@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:PapyrusJava="http://www.eclipse.org/papyrus/PapyrusJava/1" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML">
+  <uml:Model xmi:id="_ZtWWsM3oEeeArdC3tdISiQ" name="fr.ylyade.courtage.model">
+    <packagedElement xmi:type="uml:Package" xmi:id="_7Sx_wM3pEeeiyPFqevck-Q" name="fr.ylyade.courtage-ejb">
+      <packagedElement xmi:type="uml:Package" xmi:id="_7W98MM3pEeeiyPFqevck-Q" name="fr">
+        <packagedElement xmi:type="uml:Package" xmi:id="_7W_KUM3pEeeiyPFqevck-Q" name="ylyade">
+          <packagedElement xmi:type="uml:Package" xmi:id="_7W_KUc3pEeeiyPFqevck-Q" name="courtage">
+            <packagedElement xmi:type="uml:Package" xmi:id="_7W_xYM3pEeeiyPFqevck-Q" name="model">
+              <packagedElement xmi:type="uml:Class" xmi:id="_7bOKEs3pEeeiyPFqevck-Q" name="TaSinistre"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7cNBgM3pEeeiyPFqevck-Q" name="TaTListeRefDoc"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7cxCMs3pEeeiyPFqevck-Q" name="TaContratRcPro"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7cxpQc3pEeeiyPFqevck-Q" name="TaReglementAssurance"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7cxpQ83pEeeiyPFqevck-Q" name="TaContratDommageOuvrage"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7cxpRc3pEeeiyPFqevck-Q" name="TaContratGfa"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7c7aQs3pEeeiyPFqevck-Q" name="TaReglementPrestation"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7dO8QM3pEeeiyPFqevck-Q" name="TaTDoc"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7dqaEM3pEeeiyPFqevck-Q" name="TaActivite"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7dqaEs3pEeeiyPFqevck-Q" name="TaDevisRcPro"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7e3T8c3pEeeiyPFqevck-Q" name="TaClasse"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_7hvBwM3pEeeiyPFqevck-Q" name="TaUtilisateur"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_as-AcNA0EeepSsE_Iy7Vng" name="TaCourtier"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_awTBQNA0EeepSsE_Iy7Vng" name="TaTCivilite"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_awfOgNA0EeepSsE_Iy7Vng" name="TaTJuridique"/>
+              <packagedElement xmi:type="uml:Class" xmi:id="_awkuENA0EeepSsE_Iy7Vng" name="TaAttestationCompetences"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Package" xmi:id="_z0FO0NA0EeepSsE_Iy7Vng" name="dto"/>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_7XCNoM3pEeeiyPFqevck-Q" name="java">
+      <packagedElement xmi:type="uml:Package" xmi:id="_7XC0sM3pEeeiyPFqevck-Q" name="java">
+        <packagedElement xmi:type="uml:Package" xmi:id="_7XC0sc3pEeeiyPFqevck-Q" name="io">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_7XF4AM3pEeeiyPFqevck-Q" name="Serializable"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_7bIqgM3pEeeiyPFqevck-Q" name="lang">
+          <packagedElement xmi:type="uml:Class" xmi:id="_7bJRkM3pEeeiyPFqevck-Q" name="String"/>
+          <packagedElement xmi:type="uml:Class" xmi:id="_z0Pm4dA0EeepSsE_Iy7Vng" name="Object"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_7bPYMM3pEeeiyPFqevck-Q" name="util">
+          <packagedElement xmi:type="uml:Class" xmi:id="_7bPYMc3pEeeiyPFqevck-Q" name="Date"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_7ct-4c3pEeeiyPFqevck-Q" name="math">
+          <packagedElement xmi:type="uml:Class" xmi:id="_7ct-4s3pEeeiyPFqevck-Q" name="BigDecimal"/>
+        </packagedElement>
+        <packagedElement xmi:type="uml:Package" xmi:id="_z0Gc8NA0EeepSsE_Iy7Vng" name="beans">
+          <packagedElement xmi:type="uml:Class" xmi:id="_z0Gc8dA0EeepSsE_Iy7Vng" name="PropertyChangeSupport"/>
+          <packagedElement xmi:type="uml:Class" xmi:id="_z0KHUNA0EeepSsE_Iy7Vng" name="PropertyChangeListener"/>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_7Vn4YM3pEeeiyPFqevck-Q">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7VpGgM3pEeeiyPFqevck-Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/papyrus/PapyrusJava/1#/"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://PapyrusJava_PROFILES/PapyrusJava.profile.uml#_j9REUByGEduN1bTiWJ0lyw"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_7WI1wM3pEeeiyPFqevck-Q">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7WKD4M3pEeeiyPFqevck-Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/papyrus/Codegen/1#/"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://Codegen_PROFILES/Codegen.profile.uml#_fPDsIBa-EearhdjjJ6cVzQ"/>
+    </profileApplication>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_7WbJoM3pEeeiyPFqevck-Q">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7WbwsM3pEeeiyPFqevck-Q" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="http://www.eclipse.org/uml2/5.0.0/UML/Profile/Standard#/"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="pathmap://UML_PROFILES/Standard.profile.uml#_0"/>
+    </profileApplication>
+  </uml:Model>
+  <PapyrusJava:External xmi:id="_7aua0M3pEeeiyPFqevck-Q" name="java.io.Serializable" base_Classifier="_7XF4AM3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_7bMU4M3pEeeiyPFqevck-Q" name="java.lang.String" base_Classifier="_7bJRkM3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_7bRNYM3pEeeiyPFqevck-Q" name="java.util.Date" base_Classifier="_7bPYMc3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_7cv0EM3pEeeiyPFqevck-Q" name="java.math.BigDecimal" base_Classifier="_7ct-4s3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_oa9vwM3qEeeiyPFqevck-Q" name="TaContratRcPro" base_Classifier="_7cxCMs3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_obAzEM3qEeeiyPFqevck-Q" name="TaReglementAssurance" base_Classifier="_7cxpQc3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_obDPUM3qEeeiyPFqevck-Q" name="TaContratDommageOuvrage" base_Classifier="_7cxpQ83pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_obFrkM3qEeeiyPFqevck-Q" name="TaContratGfa" base_Classifier="_7cxpRc3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_awPW4NA0EeepSsE_Iy7Vng" name="TaCourtier" base_Classifier="_as-AcNA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_awXSsNA0EeepSsE_Iy7Vng" name="TaTCivilite" base_Classifier="_awTBQNA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_awcyQNA0EeepSsE_Iy7Vng" name="TaUtilisateur" base_Classifier="_7hvBwM3pEeeiyPFqevck-Q"/>
+  <PapyrusJava:External xmi:id="_awi44NA0EeepSsE_Iy7Vng" name="TaTJuridique" base_Classifier="_awfOgNA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_awnxYNA0EeepSsE_Iy7Vng" name="TaAttestationCompetences" base_Classifier="_awkuENA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_z0ISINA0EeepSsE_Iy7Vng" name="java.beans.PropertyChangeSupport" base_Classifier="_z0Gc8dA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_z0MjkNA0EeepSsE_Iy7Vng" name="java.beans.PropertyChangeListener" base_Classifier="_z0KHUNA0EeepSsE_Iy7Vng"/>
+  <PapyrusJava:External xmi:id="_z0SqMNA0EeepSsE_Iy7Vng" name="java.lang.Object" base_Classifier="_z0Pm4dA0EeepSsE_Iy7Vng"/>
+</xmi:XMI>

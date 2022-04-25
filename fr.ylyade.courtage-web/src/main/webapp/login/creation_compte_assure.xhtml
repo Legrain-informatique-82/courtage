@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Novarisks</title>
+	<link rel="shortcut icon" type="image/x-icon" href="#{resource['images:favicon.ico']}" />
+</h:head>
+
+<h:body styleClass="containerLogin">
+
+	<f:facet name="last">
+		<!-- surcharge des CSS primefaces -->
+		<h:outputStylesheet library="css" name="theme-ylyade.css" />
+	</f:facet>
+
+	<h:form>
+
+		<!--         <div class="logo-container"> -->
+		<!--             <h:graphicImage name="images/logo.svg" id="PageLogo" library="icarus-layout"/> -->
+		<!--         </div> -->
+		<div class="ui-g">
+			<p:panel header="Page Info Assure" styleClass="panel-login">
+				<h1>Vous souhaitez adhérer à une assurance Novarisks ?</h1>
+				<p>Novarisks vous propose ici une liste de courtiers d'assurance
+					certifiés partenaire Novarisks qui vous accompagnerons dans le choix et
+					le suivie d'une assurance, parmis la Responsabilité civile
+					décénnale, la garantie dommage ouvrage et les cautions et garanties
+					financières.</p>
+					
+<!-- 				<p:outputLabel for="Courtier" value="Courtier Novarisks: " /> -->
+<!--         		<p:selectOneListbox id="selectionCourtier"> -->
+<!--             		<f:selectItem itemLabel="Courtier1" itemValue="Courtier1" /> -->
+<!--             		<f:selectItem itemLabel="Courtier2" itemValue="Courtier2" /> -->
+<!--             		<f:selectItem itemLabel="Courtier3" itemValue="Courtier3" /> -->
+<!--         		</p:selectOneListbox> -->
+        		<div>
+					<p:button styleClass="btn_retour" outcome="login"
+						value="Retour au login"></p:button>
+				</div>
+			</p:panel>
+			<div class="ui-g-12 footer-login">
+				<span>Novarisks</span>
+				 <span>Legrain Informatique</span> 
+				 <span>All
+					rights reserved.</span>
+			</div>
+		</div>
+
+		<h:outputStylesheet name="css/layout-#{auth.themeCouleur}.css"
+			library="icarus-layout" />
+
+	</h:form>
+
+	<style type="text/css">
+html {
+	height: 100%;
+}
+
+.ui-button-text, .ui-button-text-only .ui-button-text {
+	padding: 8px !important;
+	transition: none !important;
+}
+
+.ui-panel .ui-panel-title {
+	font-size: 17px;
+}
+</style>
+
+	<h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css"
+		library="icarus-layout" />
+</h:body>
+
+</html>

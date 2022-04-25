@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui">
+     
+    <h:head>
+        <title>A propos</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+     
+    <h:body>
+		<h:outputText value="#{msg.hudson_string}" />
+		<br/>
+		<h:outputText value="#{msg.revision_svn}" />
+		<br/>
+		<h:outputText value="#{msg.build_date_millis}" />
+		<br/>
+		
+		<p:link href="http://www.legrain.fr" target="blank">
+			<h:graphicImage id="logo" library="images" name="logo.jpeg" width="80" height="80" />
+			<h:outputText value="#{msg.copyrights}" />
+		</p:link>
+
+		
+    </h:body>
+     
+</html>

@@ -1,0 +1,396 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-6">
+                        <div class="dashboard-title">
+                            
+                            <h2> Tableau de bord</h2>
+<!--                             <p style="display:inline-block;"><p:outputLabel value="Nom du dossier : #{dashBoardBean.tenantInfo.tenantId} (#{monCompteBean.dossierCourant.taTNiveau.libelle})"/> </p> -->
+                        </div>
+                        <div>
+                        	<p:commandButton id="refreshDashAssureur" icon="fa fa-refresh" process="@this" 
+							actionListener="#{dashAssureurController.refresh()}" update="idpanelAssureur, idpanelSoumisEtudeAssureur" styleClass="refresh-button-dashboard"/>
+                        </div>
+                        <p:tooltip id="toolTipFadeRefresh" for="refreshDashAssureur"
+	   						  value="Rafraîchir le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 dashboard-buttons">
+<!--                         <button type="button"><i class="fa fa-floppy-o" aria-hidden="true"></i> </button> -->
+<!-- 						<p:commandButton icon="fa fa-shopping-cart" title="Panier" -->
+<!-- 							onstart="window.open('#{request.contextPath}/admin/renouvellement.xhtml?dossier=#{dashBoardBean.tenantInfo.tenantId}')"> -->
+<!-- 						</p:commandButton> -->
+<!--                         <button type="button"><i class="fa fa-trash" aria-hidden="true"></i> </button> -->
+<!--                         <button type="button"><i class="fa fa-print" aria-hidden="true"></i> </button> -->
+                        <p:commandButton id="closeDashAssureur" icon="fa fa-times" styleClass="icon icon-close fermer-droite" process="@this" 
+							onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())"/>
+							<p:tooltip id="toolTipFadeClose" for="closeDashAssureur"
+	   						  value="Fermer le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+<!--                         <p:tabMenu activeIndex="#{param.i}" style="padding-left:40px"> -->
+<!--                             <p:menuitem value="Overview" outcome="/" icon="fa fa-star"> -->
+<!--                                 <f:param name="i" value="0" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Demos" outcome="/" icon="fa fa-search"> -->
+<!--                                 <f:param name="i" value="1" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Documentation" outcome="/" icon="fa fa-file"> -->
+<!--                                 <f:param name="i" value="2" /> -->
+<!--                             </p:menuitem> -->
+<!--                         </p:tabMenu> -->
+                    </div>
+                </div>
+            </div>
+       </div>
+       
+       <div id="main-wrapper-content">
+       
+       		<div class="ui-g">
+       		
+       			<div class="ui-g-12 ui-md-6">
+<!-- 					<p:panel header="Notifications Dossier" rendered="#{messageDossierController.afficheMessageDossier}" id="idTabViewNotificationDossierAccueil"> -->
+					<p:panel header="Notifications Dossier (temporaire)" rendered="false" id="idTabViewNotificationDossierAccueil">
+						<p:tabView orientation="right" styleClass="verticalTab" >
+<!-- 						 <c:forEach items="#{messageDossierController.listeMessage}" var="messDossier" > -->
+							<p:tab title="#{messDossier.titreMessage}" id="idTabNotificationDossierAccueil">
+							
+<!-- 								<h:panelGrid columns="2" cellpadding="10" style="width:75%;"> -->
+<!-- 									  #{messDossier.titreCorpsMessage}+#{messDossier.texte1Message}+#{messDossier.texte2Message}+#{messDossier.texte3Message} -->
+									<ui:include src="#{messDossier.titreCorpsMessage}" />
+									<ui:include src="#{messDossier.texte1Message}" />
+									<ui:include src="#{messDossier.texte2Message}" />
+									<ui:include src="#{messDossier.texte3Message}" />
+									<h:outputLabel escape="false" value="Message informatif" />
+									<br />
+									<h:outputLabel escape="false" value="Il vous reste 5 documents à envoyer pour l'activation de votre compte !" />
+ 									
+<!-- 								</h:panelGrid> -->
+							</p:tab>
+<!-- 						 </c:forEach> -->
+						</p:tabView>
+					</p:panel>
+	
+			<p:panel id="idpanelAssureur" header="Etat des dossiers" rendered="true"  toggleable="true" styleClass="panel-dash">
+			
+				<h:panelGrid columns="3" cellpadding="3" style="align:center;">
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis à valider <h:outputLink id="tooltip1" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFade1" for="tooltip1"
+	   						  value="Cette liste contient tous les devis qui ont été entièrement validés par Novarisks et donc en attente de la validation Assureur pour la concrétisation en contrat."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbDossierAValider}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierAValiderAssureur"
+							 styleClass=""
+							 oncomplete="PF('wvOverlaylisteDossierAValiderAssureur').show();"
+							 update="@widgetVar(wvDataTablelisteDossierAValiderAssureur)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+					<!-- AVENANT -->
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Avenants à valider <h:outputLink id="tooltipAvenantAValider" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFadeAvenantAValider" for="tooltipAvenantAValider"
+	   						  value="Cette liste contient tous les avenants qui ont été entièrement validés par Novarisks et donc en attente de la validation Assureur pour la concrétisation en contrat."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbAvenantAValider}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayAvenantAValider"
+							 styleClass=""
+							 oncomplete="PF('wvOverlayListeAvenantAValider').show();"
+							 update="@widgetVar(wvDataTableListeAvenantAValider)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+					</h:panelGrid>
+
+			</p:panel>
+					
+					<p:panel header="Votre portefeuille" rendered="false">
+
+					</p:panel>
+
+       		</div>
+			<div class="ui-g-12 ui-md-6">
+			
+			
+			
+					
+					<!-- SOUMIS A ETUDE -->
+					<p:panel id="idpanelSoumisEtudeAssureur" header="Etat des dossiers soumis à étude" rendered="true" toggleable="true" styleClass="panel-dash">
+			
+				<h:panelGrid columns="3" cellpadding="3" style="align:center;">
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis soumis à étude à valider <h:outputLink id="tooltipSoumisEtudeAValider" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFadeSoumisEtudeAValider" for="tooltipSoumisEtudeAValider"
+	   						  value="Cette liste contient tous les devis soumis à étude par Novarisks et donc en attente de la validation Assureur."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbSoumisEtudeAValider}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlaySoumisEtudeAttenteValidationAssureurAssureur"
+							 styleClass=""
+							 oncomplete="PF('wvOverlaylisteSoumisEtudeAttenteValidationAssureurAssureur').show();"
+							 update="@widgetVar(wvDataTablelisteSoumisEtudeAttenteValidationAssureurAssureur)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+					
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis soumis à étude validés <h:outputLink id="tooltipSoumisEtudeValide" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFadeSoumisEtudeValide" for="tooltipSoumisEtudeValide"
+	   						  value="Cette liste contient tous les devis soumis à étude qui ont été validés soit par Novarisks soit par l'assurance"
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbSoumisEtudeValide}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlaySoumisEtudeValideAssureur"
+							 styleClass=""
+							 oncomplete="PF('wvOverlaylisteSoumisEtudeValideAssureur').show();"
+							 update="@widgetVar(wvDataTablelisteSoumisEtudeValideAssureur)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+				
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis soumis à étude refusés <h:outputLink id="tooltipSoumisEtudeRefuse" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFadeSoumisEtudeRefuse" for="tooltipSoumisEtudeRefuse"
+	   						  value="Cette liste contient tous les devis soumis à étude qui ont été refusés définitivement soit par Novarisks soit par l'assurance."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbSoumisEtudeRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							
+							  <p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseAssureur"
+							 styleClass=""
+							 oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseAssureur').show();"
+							 update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseAssureur)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis soumis à étude définitivement refusés <h:outputLink id="tooltipSoumisEtudeRefuseDefinitif" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFadeSoumisEtudeRefuseDefinitif" for="tooltipSoumisEtudeRefuseDefinitif"
+	   						  value="Cette liste contient tous les devis soumis à étude qui ont été refusés définitivement soit par Novarisks soit par l'assurance."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashAssureurController.nbSoumisEtudeRefuseDefinitif}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							
+							  <p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseDefinitifAssureur"
+							 styleClass=""
+							 oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseDefinitifAssureur').show();"
+							 update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseDefinitifAssureur)"
+							  value="Afficher la liste" />
+						</div>
+					</h:panelGroup>
+					
+
+				</h:panelGrid>
+
+			</p:panel>
+
+
+<!-- 					<p:panel header="Contrat en attente de pièces" rendered="true"> -->
+<!-- 					<h:panelGrid columns="3" cellpadding="10" style="align:center;"> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">RCD</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="87 639,00 €"> -->
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="15"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">Dommage ouvrage</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="180 395,00 €"> -->
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="78"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">GFA</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="95 654,00 €"> -->
+<!-- 												<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="24"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+
+<!-- 					</h:panelGrid> -->
+<!-- 					</p:panel> -->
+					
+<!-- 				<p:tabView id="idTabViewInfoActiviteCourtier"> -->
+<!-- 					<p:panel header="Etats des devis en cours" rendered="true"> -->
+<!-- 					<h:panelGrid columns="3" cellpadding="10" style="align:center;"> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">RCD</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="87 639,00 €"> -->
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de devis : "/>  -->
+<!-- 						<p:outputLabel value="15"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">Dommage ouvrage</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="180 395,00 €"> -->
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de devis : "/>  -->
+<!-- 						<p:outputLabel value="78"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">GFA</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="95 654,00 €"> -->
+<!-- 												<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de devis : "/>  -->
+<!-- 						<p:outputLabel value="24"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+
+<!-- 					</h:panelGrid> -->
+<!-- 					</p:panel> -->
+					
+<!-- 					<p:panel header="Contrats arrivant à échéance" rendered="true"> -->
+<!-- 					<h:panelGrid columns="3" cellpadding="10" style="align:center;"> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">RCD</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="87 639,00 €"> -->
+<!--  						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="15"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">Dommage ouvrage</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="180 395,00 €"> -->
+<!--  						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="78"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">GFA</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="95 654,00 €"> -->
+<!-- 												<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="24"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+
+<!-- 					</h:panelGrid> -->
+<!-- 					</p:panel> -->
+<!-- 					<p:panel header="Contrats à échéance dépassée" rendered="true"> -->
+<!-- 					<h:panelGrid columns="3" cellpadding="10" style="align:center;"> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">RCD</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="87 639,00 €"> -->
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="15"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">Dommage ouvrage</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="180 395,00 €"> -->
+<!--  						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> --> 
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="78"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+<!-- 					<h:panelGroup > -->
+<!-- 					<div class="card"> -->
+<!-- 						<h3 align="center">GFA</h3> -->
+<!-- 						<p:outputLabel value="Total TTC : "/>  -->
+<!-- 						<p:outputLabel value="95 654,00 €"> -->
+<!-- 												<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+<!-- 						</p:outputLabel> -->
+<!-- 						<p:separator></p:separator> -->
+<!-- 						<p:outputLabel value="Nombre de contrats : "/>  -->
+<!-- 						<p:outputLabel value="24"/> -->
+<!-- 					</div> -->
+<!-- 					</h:panelGroup> -->
+
+<!-- 					</h:panelGrid> -->
+<!-- 					</p:panel> -->
+<!-- 				</p:tabView> -->
+
+       		</div> 
+       		     		
+       	</div>
+
+       	
+       </div>
+</ui:composition>

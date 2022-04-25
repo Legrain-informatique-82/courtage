@@ -1,0 +1,3 @@
+INSERT INTO public.ta_t_franchise (id_t_franchise, montant, taux_montant, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_franchise, libl_t_franchise) VALUES (1, 4000.00, 0.00, null, null, null, null, null, 0, 'FR4000', '4 000€');
+INSERT INTO public.ta_t_franchise (id_t_franchise, montant, taux_montant, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_franchise, libl_t_franchise) VALUES (2, 2000.00, 15.00, null, null, null, null, null, 0, 'FR2000', '2 000€');
+INSERT INTO public.ta_t_franchise (id_t_franchise, montant, taux_montant, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_franchise, libl_t_franchise) VALUES (3, 1000.00, 20.00, null, null, null, null, null, 0, 'FR1000', '1 000€');

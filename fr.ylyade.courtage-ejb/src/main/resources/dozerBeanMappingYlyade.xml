@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<configuration>
+		<stop-on-errors>true</stop-on-errors>
+		<date-format>MM/dd/yyyy HH:mm</date-format>
+		<wildcard>true</wildcard>
+	</configuration>
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.model.TaTAdresse</class-a>
+		<class-b>fr.ylyade.courtage.dto.TaTAdresseDTO</class-b>	
+		<field>
+			<a>idTAdresse</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.model.TaListeRefDoc</class-a>
+		<class-b>fr.ylyade.courtage.dto.TaListeRefDocDTO</class-b>	
+		<field type="one-way">
+			<a>taTListeRefDoc.codeTListeRefDoc</a>
+			<b>codeTListeRefDoc</b>
+		</field>
+	</mapping>
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.model.TaCourtier</class-a>
+		<class-b>fr.ylyade.courtage.dto.TaCourtierDTO</class-b>	
+		<field>
+			<a>idCourtier</a>
+			<b>id</b>
+		</field>
+		
+		
+		<field type="one-way">
+			<a>taContactEntreprise.taTCivilite.idTCivilite</a>
+			<b>idTCivilite</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.taTCivilite.codeTCivilite</a>
+			<b>codeTCivilite</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTGroupeTarif.idTGroupeTarif</a>
+			<b>idTGroupeTarif</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTGroupeTarif.codeGroupe</a>
+			<b>codeGroupe</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTGroupeTarif.nomGroupe</a>
+			<b>nomGroupe</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTGroupeTarif.tauxGroupe</a>
+			<b>tauxGroupe</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taUtilisateur.idUtilisateur</a>
+			<b>idUtilisateur</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taUtilisateur.identifiant</a>
+			<b>identifiant</b>
+		</field>
+		
+<!-- 		<field type="one-way"> -->
+<!-- 			<a>taUtilisateur.password</a> -->
+<!-- 			<b>password</b> -->
+<!-- 		</field> -->
+		
+		<field type="one-way">
+			<a>taTCourtier.idTCourtier</a>
+			<b>idTCourtier</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTCourtier.codeTCourtier</a>
+			<b>codeTCourtier</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTJuridique.idTJuridique</a>
+			<b>idTJuridique</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTJuridique.codeTJuridique</a>
+			<b>codeTJuridique</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.idContactEntreprise</a>
+			<b>idContactEntreprise</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.nom</a>
+			<b>nom</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.prenom</a>
+			<b>prenom</b>
+		</field>
+		
+			<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne1</a>
+			<b>adresseLigne1</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne2</a>
+			<b>adresseLigne2</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne3</a>
+			<b>adresseLigne3</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.codePostal</a>
+			<b>codePostal</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.ville</a>
+			<b>ville</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.pays</a>
+			<b>pays</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taEmail.adresseEmail</a>
+			<b>adresseEmail</b>
+		</field>
+				  
+		<field>
+			<a>taContactEntreprise.taTel.numeroTel</a>
+			<b>numeroTel</b>
+		</field>
+	</mapping>
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.model.TaAssure</class-a>
+		<class-b>fr.ylyade.courtage.dto.TaAssureDTO</class-b>	
+		<field>
+			<a>idAssure</a>
+			<b>id</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.taTCivilite.idTCivilite</a>
+			<b>idTCivilite</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.taTCivilite.codeTCivilite</a>
+			<b>codeTCivilite</b>
+		</field>
+		
+		
+		<field type="one-way">
+			<a>taUtilisateur.idUtilisateur</a>
+			<b>idUtilisateur</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taUtilisateur.identifiant</a>
+			<b>identifiant</b>
+		</field>
+		
+<!-- 		<field type="one-way"> -->
+<!-- 			<a>taUtilisateur.password</a> -->
+<!-- 			<b>password</b> -->
+<!-- 		</field> -->
+		
+		<field type="one-way">
+			<a>taTAssure.idTAssure</a>
+			<b>idTAssure</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTAssure.codeTAssure</a>
+			<b>codeTAssure</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTJuridique.idTJuridique</a>
+			<b>idTJuridique</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taTJuridique.codeTJuridique</a>
+			<b>codeTJuridique</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.idContactEntreprise</a>
+			<b>idContactEntreprise</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.nom</a>
+			<b>nom</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taContactEntreprise.prenom</a>
+			<b>prenom</b>
+		</field>
+		
+			<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne1</a>
+			<b>adresseLigne1</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne2</a>
+			<b>adresseLigne2</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.adresseLigne3</a>
+			<b>adresseLigne3</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.codePostal</a>
+			<b>codePostal</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.ville</a>
+			<b>ville</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taAdresse.pays</a>
+			<b>pays</b>
+		</field>
+		
+		<field>
+			<a>taContactEntreprise.taEmail.adresseEmail</a>
+			<b>adresseEmail</b>
+		</field>
+				  
+		<field>
+			<a>taContactEntreprise.taTel.numeroTel</a>
+			<b>numeroTel</b>
+		</field>
+	</mapping>
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.droits.model.TaRole</class-a>
+		<class-b>fr.ylyade.courtage.droits.model.dto.TaRoleDTO</class-b>	
+		<field type="one-way">
+			<a>idRoles</a>
+			<b>id</b>
+		</field>
+	</mapping>
+	
+<!-- 	<mapping map-null="false" map-empty-string="false" > -->
+<!-- 		<class-a>fr.ylyade.courtage.model.TaDevisRcPro</class-a> -->
+<!-- 		<class-b>fr.ylyade.courtage.dto.TaDevisRcProDTO</class-b>	 -->
+
+<!-- 	</mapping> -->
+	
+	<mapping map-null="false" map-empty-string="false" >
+		<class-a>fr.ylyade.courtage.model.TaDossierRcd</class-a>
+		<class-b>fr.ylyade.courtage.dto.TaDossierRcdDTO</class-b>	
+		<field-exclude>
+			<a>versionObj</a>
+			<b>versionObj</b>
+		</field-exclude>
+		
+		<field type="one-way">
+			<a>idDossierRcd</a>
+			<b>id</b>
+		</field>
+		<field type="one-way">
+			<a>taCourtier.idCourtier</a>
+			<b>idCourtier</b>
+		</field>
+		<field type="one-way">
+			<a>taCourtier.codeCourtier</a>
+			<b>codeCourtier</b>
+		</field>
+		
+		<field type="one-way">
+			<a>taAssure.idAssure</a>
+			<b>idAssure</b>
+		</field>
+		<field type="one-way">
+			<a>taAssure.codeAssure</a>
+			<b>codeAssure</b>
+		</field>
+<!-- 		<field-exclude> -->
+<!-- 			<a>taSinistreAntecedent</a> -->
+<!-- 			<b></b> -->
+<!-- 		</field-exclude> -->
+
+
+		<field type="one-way">
+			<a>taTReglement.codeTReglement</a>
+			<b>codeTReglement</b>
+		</field>
+		<field type="one-way">
+			<a>taTEcheance.codeTEcheance</a>
+			<b>codeEcheance</b>
+		</field>
+		<field type="one-way">
+			<a>taTEcheance.liblTEcheance</a>
+			<b>liblTEcheance</b>
+		</field>
+		<field type="one-way">
+			<a>taTSousTraitance.codeTSousTraitance</a>
+			<b>codeTSousTraitance</b>
+		</field>
+	</mapping>
+	
+</mappings>

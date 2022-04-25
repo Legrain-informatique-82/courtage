@@ -1,0 +1,257 @@
+.pulse {
+  animation: pulse-custom 1.5s infinite forwards;
+}
+@keyframes pulse-custom {
+  /*25% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 1;
+  }*/
+  
+   0% {
+          box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.6);
+     }
+   100% {
+          box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+     }
+}
+
+
+.montant-gras .ui-inputfield{
+	font-weight : 800 !important;
+}
+.containerLogin {
+	background : inherit;
+	background-color : #1f355a !important;
+}
+.ui-tabs-nav {
+    width:inherit !important;          
+}
+          
+.ui-widget-content {
+	border: none;
+}
+
+.ui-panelgrid .ui-panelgrid-cell {
+    border: none;
+}
+
+.ui-editor.ui-widget-content {
+	border: 1px solid #9a9a9a;
+}
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+    opacity: .8;
+    filter: Alpha(Opacity=80);
+}
+
+.center {
+	text-align: center;
+}
+.right {
+	text-align: right;
+}
+.left {
+	text-align: left;
+}
+
+.ui-overlaypanel {
+	width:90%; 
+	/*margin:auto;*/
+    top: 102px !important;
+    left: auto !important;
+    right: 10px !important;
+}
+
+.ui-overlaypanel {
+	width:90%; 
+	/*margin:auto;*/
+    top: 102px !important;
+    left: auto !important;
+    right: 10px !important;
+}
+
+.btn-action-defaut-vide {
+	visibility: hidden;
+	width: 0px;
+	height: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.labelchob,
+.labelchblo {
+    position: relative;
+}
+
+.labelwarning {
+    content: "\f12a";
+    /*content: " * ";*/
+    font-size: 12px;
+    font-variant:small-caps;
+    font-family: FontAwesome;
+    margin-left: 0px;
+    vertical-align: super;
+    color: red;
+} 
+
+.labelchob:after,
+.labelchblo:after {
+    /*content: " \f005 ";*/
+    content: " * ";
+    font-size: 10px;
+    font-variant:small-caps;
+    font-family: FontAwesome;
+    margin-left: 0px;
+    vertical-align: super;
+     color: red;
+}
+
+.labelchblo:after {
+	content: " ** ";
+}
+
+.ui-dialog{
+	top: 0px !important;
+}
+
+.ui-datalist-data {
+	list-style-type: none;
+}
+
+.ui-tabs.ui-tabs-top .ui-tabs-nav.ui-widget-header .ui-state-default.ui-tabs-selected.onglet-valide,
+.ui-tabs.ui-tabs-top .ui-tabs-nav.ui-widget-header .ui-state-default.onglet-valide
+/* .ui-tabs.ui-tabs-top .ui-tabs-nav.ui-widget-header .ui-state-default.onglet-valide*/ {
+	/*background: #29b02a;
+	
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-right-color: #e88524;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-left-color: #e88524;
+    
+    */
+    border-right-style: solid;
+    border-left-style: solid;
+    border-top-style: solid;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-color: #29b02a;
+    
+}
+
+.ui-tabs.ui-tabs-top .ui-tabs-nav.ui-widget-header .ui-state-default.ui-tabs-selected.onglet-erreur,
+.ui-tabs.ui-tabs-top .ui-tabs-nav.ui-widget-header .ui-state-default.onglet-erreur {
+	/*background: #c2201b;
+	 */
+	 
+	 border-right-style: solid;
+    border-left-style: solid;
+    border-top-style: solid;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-color: #c2201b;
+}
+
+.ui-tabs.ui-widget.ui-widget-content.ui-corner-all.ui-hidden-container.ui-tabs-top.verticalTab ul.ui-widget-header {
+	background: #ffffff;
+}
+
+
+.cbInfosLegales .ui-chkbox-box.ui-widget.ui-corner-all.ui-state-default {
+	/*background: #ea9624;*/
+}
+
+/*DASHBOARD*/
+.refresh-button-dashboard {
+	border: none !important;
+	color: #ea9624 !important;
+	background: #4a4a4a !important;
+}
+.refresh-button-dashboard:hover{
+	border: none !important;
+	color: white !important;
+	/*background-color : white !important;*/
+	background: #ea9624 !important;
+}
+
+.fermer-droite{
+	border: none !important;
+	color: #ea9624 !important;
+	background: #4a4a4a !important;
+}
+.fermer-droite:hover{
+	border: none !important;
+	color: white !important;
+	/*background-color : white !important;*/
+	background: #ea9624 !important;
+}
+.label-number-dashboard{
+	font-size: 30px;
+}
+.card-courtier {
+	padding: 5px 13px 20px !important;
+	height:200px;
+	width:245px;
+}
+
+@media all and (max-width: 1850px){
+	.card-courtier {
+	width:160px;
+	}
+}
+
+@media all and (max-width: 1344px){
+	.card-courtier {
+	width:130px;
+	}
+}
+
+.champsProposant {
+	width:500px;
+}
+
+/*LABEL STATUT*/
+
+.panel-statut-label {
+	/*display: flow-root;*/
+	/*margin-bottom: 20px;*/
+}
+
+.panel-statut-label ul li {
+	display:inline-block;
+	margin-bottom : 20px;
+}
+.statut-label {
+	padding:10px;
+	color: white;
+	/*background-color:#ea9624;*/
+	background-color:#5BA5D8;
+	font-weight : bold;
+	border-radius: 5px;
+	/*display: inline;
+    float : left;*/
+    width : 180px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+/*LISTE DE FRAIS IMPAYE*/
+.liste-frais-impaye {
+	text-align : left;
+}
+.montant-plus-frais-text {
+	font-weight : bold;
+}
+
+/*____________________________*/
+
+

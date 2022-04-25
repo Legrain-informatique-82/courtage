@@ -1,0 +1,5 @@
+INSERT INTO public.ta_t_liste_ref_doc (id_t_liste_ref_doc, libl, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_liste_ref_doc) VALUES (2, 'Courtier', null, null, null, null, null, 0, 'court');
+INSERT INTO public.ta_t_liste_ref_doc (id_t_liste_ref_doc, libl, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_liste_ref_doc) VALUES (3, 'Assuré', null, null, null, null, null, 0, 'assu');
+INSERT INTO public.ta_t_liste_ref_doc (id_t_liste_ref_doc, libl, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_liste_ref_doc) VALUES (1, 'Rc Pro  & Décennale', null, null, null, null, null, 1, 'rcpro');
+INSERT INTO public.ta_t_liste_ref_doc (id_t_liste_ref_doc, libl, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_liste_ref_doc) VALUES (4, 'GFA', null, null, null, null, null, 0, 'gfa');
+INSERT INTO public.ta_t_liste_ref_doc (id_t_liste_ref_doc, libl, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_liste_ref_doc) VALUES (5, 'Dommage ouvrage', null, null, null, null, null, 0, 'do');

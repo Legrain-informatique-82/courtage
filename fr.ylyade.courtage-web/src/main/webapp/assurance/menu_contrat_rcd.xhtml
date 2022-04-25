@@ -1,0 +1,126 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+	
+	<o:importConstants type="fr.ylyade.courtage.app.LgrTab" />
+	
+		<div style="text-align: center">
+		<p:outputLabel value="Contrat N° " />
+<!-- 		<p:inputText  -->
+<!-- 			value="#{devisRcdController.selectedTaDevisRcProDTO.numDossierPolice}" -->
+<!-- 			validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 			disabled="#{devisRcdController.editable()}"> -->
+<!-- 			<f:attribute name="nomChamp" value="#{const.C_NUM_DEVIS_RCPRO}" /> -->
+<!-- 			<p:ajax event="blur" update="@this" /> -->
+<!-- 		</p:inputText> -->
+		<p:outputLabel value="#{contratRcdController.selectedTaDossierRcdDTO.numDossierPolice}#{contratRcdController.selectedTaDossierRcdDTO.lettrePjNumPolice} - #{contratRcdController.selectedTaContratRcProDTO.numeroAvenant}"/>
+
+<!-- 		<p:outputLabel value="#{contratRcdController.selectedTaContratRcProDTO.numDossierPolice} - #{contratRcdController.selectedTaContratRcProDTO.numeroAvenant}"/>
+ -->	</div>
+
+	<p:panel styleClass="menu-onglet">
+<!-- 				<p:commandButton value="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuContratRcPro').show()" /> -->
+	
+	<p:commandButton value="Enregistrer" icon="fa fa-save"
+		actionListener="#{contratRcdController.actEnregistrer}"
+		process="@this"
+		update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro), @widgetVar(wvPanelStatutContrat)"
+		disabled="#{contratRcdController.etatBouton('enregistrer')}" rendered="#{auth.isCourtier() or auth.isYlyade()}" />
+	
+<!-- 				<p:commandButton value="Ajouter" styleClass="icon-insert icon" -->
+<!-- 					actionListener="#{contratRcdController.actInserer}" process="@this" -->
+<!-- 					update="idPanelAdresse,:form:messages,@form,@widgetVar(wvPanelEntete),@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro),@widgetVar(wvBandeauActionContratRcPro)" -->
+<!-- 					disabled="#{contratRcdController.etatBouton('inserer')}" -->
+<!-- 					rendered="#{auth.isYlyade()}" /> -->
+		
+	<!--  <p:commandButton value="Avenant" icon="fa fa-clone"
+		actionListener="#{contratRcdController.actCreerAvenant}" process="@this"
+		update="idPanelAdresse,:form:messages,@form,@widgetVar(wvPanelEntete),@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro),@widgetVar(wvBandeauActionContratRcPro),@widgetVar(wvPanelHistorique), @widgetVar(wvDataTableListeDevisRcPro)"
+		disabled="#{contratRcdController.etatBouton('modifier')}"
+		oncomplete="activeTabCenter('#{LgrTab.CSS_CLASS_TAB_DEVIS_RCPRO}');scrollToTop();"
+		rendered="#{auth.isCourtier() or auth.isYlyade()}">
+		<p:confirm header="Confirmation" message="Etes vous sur de vouloir créer un avenant pour ce contrat ?" icon="ui-icon-alert" />
+		</p:commandButton>-->
+	
+	<!-- <p:commandButton value="Modifier" styleClass="icon-update icon"
+		actionListener="#{contratRcdController.actModifier}"
+		process="@this"
+		update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro)"
+		disabled="#{contratRcdController.etatBouton('modifier')}" rendered="#{auth.isCourtier() or auth.isYlyade()}" />-->
+
+	
+	<p:commandButton value="Annuler" icon="fa fa-ban"
+		actionListener="#{contratRcdController.actAnnuler}" process="@this"
+		update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro)"
+		disabled="#{contratRcdController.etatBouton('annuler')}" 
+		rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+		<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours ?" icon="ui-icon-alert" />
+	</p:commandButton>
+	
+<!-- 	<p:commandButton value="Supprimer" -->
+<!-- 		styleClass="icon icon-delete menuitem-poubelle-droite" -->
+<!-- 		actionListener="#{contratRcdController.actSupprimer}" -->
+<!-- 		process="@this" -->
+<!-- 		update="idPanelAdresse,:form:messages,@form,@widgetVar(wvDataTableListeContratRcPro)" -->
+<!-- 		disabled="#{contratRcdController.etatBouton('supprimer')}" -->
+<!-- 		rendered="#{auth.isCourtier() or auth.isYlyade()}" > -->
+<!-- 		<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce contrat ?" icon="ui-icon-alert" /> -->
+<!-- 	</p:commandButton> -->
+	
+	<p:commandButton value="Fermer"
+		icon="fa fa-close" process="@this"
+		actionListener="#{contratRcdController.actFermer}"
+		update=":form:messages,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro)"
+		disabled="#{contratRcdController.etatBouton('fermer')}"
+		onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+		<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours et fermer l'onglet?" icon="ui-icon-alert"
+			disabled="#{!contratRcdController.modeEcran.dataSetEnModif()}" />
+	</p:commandButton>
+	
+	<!-- non PIB -->
+	<!-- <p:commandButton value="Imprimer attestation d'assurance" icon="fa fa-print"
+		onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestation/AttestationAssuranceRcDecennale.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+		actionListener="#{contratRcdController.actImprimer}"
+		disabled="#{contratRcdController.etatBouton('imprimer')}" 
+		process="@this" rendered="#{!contratRcdController.assurePib()}"/>
+
+		
+	PIB
+	<p:commandButton value="Imprimer attestation d'assurance Pib" icon="fa fa-print"
+		onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestation/AttestationAssuranceRcDecennalePib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+		actionListener="#{contratRcdController.actImprimer}"
+		disabled="#{contratRcdController.etatBouton('imprimer')}" 
+		process="@this" rendered="#{contratRcdController.assurePib()}"/>
+	
+	<p:commandButton value="Imprimer CP" icon="fa fa-print"
+			onsuccess="window.open('#{request.contextPath}/output?__report=/reports/conditionsParticulieres/ConditionsParticulieres.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+			actionListener="#{contratRcdController.actImprimer}"
+			disabled="#{contratRcdController.etatBouton('imprimer')}" 
+			process="@this" rendered="#{!contratRcdController.assurePib()}"/>
+			
+	<p:commandButton value="Imprimer CP Pib" icon="fa fa-print"
+			onsuccess="window.open('#{request.contextPath}/output?__report=/reports/conditionsParticulieres/ConditionsParticulieresPib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+			actionListener="#{contratRcdController.actImprimer}"
+			disabled="#{contratRcdController.etatBouton('imprimer')}" 
+			process="@this" rendered="#{contratRcdController.assurePib()}"/> -->
+		
+	<p:commandButton value="Liste" icon="fa fa-list" oncomplete="PF('wvOverlayListeContratRcPro').show();" process="@this" />
+</p:panel>
+
+
+<!-- STATUTS DU DOSSIER -->
+<p:panel widgetVar="wvPanelStatutContrat#{varMenuContrat}"  styleClass="panel-statut-label"  header="Statut du contrat" >
+	<p:dataList  value="#{contratRcdController.selectedTaDossierRcdDTO.taTStatut}" var="statut">
+		<p:column sortBy="statut.liblTStatut">
+       		<p:outputLabel styleClass="statut-label"> #{statut.liblTStatut}</p:outputLabel>
+        </p:column>
+    </p:dataList>
+	
+</p:panel>
+			
+</ui:composition>

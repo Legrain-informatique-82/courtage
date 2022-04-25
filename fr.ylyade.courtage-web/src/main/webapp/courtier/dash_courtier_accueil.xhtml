@@ -1,0 +1,772 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-6">
+                        <div class="dashboard-title">
+                            
+                            <h2> Tableau de bord</h2>
+<!--                             <p style="display:inline-block;"><p:outputLabel value="Nom du dossier : #{dashBoardBean.tenantInfo.tenantId} (#{monCompteBean.dossierCourant.taTNiveau.libelle})"/> </p> -->
+                        </div>
+                        <div>
+                    	<p:commandButton id="refreshDashCourtier" icon="fa fa-refresh" process="@this"  
+ 							actionListener="#{dashCourtierController.refresh()}" update="idpanelCourtier, idpanelCourtierAvenants, idpanelSoumisExpertiseCourtier, idpanelCourtierPaiement, idpanelPaiementContratCourtier, idpanelResiliationCourtier, idpanelAttestationNominative" styleClass="refresh-button-dashboard"/> 
+<!-- 							<p:commandButton id="refreshDashCourtier" icon="fa fa-refresh" process="@this"  -->
+<!-- 							oncomplete="#{dashCourtierController.refresh()}" update="idpanelCourtier" styleClass="refresh-button-dashboard"/> -->
+                        </div>
+                         <p:tooltip id="toolTipFadeRefresh" for="refreshDashCourtier"
+	   						  value="Rafraîchir le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 dashboard-buttons">
+<!--                         <button type="button"><i class="fa fa-floppy-o" aria-hidden="true"></i> </button> -->
+<!-- 						<p:commandButton icon="fa fa-shopping-cart" title="Panier" -->
+<!-- 							onstart="window.open('#{request.contextPath}/admin/renouvellement.xhtml?dossier=#{dashBoardBean.tenantInfo.tenantId}')"> -->
+<!-- 						</p:commandButton> -->
+<!--                         <button type="button"><i class="fa fa-trash" aria-hidden="true"></i> </button> -->
+<!--                         <button type="button"><i class="fa fa-print" aria-hidden="true"></i> </button> -->
+                        <p:commandButton id="closeDashCourtier" icon="fa fa-times" styleClass="icon icon-close fermer-droite" process="@this" 
+							onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())"/>
+							<p:tooltip id="toolTipFadeClose" for="closeDashCourtier"
+	   						  value="Fermer le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+<!--                         <p:tabMenu activeIndex="#{param.i}" style="padding-left:40px"> -->
+<!--                             <p:menuitem value="Overview" outcome="/" icon="fa fa-star"> -->
+<!--                                 <f:param name="i" value="0" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Demos" outcome="/" icon="fa fa-search"> -->
+<!--                                 <f:param name="i" value="1" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Documentation" outcome="/" icon="fa fa-file"> -->
+<!--                                 <f:param name="i" value="2" /> -->
+<!--                             </p:menuitem> -->
+<!--                         </p:tabMenu> -->
+                    </div>
+                </div>
+            </div>
+       </div>
+       
+       <div id="main-wrapper-content">
+       		<div class="ui-g">
+       			<div class="ui-g-12 ui-md-6">
+<!-- 					<p:panel header="Notifications Dossier" rendered="#{messageDossierController.afficheMessageDossier}" id="idTabViewNotificationDossierAccueil"> -->
+					<p:panel header="Notifications Dossier (temporaire)" rendered="false" id="idTabViewNotificationDossierAccueil">
+						<p:tabView orientation="right" styleClass="verticalTab" >
+<!-- 						 <c:forEach items="#{messageDossierController.listeMessage}" var="messDossier" > -->
+							<p:tab title="#{messDossier.titreMessage}" id="idTabNotificationDossierAccueil">
+							
+<!-- 								<h:panelGrid columns="2" cellpadding="10" style="width:75%;"> -->
+<!-- 									  #{messDossier.titreCorpsMessage}+#{messDossier.texte1Message}+#{messDossier.texte2Message}+#{messDossier.texte3Message} -->
+									<ui:include src="#{messDossier.titreCorpsMessage}" />
+									<ui:include src="#{messDossier.texte1Message}" />
+									<ui:include src="#{messDossier.texte2Message}" />
+									<ui:include src="#{messDossier.texte3Message}" />
+									<h:outputLabel escape="false" value="Message informatif" />
+									<br />
+									<h:outputLabel escape="false" value="Il vous reste 5 documents à envoyer pour l'activation de votre compte !" />
+ 									
+<!-- 								</h:panelGrid> -->
+							</p:tab>
+<!-- 						 </c:forEach> -->
+						</p:tabView>
+					</p:panel>
+					
+<!-- 				<p:tabView id="idTabViewInfoActiviteCourtier"> -->
+					<p:panel header="Votre portefeuille" rendered="false">
+
+					</p:panel>
+					
+			<p:panel id="idpanelCourtier" header="Etat des dossiers" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Contrats à traiter <h:outputLink id="tooltip1" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFade1" for="tooltip1"
+                             value="Cette liste contient tous les contrats qui n'ont pas encore été traités, c'est à dire imprimés et remis aux clients pour signature par le courtier, et enfin reçus et validés par Novarisks."
+                             position="top"/>
+<!-- 						<p:outputLabel value="#{dashCourtierController.nbContratATraiter}" style="align:center;width:100%;" styleClass="label-number-dashboard" /> -->
+<!-- 						<p:outputLabel value="10000" -->
+<!-- 						 style="align:center;width:100%;"  -->
+<!-- 						 styleClass="label-number-dashboard panel-dash" /> -->
+						 <p:outputLabel  style="align:center;width:100%;"
+						  styleClass="label-number-dashboard"> #{dashCourtierController.nbContratATraiter}</p:outputLabel>
+						 
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayDossierAValider" styleClass=""
+						 oncomplete="PF('wvOverlayListeContratATraiter').show();"
+						 update="@widgetVar(wvDataTableListeContratATraiter)"
+						  value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Devis avec pièces à valider <h:outputLink id="tooltip2" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    				<p:tooltip id="toolTipFade2" for="tooltip2"
+                         value="Cette liste contient tous les devis qui n'ont pas la GED validée (par exemple oubli, pièces manquantes, refusés par Novarisks...) et qu'il faut donc traiter et valider puis soumettre à souscription."
+                         position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbDossierPieceManquanteOuRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeDossierAvecPieceAValider" styleClass=""
+						 oncomplete="PF('wvOverlaylisteDossierAvecPieceAValider').show();"
+						 update="@widgetVar(wvDataTablelisteDossierAvecPieceAValider)"
+						 value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Devis en attente de validation par NOVARISKS <h:outputLink id="tooltip3" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFade3" for="tooltip3"
+                             value="Cette liste contient tous les devis qui ont été soumis à souscription, qui ont la GED intégralement validée et le premier paiement effectué. Ces devis sont en attente de validation par Novarisks."
+                             position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbDevisAttenteValidation}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayDevisAttenteValidation" styleClass=""
+						 oncomplete="PF('wvOverlaylisteDevisAttenteValidation').show();"
+						 update="@widgetVar(wvDataTablelisteDevisAttenteValidation)"
+						  value="Afficher la liste"  /> 
+ 
+						
+					</div>
+					</h:panelGroup>
+					
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Devis en attente de validation par la compagnie <h:outputLink id="tooltipValidationAssureur" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeAttenteValidationAssureur" for="tooltipValidationAssureur"
+                             value="Cette liste contient tous les devis qui ont été soumis à souscription,
+                              qui ont la GED intégralement validée, le premier paiement effectué et qui ont été validés par Novarisks.
+                               Ces devis sont en attente de validation par l'assureur."
+                             position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbDevisAttenteValidationAssureur}"
+						 style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayDevisAttenteValidationAssureur" styleClass=""
+						 oncomplete="PF('wvOverlaylisteDevisAttenteValidationAssureur').show();"
+						 update="@widgetVar(wvDataTablelisteDevisAttenteValidationAssureur)"
+						  value="Afficher la liste"  /> 
+ 
+						
+					</div>
+					</h:panelGroup>
+					
+					
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Dossiers refusés <h:outputLink id="tooltip4" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFade4" for="tooltip4"
+                             value="Cette liste contient tous les devis qui ont été refusés par l'assureur, triés par date de création."
+                             position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbDossierRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierRefuseCourtier" styleClass=""
+						 	oncomplete="PF('wvOverlaylisteDossierRefuseCourtier').show();"
+						 	update="@widgetVar(wvDataTablelisteDossierRefuseCourtier)"
+						  	value="Afficher la liste"  />
+						  	
+						  
+						</div>
+					</h:panelGroup>
+					</h:panelGrid>
+			
+			</p:panel>
+			
+			<!-- PAIEMENT -->
+			<p:panel id="idpanelCourtierPaiement" header="Etat des paiements (Devis)" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+				
+				
+				<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Devis en attente de paiement <h:outputLink id="tooltipAttentePaiement" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    				<p:tooltip id="toolTipFadeAttentePaiement" for="tooltipAttentePaiement"
+                         value="Cette liste contient tous les devis ou il manque le paiement de la 1ère échéance."
+                         position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbDevisAttentePaiement}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeDevisAttentePaiement" styleClass=""
+						 oncomplete="PF('wvOverlaylisteDevisAttentePaiement').show();"
+						 update="@widgetVar(wvDataTablelisteDevisAttentePaiement)"
+						 value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+				
+				
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis en attente d'envoi du chèque <h:outputLink id="tooltipAttenteEnvoiCheque" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    				<p:tooltip id="toolTipFadeAttenteEnvoiCheque" for="tooltipAttenteEnvoiCheque"
+	                         value="Cette liste contient tous les devis avec option de paiement par chèque, ou le chèque du 1er paiement n'a pas encore été envoyé à Novarisks."
+	                         position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbDevisAttenteEnvoiCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeDevisAttenteEnvoiCheque" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDevisAttenteEnvoiCheque').show();"
+							 update="@widgetVar(wvDataTablelisteDevisAttenteEnvoiCheque)"
+							 value="Afficher la liste"  /> 
+							
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis avec chèque en attente d'encaissement <h:outputLink id="tooltipAttenteEncaissementCheque" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    				<p:tooltip id="toolTipFadeAttenteEncaissementCheque" for="tooltipAttenteEncaissementCheque"
+	                         value="Cette liste contient tous les devis où le chèque du 1er paiement a été envoyé et qui sont donc en attente d'encaissement par Novarisks."
+	                         position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbDevisAttenteEncaissementCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeDevisAttenteEncaissementCheque" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDevisAttenteEncaissementCheque').show();"
+							 update="@widgetVar(wvDataTablelisteDevisAttenteEncaissementCheque)"
+							 value="Afficher la liste"  /> 
+							
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis en attente de virement <h:outputLink id="tooltipAttenteVirementEffectue" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    				<p:tooltip id="toolTipFadeAttenteEnvoiCheque" for="tooltipAttenteVirementEffectue"
+	                         value="Cette liste contient tous les devis avec option de paiement par virement, où le 1er virement n'a pas encore été effectué."
+	                         position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbDevisAttenteVirementEffectue}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeDevisAttenteVirementEffectue" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDevisAttenteVirementEffectue').show();"
+							 update="@widgetVar(wvDataTablelisteDevisAttenteVirementEffectue)"
+							 value="Afficher la liste"  /> 
+							
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis avec virement en attente de reception <h:outputLink id="tooltipAttenteReceptionVirement" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    				<p:tooltip id="toolTipFadeAttenteReceptionVirement" for="tooltipAttenteReceptionVirement"
+	                         value="Cette liste contient tous les devis avec option de paiement par virement, où le 1er virement a été effectué mais Novarisks ne l'a pas encore reçu et validé."
+	                         position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbDevisAttenteReceptionVirement}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeDevisAttenteReceptionVirement" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDevisAttenteReceptionVirement').show();"
+							 update="@widgetVar(wvDataTablelisteDevisAttenteReceptionVirement)"
+							 value="Afficher la liste"  /> 
+							
+						</div>
+					</h:panelGroup>
+				
+				
+				</h:panelGrid>
+			
+			</p:panel>
+			
+			<!-- ESPACE PAIEMENT CONTRATS -->
+					<p:panel id="idpanelPaiementContratCourtier" header="Espace paiement (Contrats)" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats arrivant à termes <h:outputLink id="tooltipContratArrivantTermesCourtier" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratArrivantTermesCourtier" for="tooltipContratArrivantTermesCourtier"
+		                             value="Cette liste contient tous les contrats qui ont la date de règlement de la prochaine échéance dans moins de 30 jours et ou celle-ci n'a pas encore été réglée."
+		                             position="top"/>
+									<p:outputLabel value="#{dashCourtierController.nbContratArrivantTermesCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratArrivantTermesCourtier" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratArrivantTermesCourtier').show();"
+								 	update="@widgetVar(wvDataTablelisteContratArrivantTermesCourtier)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup rendered="true">
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats termes dépassée <h:outputLink id="tooltipContratTermesDepasseeCourtier" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratTermesDepasseeCourtier" for="tooltipContratTermesDepasseeCourtier"
+		                             value="Cette liste contient tous les contrats qui ont la prochaine échéance non payé depuis au moins 10 jours."
+		                             position="top"/>
+									<p:outputLabel value="#{dashCourtierController.nbContratTermesDepasseeCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratTermesDepasseeCourtier" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratTermesDepasseeCourtier').show();"
+								 	update="@widgetVar(wvDataTablelisteContratTermesDepasseeCourtier)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats arrivant à échéance annuelle <h:outputLink id="tooltipContratArrivantEcheanceAnnuelleCourtier" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratArrivantEcheanceAnnuelleCourtier" for="tooltipContratArrivantEcheanceAnnuelleCourtier"
+		                             value="Cette liste contient tous les contrats qui arrivent à échéance annuelle dans 30 jours ou moins."
+		                             position="top"/>
+									<p:outputLabel value="#{dashCourtierController.nbContratArrivantEcheanceAnnuelleCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratArrivantEcheanceAnnuelleCourtier" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratArrivantEcheanceAnnuelleCourtier').show();"
+								 	update="@widgetVar(wvDataTablelisteContratArrivantEcheanceAnnuelleCourtier)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats mis en demeure <h:outputLink id="tooltipContratMisEnDemeureCourtier" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratMisEnDemeureCourtier" for="tooltipContratMisEnDemeureCourtier"
+		                             value="Cette liste contient tous les contrats qui sont mis en demeure, c'est à dire les contrats qui n'ont pas reçus le dernier règlement attendu depuis au moins 30 jours"
+		                             position="top"/>
+									<p:outputLabel value="#{dashCourtierController.nbContratMisEnDemeureCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratMisEnDemeureCourtier" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratMisEnDemeureCourtier').show();"
+								 	update="@widgetVar(wvDataTablelisteContratMisEnDemeureCourtier)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats suspendus pour non-paiement <h:outputLink id="tooltipContratSuspendusNonPaiementCourtier" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratSuspendusNonPaiementCourtier" for="tooltipContratSuspendusNonPaiementCourtier"
+		                             value="Cette liste contient tous les contrats qui ont été automatiquement suspendus car l'échéance suivante n'à pas été réglée depuis au moins 1 mois."
+		                             position="top"/>
+									<p:outputLabel value="#{dashCourtierController.nbContratSuspendusNonPaiementCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratSuspendusNonPaiementCourtier" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratSuspendusNonPaiementCourtier').show();"
+								 	update="@widgetVar(wvDataTablelisteContratSuspendusNonPaiementCourtier)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+						</h:panelGrid>
+					</p:panel>
+					
+					
+				<!-- Avenants -->	
+					<p:panel id="idpanelCourtierAvenants" header="Etat des avenants" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Avenants avec pièces à valider <h:outputLink id="tooltipAvenantPieceAValider" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    				<p:tooltip id="toolTipFadeAvenantPieceAValider" for="tooltipAvenantPieceAValider"
+                         value="Cette liste contient tous les avenants qui n'ont pas la GED validée (par exemple oubli, pièces manquantes, refusés par Novarisks...) et qu'il faut donc traiter et valider puis soumettre à souscription."
+                         position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbAvenantPieceManquanteOuRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeAvenantAvecPieceAValider" styleClass=""
+						 oncomplete="PF('wvOverlaylisteAvenantAvecPieceAValider').show();"
+						 update="@widgetVar(wvDataTablelisteAvenantAvecPieceAValider)"
+						 value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Avenants en attente de paiement <h:outputLink id="tooltipAvenantAttentePaiement" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    				<p:tooltip id="toolTipFadeAvenantAttentePaiement" for="tooltipAvenantAttentePaiement"
+                         value="Cette liste contient tous les avenants ou il manque le paiement de la 1ère échéance."
+                         position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbAvenantAttentePaiement}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeAvenantAttentePaiement" styleClass=""
+						 oncomplete="PF('wvOverlaylisteAvenantAttentePaiement').show();"
+						 update="@widgetVar(wvDataTablelisteAvenantAttentePaiement)"
+						 value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Avenants en attente de validation par NOVARISKS <h:outputLink id="tooltipAvenantAttenteValidationYlyade" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeAvenantAttenteValidationYlyade" for="tooltipAvenantAttenteValidationYlyade"
+                             value="Cette liste contient tous les avenants qui ont été soumis à souscription, qui ont la GED intégralement validée et le premier paiement effectué. Ces devis sont en attente de validation par Novarisks."
+                             position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbAvenantAttenteValidationYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayAvenantAttenteValidation" styleClass=""
+						 oncomplete="PF('wvOverlaylisteAvenantAttenteValidation').show();"
+						 update="@widgetVar(wvDataTablelisteAvenantAttenteValidation)"
+						  value="Afficher la liste"  /> 
+ 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Avenants en attente de validation par la compagnie <h:outputLink id="tooltipAvenantValidationAssureur" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeAvenantAttenteValidationAssureur" for="tooltipAvenantValidationAssureur"
+                             value="Cette liste contient tous les avenants qui ont été soumis à souscription,
+                              qui ont la GED intégralement validée, le premier paiement effectué et qui ont été validés par Novarisks.
+                               Ces devis sont en attente de validation par l'assureur."
+                             position="top"/>
+						<p:outputLabel value="#{dashCourtierController.nbAvenantAttenteValidationAssureur}"
+						 style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayAvenantAttenteValidationAssureur" styleClass=""
+						 oncomplete="PF('wvOverlaylisteAvenantAttenteValidationAssureur').show();"
+						 update="@widgetVar(wvDataTablelisteAvenantAttenteValidationAssureur)"
+						  value="Afficher la liste"  /> 
+ 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Avenants refusés <h:outputLink id="tooltipAvenantRefuse" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeAvenantRefuse" for="tooltipAvenantRefuse"
+                             value="Cette liste contient tous les avenants qui ont été refusés par l'assureur, triés par date de création."
+                             position="top"/>
+							<p:outputLabel value="#{dashCourtierController.nbAvenantRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayAvenantRefuseCourtier" styleClass=""
+						 	oncomplete="PF('wvOverlaylisteAvenantRefuseCourtier').show();"
+						 	update="@widgetVar(wvDataTablelisteAvenantRefuseCourtier)"
+						  	value="Afficher la liste"  />
+						  	
+						  
+						</div>
+					</h:panelGroup>
+					
+
+					</h:panelGrid>
+			
+			</p:panel>
+			
+			
+			
+			
+			
+			
+			
+			
+       		</div>
+			<div class="ui-g-12 ui-md-6">
+			
+			<!-- SOUMIS ETUDE -->
+			<p:panel id="idpanelSoumisExpertiseCourtier" header="Etat des dossiers soumis à étude" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+				
+					<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude en attente de validation NOVARISKS <h:outputLink id="tooltipSoumisEtudeAttenteValidationYlyade" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeAttenteValidationYlyade" for="tooltipSoumisEtudeAttenteValidationYlyade"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et qui attendent la validation NOVARISKS"
+	                             position="top"/>
+								<p:outputLabel value="#{dashCourtierController.nbSoumisEtudeAttenteValidation}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeAttenteValidationYlyadeCourtier" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeAttenteValidationYlyadeCourtier').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeAttenteValidationYlyadeCourtier)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude en attente de validation par la compagnie <h:outputLink id="tooltipSoumisEtudeAttenteValidationAssureur" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeAttenteValidationAssureur" for="tooltipSoumisEtudeAttenteValidationAssureur"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et qui attendent la validation de la compagnie"
+	                             position="top"/>
+								<p:outputLabel value="#{dashCourtierController.nbSoumisEtudeAttenteValidationAssureur}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeAttenteValidationAssureurCourtier" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeAttenteValidationAssureurCourtier').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeAttenteValidationAssureurCourtier)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude validés <h:outputLink id="tooltipSoumisEtudeValide" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeValide" for="tooltipSoumisEtudeValide"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et validés soit par Novarisks soit par la compagnie, et qui n'ont pas encore été souscris."
+	                             position="top"/>
+								<p:outputLabel value="#{dashCourtierController.nbSoumisEtudeValide}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeValideCourtier" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeValideCourtier').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeValideCourtier)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude refusés <h:outputLink id="tooltipSoumisEtudeRefuse" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeRefuse" for="tooltipSoumisEtudeRefuse"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et refusés soit par Novarisks soit par la compagnie."
+	                             position="top"/>
+								<p:outputLabel value="#{dashCourtierController.nbSoumisEtudeRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseCourtier" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseCourtier').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseCourtier)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude définitivement refusés <h:outputLink id="tooltipSoumisEtudeRefuseDefinitif" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeRefuseDefinitif" for="tooltipSoumisEtudeRefuseDefinitif"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et qui ont été définitivement refusés par Novarisks ou la compagnie."
+	                             position="top"/>
+								<p:outputLabel value="#{dashCourtierController.nbSoumisEtudeRefuseDefinitif}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseDefinitifCourtier" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseDefinitifCourtier').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseDefinitifCourtier)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						
+				</h:panelGrid>
+			
+			</p:panel>
+			
+			<!-- RESILIATION -->
+					<p:panel  id="idpanelResiliationCourtier" header="Résiliation" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour non-paiement <h:outputLink id="tooltipContratResilieNonPaiementCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieNonPaiementCourtier" for="tooltipContratResilieNonPaiementCourtier"
+			                             value="Cette liste contient tous les contrats résiliés pour non-paiement."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieNonPaiementCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieNonPaiementCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieNonPaiementCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieNonPaiementCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés à l'échéance <h:outputLink id="tooltipContratResilieEcheanceCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieEcheanceCourtier" for="tooltipContratResilieEcheanceCourtier"
+			                             value="Cette liste contient tous les contrats résiliés à l'échéance."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieEcheanceCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieEcheanceCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieEcheanceCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieEcheanceCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés à l'amiable <h:outputLink id="tooltipContratResilieAmiableCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieAmiableCourtier" for="tooltipContratResilieAmiableCourtier"
+			                             value="Cette liste contient tous les contrats résiliés à l'amiable."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieAmiableCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieAmiableCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieAmiableCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieAmiableCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour fausse déclaration <h:outputLink id="tooltipContratResilieFausseDeclarationCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieFausseDeclarationCourtier" for="tooltipContratResilieFausseDeclarationCourtier"
+			                             value="Cette liste contient tous les contrats résiliés pour fausse déclaration."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieFausseDeclarationCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieFausseDeclarationCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieFausseDeclarationCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieFausseDeclarationCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour cessation d'activité <h:outputLink id="tooltipContratResilieCessationActiviteCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieCessationActiviteCourtier" for="tooltipContratResilieCessationActiviteCourtier"
+			                             value="Cette liste contient tous les contrats résiliés pour cessation d'activité."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieCessationActiviteCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieCessationActiviteCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieCessationActiviteCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieCessationActiviteCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats sans effet / annulés  <h:outputLink id="tooltipContratResilieSansEffetCourtier" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieSansEffetCourtier" for="tooltipContratResilieSansEffetCourtier"
+			                             value="Cette liste contient tous les contrats sans effet / annulés."
+			                             position="top"/>
+										<p:outputLabel value="#{dashCourtierController.nbContratResilieSansEffetCourtier}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieSansEffetCourtier" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieSansEffetCourtier').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieSansEffetCourtier)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								
+						</h:panelGrid>
+					</p:panel>
+					
+					<!-- ATTESTATIONS -->
+					<p:panel  id="idpanelAttestationNominative" header="Attestations nominatives" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+										<div class="card card-courtier" style="text-align:center;">
+											<h3 align="center">Contrats avec attestations nominatives en attente de paiement  <h:outputLink id="tooltipContratAttentePaiementAttestationNominative" value="#">
+					        						<i class="fa fa-question-circle"></i>
+					    						</h:outputLink></h3>
+					    						<p:tooltip id="toolTipFadeContratResilieSansEffet" for="tooltipContratAttentePaiementAttestationNominative"
+				                             value="Cette liste contient tous les contrats qui possède une ou plusieurs attestations nominatives en attente de paiement."
+				                             position="top"/>
+											<p:outputLabel value="#{dashCourtierController.nbContratAttentePaiementAttestationNominative}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+											<p:separator></p:separator>
+											<p:commandButton id="idBtnListeOverlayContratAttentePaiementAttestationNominative" styleClass=""
+										 	oncomplete="PF('wvOverlaylisteContratAttentePaiementAttestationNominative').show();"
+										 	update="@widgetVar(wvDataTablelisteContratAttentePaiementAttestationNominative)"
+										  	value="Afficher la liste"  />
+										  	
+										  
+										</div>
+							</h:panelGroup>
+						</h:panelGrid>
+					</p:panel>
+				
+					
+			
+
+       		</div>       		
+       	</div>
+
+       	
+       </div>
+</ui:composition>

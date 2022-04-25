@@ -1,0 +1,130 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" xmlns:pi="http://primefaces.org/icarus">
+
+	<h:form id="menuform">
+   
+        <pi:menu widgetVar="IcarusMenu">
+
+			<p:menuitem icon="fa fa-home" value="Accueil" outcome="/index.xhtml" />
+			
+			<p:submenu id="idMenuMonCompte" label="Mon compte" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+				<!-- Novarisks -->
+				<p:menuitem id="idMenuYlyadeDashAccueil" value="Tableau de bord Novarisks" actionListener="#{menuBean.openDashBoardAccueilYlyade}" update=":form:tabView" rendered="#{auth.isYlyade()}"/>
+				
+				<!-- Super assureur -->
+				<p:menuitem id="idMenuSuperAssureurDashAccueil" value="Tableau de bord" actionListener="#{menuBean.openDashBoardAccueilAssureur}" update=":form:tabView" rendered="#{auth.isSuperAssureur()}"/>
+				
+				<!-- Courtier -->
+				<p:menuitem id="idMenuCourtierMonCompte" value="Mon compte courtier" actionListener="#{menuBean.openMonCompteCourtier}" rendered="#{auth.isCourtier()}" update=":form:tabView"/>
+				<p:menuitem id="idMenuCourtierDashAccueil" value="Tableau de bord courtier" actionListener="#{menuBean.openDashBoardAccueilCourtier}" rendered="#{auth.isCourtier()}" update=":form:tabView"/>
+				
+				<!-- Assure -->
+				<p:menuitem id="idMenuAssureMonCompte" value="Mon compte assuré" actionListener="#{menuBean.openMonCompteAssure}" rendered="#{auth.isAssure()}" update=":form:tabView"/>
+				<p:menuitem id="idMenuAssureDashAccueil" value="Tableau de bord Assuré" actionListener="#{menuBean.openDashBoardAccueilAssure}" rendered="#{auth.isAssure()}" update=":form:tabView"/>
+			</p:submenu>
+				
+			<p:submenu id="idMenuPortefeuille" label="Mon portefeuille" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+				<p:menuitem id="idMenuCourtierCourtier" value="Courtiers" oncomplete="PF('wvOverlayListeCourtier').show();" rendered="#{auth.isYlyade()}"/>
+				<p:menuitem id="idMenuAssureAssureProspect" value="Clients et prospects" oncomplete="PF('wvOverlayListeAssure').show();" rendered="#{auth.isCourtier() or auth.isYlyade()}"/>
+				<p:menuitem id="idMenuAssureAssure" value="Clients" oncomplete="PF('wvOverlayListeAssure').show();" rendered="#{auth.isSuperAssureur()}"/>
+				<p:menuitem id="idMenuContratRcPro" value="Contrats" oncomplete="PF('wvOverlayListeContratRcPro').show();" update="@widgetVar(wvDataTableListeContratRcPro)" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}"/>
+				<p:menuitem id="idMenuDevisRcPro" value="Devis" oncomplete="PF('wvOverlayListeDevisRcPro').show();" update="@widgetVar(wvDataTableListeDevisRcPro)" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade()}"/>
+			</p:submenu>
+			
+			<p:submenu id="idMenuAssurance" label="Offres RCD" rendered="#{auth.isCourtier()}">
+				<p:submenu id="idMenuNouveauDevisRcPro" label="Nouveau devis RCD" rendered="#{auth.isCourtier()}">
+<!-- 					<p:menuitem id="idMenuNouveauDevisRcdEntrepriseBatiment"  value="Entreprise du batiment" actionListener="#{menuBean.openDossierRCD}" update=":form:tabView" rendered="#{auth.isCourtier()}"/> -->
+					<p:menuitem id="idMenuNouveauDevisRcdEntrepriseBatiment" value="Exécutant du batiment" actionListener="#{menuBean.openDossierRCDEntrepriseBatiment}" update=":form:tabView" rendered="#{auth.isCourtier()}"/>
+					<p:menuitem id="idMenuNouveauDevisRcdPIB" value="P.I.B" actionListener="#{menuBean.openDossierRCDPib}" update=":form:tabView" rendered="#{auth.isCourtier()}"/>
+					<!-- <p:menuitem id="idMenuNouveauDevisRcdPiscine" value="Piscine" actionListener="#{menuBean.openDossierRCDPiscine}" update=":form:tabView" rendered="#{auth.isCourtier()}"/> -->
+					
+				</p:submenu>
+			</p:submenu>
+			<p:menuitem id="idMenuNouveauDevisRcdDommageOuvrage" value="Dommage ouvrage" actionListener="#{menuBean.openMessageProchainementDispo}" update=":form:tabView" rendered="#{auth.isCourtier()}"/>
+			
+<!-- 			<p:submenu id="idMenuDoc" label="Documents" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade()}"> -->
+				<p:menuitem id="idMenuDocument" value="Documentation" actionListener="#{menuBean.openListeDoc}" update=":form:tabView" process="@this" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}"/>
+<!-- 			</p:submenu> -->
+
+			<p:submenu id="idMenuBordereaux" label="Bordereaux" rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+				<p:menuitem id="idMenuBordereauxCommission" value="Commission" actionListener="#{menuBean.openMessageProchainementDispo}" update=":form:tabView" rendered="#{auth.isCourtier()}"/>
+				<p:menuitem id="idMenuBordereauxReversement" value="Relevé de reversement" actionListener="#{menuBean.openMessageProchainementDispo}" update=":form:tabView" rendered="#{auth.isSuperAssureur()}"/>
+			</p:submenu>
+			
+
+			<p:submenu id="idMenuParametres" label="Paramètres" rendered="#{auth.isYlyade() and auth.hasRole('gestionnaire')}">
+			
+				<p:menuitem id="idMenuParamTypeAdresse"  value="Type adresse" actionListener="#{menuBean.openTypeAdresse}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeAssurance"  value="Type assurance" actionListener="#{menuBean.openTypeAssurance}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeAssure"  value="Type assure" actionListener="#{menuBean.openTypeAssure}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeCivilite"  value="Type civilite" actionListener="#{menuBean.openTypeCivilite}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeCourtier"  value="Type courtier" actionListener="#{menuBean.openTypeCourtier}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeTel"  value="Type tel" actionListener="#{menuBean.openTypeTel}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeFranchise"  value="Type franchise" actionListener="#{menuBean.openTypeFranchise}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeStatut"  value="Type statut" actionListener="#{menuBean.openTypeStatut}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeSousTraitance"  value="Type sous traitance" actionListener="#{menuBean.openTypeSousTraitance}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeTravaux"  value="Type travaux" actionListener="#{menuBean.openTypeTravaux}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeRole"  value="Type role" actionListener="#{menuBean.openTypeRole}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeListeRefDoc"  value="Type liste ref doc" actionListener="#{menuBean.openTypeListeRefDoc}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeJuridique"  value="Type Juridique" actionListener="#{menuBean.openTypeJuridique}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeEmail"  value="Type Email" actionListener="#{menuBean.openTypeEmail}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeEcheance"  value="Type Echeance" actionListener="#{menuBean.openTypeEcheance}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeActionDoc"  value="Type Action Doc" actionListener="#{menuBean.openTypeActionDoc}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeGroupeTarif"  value="Type groupe de tarif" actionListener="#{menuBean.openTypeGroupeTarif}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeReglement"  value="Type reglement" actionListener="#{menuBean.openTypeReglement}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeConstruction"  value="Type construction" actionListener="#{menuBean.openTypeConstruction}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeDoc"  value="Type doc" actionListener="#{menuBean.openTypeDoc}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeDestinationUsage"  value="Type destination usage" actionListener="#{menuBean.openTypeDestinationUsage}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeLotRealise"  value="Type lot realisé" actionListener="#{menuBean.openTypeLotRealise}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeFraisImpaye"  value="Type frais impayé" actionListener="#{menuBean.openTypeFraisImpaye}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeGedSinistre"  value="Type ged sinistre" actionListener="#{menuBean.openTypeGedSinistre}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeMaitriseOeuvre"  value="Type maitrise oeuvre" actionListener="#{menuBean.openTypeMaitriseOeuvre}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeTarifPrestation"  value="Type tarif prestation" actionListener="#{menuBean.openTypeTarifPrestation}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeFamilleActivite"  value="Type famille activite" actionListener="#{menuBean.openTypeFamilleActivite}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeClasse"  value="Type classe" actionListener="#{menuBean.openTypeClasse}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeActivite"  value="Type activité" actionListener="#{menuBean.openTypeActivite}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamListeRefDoc"  value="Liste ref doc" actionListener="#{menuBean.openListeRefDoc}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypePalierClasse"  value="Palier de Classe" actionListener="#{menuBean.openTypePalierClasse}" update=":form:tabView" />
+				<p:menuitem id="idMenuParamTypeTauxAssurance"  value="Taux assurance" actionListener="#{menuBean.openTypeTauxAssurance}" update=":form:tabView" />
+				
+			</p:submenu>
+			
+			<p:submenu id="idMenuTestDroitASupprimer" label="** Test droits **" rendered="#{auth.isDevLgr()}">
+				<p:menuitem value="Courtier" rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isAdministrateur()}"/>
+				<p:menuitem value="Assuré" rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isAdministrateur()}"/>
+				<p:submenu label="Novarisks" rendered="#{auth.isYlyade() or auth.isAdministrateur()}">
+					<p:menuitem value="Novarisks" rendered="#{auth.hasRole('ylyade')}"/>
+					<p:menuitem value="Comptable" rendered="#{auth.hasRole('comptable')}"/>
+					<p:menuitem value="Gestionnaire" rendered="#{auth.hasRole('gestionnaire')}"/>
+				</p:submenu>
+				<p:menuitem value="Administrateur" rendered="#{auth.isAdministrateur()}"/>
+			</p:submenu>
+			
+			<p:menuitem value="Nous contacter" actionListener="#{menuBean.actDialogNousContacter}" />
+
+			<p:submenu label="Aide" icon="fa fa-info-circle">
+				<p:menuitem value="A propos" actionListener="#{aProposBean.actAbout}" />
+			</p:submenu>
+			
+			<p:submenu id="idMenuAdministration"  label="Administration" icon="fa fa-cogs" rendered="#{auth.isYlyade() and auth.hasRole('gestionnaire')}">
+				<p:menuitem id="idMenuUtilisateur"  value="Utilisateurs" actionListener="#{menuBean.openUtilisateur}" update=":form:tabView"   />
+				<p:menuitem id="idMenuRoles"  value="Roles" actionListener="#{menuBean.openRole}" update=":form:tabView"   />
+				
+				<p:menuitem id="idMenuBugs" value="Ticket" actionListener="#{menuBean.openBugs}" update=":form:tabView"   />
+<!-- 				<p:menuitem id="idMenuDevBugzilla" value="Bugzilla" onclick="window.open('http://bugs.legrain.fr')" /> -->
+			</p:submenu>
+			
+			<p:submenu id="idMenuDeveloppement"  label="Développement" icon="fa fa-cogs" rendered="#{auth.isDevLgr()}">
+<!-- 				<p:menuitem id="idMenuUtilisateur"  value="Utilisateurs" actionListener="#{menuBean.openUtilisateur}" update=":form:tabView"   /> -->
+<!-- 				<p:menuitem id="idMenuRoles"  value="Roles" actionListener="#{menuBean.openRole}" update=":form:tabView"   /> -->
+			</p:submenu>
+
+		</pi:menu>
+
+	</h:form>
+
+</ui:composition>

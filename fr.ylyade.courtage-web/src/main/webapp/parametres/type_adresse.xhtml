@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeAdressePanel" widgetVar="wvTypeAdressePanel">
+
+		<p class="subtitle">Gestion des types d'adresses</p>
+
+		<p:panel id="idTypeAdressePanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeAdresseController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeAdresseController.handleReturnDialogTypes}" update="@widgetVar(wvTypeAdressePanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeAdresseController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeAdresseController.handleReturnDialogTypes}" update="@widgetVar(wvTypeAdressePanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeAdresseController.etatBouton('supprimer')}"
+				actionListener="#{typeAdresseController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeAdresse)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeAdresseController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeAdresseController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeAdresse" 
+			widgetVar="wvDataTableTypeAdresse" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeAdresseController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeAdresseController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeAdresseController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeAdresse" fileName="type_adresse" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeAdresse" fileName="type_adresse" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeAdresse" fileName="type_adresse" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeAdresse" fileName="type_adresse" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeTAdresse}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeTAdresse}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblTAdresse}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.liblTAdresse}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeAdresseFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeAdresseController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeAdresseController.nouveau.codeTAdresse}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeAdresseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_ADR}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeAdresseController.nouveau.liblTAdresse}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeAdresseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_T_ADR}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeAdresseController.etatBouton('enregistrer')}"
+									actionListener="#{typeAdresseController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeAdresseController.etatBouton('annuler')}"
+									actionListener="#{typeAdresseController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeAdresseController.etatBouton('annuler')}"
+									actionListener="#{typeAdresseController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

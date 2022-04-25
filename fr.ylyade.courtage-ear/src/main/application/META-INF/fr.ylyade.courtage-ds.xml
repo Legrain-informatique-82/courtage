@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.jboss.org/ironjacamar/schema http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
+   <!-- The datasource is bound into JNDI at this location. We reference 
+      this in META-INF/persistence.xml -->
+	<datasource jta="true" jndi-name="java:/YlyadePostgresDS" pool-name="YlyadePostgresDS" enabled="true" use-java-context="true" use-ccm="true">
+        <connection-url>jdbc:postgresql:ylyade</connection-url>
+        <driver>posgresqlDriver</driver>
+        <pool>
+            <min-pool-size>10</min-pool-size>
+            <max-pool-size>50</max-pool-size>
+            <flush-strategy>IdleConnections</flush-strategy>
+        </pool>
+        <security>
+            <user-name>ylyade</user-name>
+            <password>lgr82admin</password>
+        </security>
+        <timeout>
+            <blocking-timeout-millis>20000</blocking-timeout-millis>
+            <idle-timeout-minutes>1</idle-timeout-minutes>
+        </timeout>
+    </datasource>
+</datasources>
+ 

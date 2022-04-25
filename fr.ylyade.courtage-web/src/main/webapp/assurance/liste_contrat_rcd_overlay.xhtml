@@ -1,0 +1,190 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<o:importConstants type="fr.ylyade.courtage.app.LgrTab" />
+	
+	<p:commandLink id="listeContratRcProBtn" >
+		<i class="top-submenu-icon fa fa-fw fa-user"></i>
+		<span><h:outputText value="Liste des contrats RCD"/></span>
+	</p:commandLink>
+	
+	<p:overlayPanel id="idListeContratRcProPanel" for="listeContratRcProBtn" hideEffect="fade" dynamic="true" 
+		dismissable="true" appendToBody="true" widgetVar="wvOverlayListeContratRcPro" showCloseIcon="true">
+		<h:form>
+		<div class="dashboard-title" style="background:#f6f6f6;">
+              <h:panelGrid columns="3" cellpadding="5">
+<!--             	<h:graphicImage name="dashboard/tier.svg" library="images" height="35px" style="margin-top:1px;" /> -->
+                <p:outputLabel value="Liste des contrats RCD" style="font-size:20px;"/>
+              </h:panelGrid>  
+              <p:separator/>
+        </div>
+        
+	<p:menubar styleClass="menu-onglet" widgetVar="wvMenuListeContratRcPro" id="idMenuListeContratRcPro">
+<!-- 		 <p:menuitem value="Ajouter un nouveau contrat" update=":form:tabView,:form:messages,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro),@widgetVar(wvBandeauActionContratRcPro)"  -->
+<!-- 		 actionListener="#{contratRcdController.nouveau}" styleClass="icon icon-insert" disabled="#{contratRcdController.etatBouton('inserer')}" oncomplete="PF('wvOverlayListeContratRcPro').hide();"/> -->
+	
+<!-- 		 <p:menuitem title="Ajouter un nouveau ContratRcPro" update=":form:tabView,:form:messages,@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro),@widgetVar(wvBandeauActionContratRcPro)"  -->
+<!-- 		 actionListener="#{contratRcdController.nouveau}" styleClass="icon icon-insert" disabled="#{contratRcdController.etatBouton('inserer')}" oncomplete="PF('wvOverlayListeContratRcPro').hide();"/> -->
+
+		 <p:menuitem title="Rafraîchir la liste" update="@form,:form:messages" actionListener="#{contratRcdController.refresh}" styleClass="icon icon-refresh" disabled="#{contratRcdController.modeEcran.dataSetEnModif()}"/>
+		 
+	</p:menubar>
+	
+	<p:sticky target="idMenuListeContratRcPro" />
+	 	
+	<p:dataTable id="dataTableListeContratRcPro" var="taContratRcPro"
+				widgetVar="wvDataTableListeContratRcPro"
+				value="#{contratRcdController.values}"
+				rowKey="#{taContratRcPro.id}"
+				selection="#{contratRcdController.selectedTaContratRcProDTOs}"
+				dblClickSelect="true"
+				styleClass="datatable mt10"
+				resizableColumns="true"
+				paginator="true" 
+				rows="#{msg.modele_datatable_ligne_par_page_debut}"
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+				disabledSelection="#{contratRcdController.modeEcran.dataSetEnModif()}">
+				
+				<p:ajax event="rowSelect" delay="#{msg.datatable_rowselect_delay}" listener="#{contratRcdController.onRowSelect}" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionContratRcPro)" oncomplete="activeTabCenter('#{LgrTab.CSS_CLASS_TAB_CONTRAT_RCPRO}');PF('wvOverlayListeContratRcPro').hide();scrollToTop();"/>
+			
+				<f:facet name="header">  
+           			<h:outputText value="Contrat RCD" />
+        		</f:facet>
+
+		  		<f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage library="images" name="excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="dataTableListeContratRcPro" fileName="liste_devis" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="pdf.png"  width="24"/>
+		                <p:dataExporter type="pdf" target="dataTableListeContratRcPro" fileName="liste_devis"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="csv.png"  width="24"/>
+		                <p:dataExporter type="csv" target="dataTableListeContratRcPro" fileName="liste_devis" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="xml.png"  width="24"/>
+		                <p:dataExporter type="xml" target="dataTableListeContratRcPro" fileName="liste_devis" />
+		            </h:commandLink>
+		        </f:facet>
+        
+        		<p:column selectionMode="multiple" style="width:16px;text-align:center" exportable="false"/>
+			
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					<p:commandButton title="Détail" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionContratRcPro)" 
+						action="#{contratRcdController.detail}" icon="ui-icon-search"
+						disabled="#{contratRcdController.modeEcran.dataSetEnModif()}" oncomplete="PF('wvOverlayListeContratRcPro').hide();">
+						<f:setPropertyActionListener target="#{contratRcdController.selectedTaContratRcProDTO}" value="#{taContratRcPro}" />
+					</p:commandButton>
+				</p:column>
+        
+<!-- 				<p:column sortBy="#{taContratRcPro.id}"> -->
+<!-- 					<f:facet name="header"> -->
+<!-- 						<h:outputText value="ID" /> -->
+<!-- 					</f:facet> -->
+<!-- 					<h:outputText value="#{taContratRcPro.id}" /> -->
+<!-- 				</p:column> -->
+
+				<p:column sortBy="#{taContratRcPro.dateEffet}" filterBy="#{taContratRcPro.dateEffet}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Date d'effet" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.dateEffet}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></h:outputText>
+				</p:column>
+
+				<p:column sortBy="#{taContratRcPro.numDossierPolice}" filterBy="#{taContratRcPro.numDossierPolice}#{taContratRcPro.lettrePjNumPolice}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Numéro dossier/police" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.numDossierPolice}#{taContratRcPro.lettrePjNumPolice} - #{taContratRcPro.numeroAvenant}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.codeAssure}" filterBy="#{taContratRcPro.codeAssure}" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Code assuré" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.codeAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.taAssureDTO.raisonSociale}" filterBy="#{taContratRcPro.taAssureDTO.raisonSociale}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Raison Sociale" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.taAssureDTO.raisonSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.taAssureDTO.codeSiren}" filterBy="#{taContratRcPro.taAssureDTO.codeSiren}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Siren" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.taAssureDTO.codeSiren}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.taAssureDTO.codeTAssure}" filterBy="#{taContratRcPro.taAssureDTO.codeTAssure}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Type d'assuré" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.taAssureDTO.codeTAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.codeCourtier}" filterBy="#{taContratRcPro.codeCourtier}" filterMatchMode="contains" styleClass="center" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+					<f:facet name="header">
+						<h:outputText value="Code courtier" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.codeCourtier}" />
+				</p:column>
+				
+				<p:column sortBy="#{taContratRcPro.nomDenominationSociale}" filterBy="#{taContratRcPro.nomDenominationSociale}" filterMatchMode="contains" styleClass="center" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+					<f:facet name="header">
+						<h:outputText value="Courtier" />
+					</f:facet>
+					<h:outputText value="#{taContratRcPro.nomDenominationSociale}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header">
+						<h:outputText value="Statuts" />
+					</f:facet>
+					<p:selectOneMenu style="width:140px" rendered="#{not empty taContratRcPro.taTStatut}" value="#{s}" 
+								 converter="omnifaces.SelectItemsConverter">
+                				<f:selectItems value="#{taContratRcPro.taTStatut}" var="s" itemLabel="#{s.liblTStatut}" itemValue="#{s}" />
+            		</p:selectOneMenu>
+				</p:column>
+<!-- 				rendered="#{not empty taContratRcPro.taTStatut}" -->
+								
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					
+<!-- 					<p:commandButton title="Supprimer" icon=" ui-icon-trash" widgetVar="widgetVarBtnSupprimerContratRcProListe" -->
+<!-- 						action="#{contratRcdController.actSupprimer}" -->
+<!-- 						process="@this" -->
+<!-- 						update="@widgetVar(wvDataTableListeContratRcPro)"> -->
+<!-- 						<f:setPropertyActionListener target="#{contratRcdController.selectedTaContratRcProDTO}" value="#{taContratRcPro}" /> -->
+<!-- 						<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce contrat ?" icon="ui-icon-alert" /> -->
+<!-- 					</p:commandButton> -->
+						
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</p:overlayPanel>
+	
+</ui:composition>

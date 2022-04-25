@@ -1,0 +1,573 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+
+    <div id="top-bar-wrapper">
+        <div id="top-bar">
+        	
+            <div class="search-bar">
+			<p:fieldset >
+        		<h:panelGrid columns="2">
+		            	<p:outputLabel style="font-weight: bold;" value="#{auth.username}" />
+            	</h:panelGrid>
+    		</p:fieldset>
+					
+            </div>
+            
+            <div class="top-bar-profile">
+           
+                <div class="profile-name">
+                    <span><h:outputText value="#{auth.username}"/></span><br/>
+<!--                     <span><h:outputText value="#{creationCourtierController.user.getIdentifiant()}"/></span><br/> -->
+<!--                     Admin -->
+                </div>
+                
+                <a href="#" id="profile-image">
+                    <h:graphicImage name="images/profile.png" library="icarus-layout" style="border: 0 none;"/>
+                </a>
+                <ul class="top-submenu animated flipInX">
+<!--                     <li> -->
+<!--                         <a href="#"> -->
+<!--                             <i class="fa fa-fw fa-user"></i> -->
+<!--                             <span>Profile</span> -->
+<!--                         </a> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                         <a href="#"> -->
+<!--                             <i class="top-submenu-icon fa fa-fw fa-calendar"></i> -->
+<!--                             <span>Calendar</span> -->
+<!--                         </a> -->
+<!--                     </li> -->
+
+<!--                     <li> -->
+<!--                         <a href="#"> -->
+<!--                             <i class="top-submenu-icon fa fa-fw fa-envelope"></i> -->
+<!--                             <span>Messages</span> -->
+<!--                             <span class="top-submenu-badge">5</span> -->
+<!--                         </a> -->
+<!--                     </li> -->
+                    
+<!--                     <li> -->
+<!--                    		 <p:commandLink actionListener="#{monCompteBean.openMonCompte}" update=":form:tabView" -->
+<!-- 										oncomplete="activeLastTabCenter()" > -->
+<!--                           	<i class="top-submenu-icon fa fa-fw fa-user"></i> -->
+<!-- 					        <span><h:outputText value="Mon compte" /></span> -->
+<!-- 					    </p:commandLink> -->
+<!--                     </li> -->
+                    <li>
+<!--                         <a href="#"> -->
+<!--                             <i class="top-submenu-icon fa fa-fw fa-close"></i> -->
+<!--                             <span>Log Out</span> -->
+<!--                             <p:commandButton value="Log Out" actionListener="#{auth.logout}" icon="fa fa-key" /> -->
+<!--                         </a> -->
+                         <p:commandLink actionListener="#{auth.logout}">
+<!--                          <f:actionListener binding="#{creationCourtierController.logout()}"/> -->
+                          	<i class="top-submenu-icon fa fa-fw fa-close"></i>
+					        <span><h:outputText value="Déconnexion" /></span>
+					    </p:commandLink>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="top-menu">
+                <div class="top-bar-icon">
+                    <a href="#">
+                        <i class="fa fa-list animated swing" aria-hidden="true"></i>
+<!--                         <i class="top-bar-badge animated rubberBand"><h:outputText value="#{topBarController.nbProduit}"/></i> -->
+                    </a>
+                    <ul class="top-submenu animated flipInX">
+<!-- 						<ui:fragment rendered="#{autorisationBean.autoriseMenu(autorisationBean.idModuleMouvementStock)}"> -->
+						<ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_courtier_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_a_traiter_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_dossier_refuse_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_dossier_validation_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- AVENANT YLYADE -->
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_avenant_attente_paiement_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_avenant_refuse_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_avenant_validation_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_avenant_attente_validation_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <!-- ASSUREUR -->
+                         <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_dossier_a_valider_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- AVENANTS ASSUREUR-->
+                         <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_avenant_a_valider_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- SOUMIS A ETUDE ASSUREUR -->
+                        <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_soumis_etude_attente_validation_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_soumis_etude_valide_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_soumis_etude_refuse_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_soumis_etude_refuse_definitif_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_dossier_a_valider_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_dossier_a_valider_attente_paiement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_paiement_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <!-- SOUMIS A ETUDE YLYADE -->
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_soumis_etude_attente_validation_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_soumis_etude_attente_validation_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_soumis_etude_refuse_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_soumis_etude_refuse_definitif_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_soumis_etude_valide_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- ESPACE PAIEMENT CONTRATS YLYADE -->
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_arrivant_termes_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_termes_depassee_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_arrivant_echeance_annuelle_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_mis_demeure_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_suspendus_non_paiement_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <!-- ESPACE PAIEMENT CONTRATS COURTIER -->
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_arrivant_termes_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_termes_depassee_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_arrivant_echeance_annuelle_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_mis_demeure_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_suspendus_non_paiement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- RESILIATION YLYADE -->
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_non_paiement_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_echeance_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_fausse_declaration_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_cessation_activite_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_sans_effet_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_resilie_amiable_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- ATTESTATION YLYADE -->
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_attente_paiement_attestation_nominative_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_contrat_attente_validation_attestation_nominative_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                         <!-- RESILIATION COURTIER -->
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_non_paiement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_echeance_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_fausse_declaration_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_cessation_activite_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_sans_effet_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_resilie_amiable_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <!-- ATTESTATION COURTIER -->
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_attente_paiement_attestation_nominative_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        
+                        <ui:fragment rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assure/liste_assure_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/assurance/liste_devis_rcd_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assurance/liste_contrat_rcd_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isAssure() or auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+	                        <li>
+						    	<ui:include src="/assureur/liste_devis_a_valider_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_contrat_a_traiter_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_dossier_avec_pieces_a_valider_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_validation_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_dossier_refuse_courtier_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- Paiement -->
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_paiement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_envoi_cheque_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_encaissement_cheque_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_reception_virement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_virement_effectue_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_envoi_cheque_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                          <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_reception_cheque_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_depot_cheque_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_encaissement_cheque_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_virement_effectue_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/admin/liste_devis_attente_reception_virement_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        
+                        
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_devis_attente_validation_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <!-- AVENANT -->
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_avenant_attente_validation_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_avenant_attente_validation_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_avenant_avec_pieces_a_valider_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_avenant_refuse_courtier_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_avenant_attente_paiement_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                         <!-- SOUMIS A ETUDE COURTIER -->
+                         <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_soumis_etude_attente_validation_assureur_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_soumis_etude_attente_validation_ylyade_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_soumis_etude_refuse_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_soumis_etude_refuse_definitif_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{auth.isCourtier()}">
+	                        <li>
+						    	<ui:include src="/courtier/liste_soumis_etude_valide_overlay.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        
+                        <!-- EXTRACTION YLYADE  -->
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/extraction/liste_extraction_client.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                         <ui:fragment rendered="#{auth.isYlyade()}">
+	                        <li>
+						    	<ui:include src="/extraction/liste_extraction_dossier.xhtml" />
+	                        </li>
+                        </ui:fragment>
+                        <!-- FIN EXTRACTION -->
+                        
+                    </ul>
+                </div>
+<!--                 <div class="top-bar-icon"> -->
+<!--                     <a href="#"> -->
+<!--                         <i class="fa fa-envelope-o animated swing" aria-hidden="true"></i> -->
+<!--                         <i class="top-bar-badge animated rubberBand">5</i> -->
+<!--                     </a> -->
+<!--                     <ul class="top-submenu animated flipInX"> -->
+<!--                         <li class="header">You have 5 messages.</li> -->
+<!--                         <li> -->
+<!--                             <a href="#"> -->
+<!--                                 <p:graphicImage name="images/avatar_1.png" library="icarus-layout" width="35"/> -->
+<!--                                 <span>Nice to meet you.</span> -->
+<!--                             </a> -->
+<!--                         </li> -->
+<!--                         <li> -->
+<!--                             <a href="#"> -->
+<!--                                 <p:graphicImage name="images/avatar_2.png" library="icarus-layout" width="35"/> -->
+<!--                                 <span>Sales reports attached.</span> -->
+<!--                             </a> -->
+<!--                         </li> -->
+<!--                         <li> -->
+<!--                             <a href="#"> -->
+<!--                                 <p:graphicImage name="images/avatar_3.png" library="icarus-layout" width="35"/> -->
+<!--                                 <span>About your invoice.</span> -->
+<!--                             </a> -->
+<!--                         </li> -->
+<!--                         <li> -->
+<!--                             <a href="#"> -->
+<!--                                 <p:graphicImage name="images/avatar_4.png" library="icarus-layout" width="35"/> -->
+<!--                                 <span>Meeting today at 10pm.</span> -->
+<!--                             </a> -->
+<!--                         </li> -->
+<!--                         <li> -->
+<!--                             <a href="#"> -->
+<!--                                 <p:graphicImage name="images/avatar_2.png" library="icarus-layout" width="35"/> -->
+<!--                                 <span>Lunch today?</span> -->
+<!--                             </a> -->
+<!--                         </li> -->
+<!--                     </ul> -->
+<!--                 </div> -->
+
+<!--                 <div class="top-bar-icon"> -->
+<!--                     <a href="#"> -->
+<!--                         <i class="fa fa-support" aria-hidden="true"></i> -->
+<!--                     </a> -->
+<!--                 </div> -->
+                
+            </div>
+            
+<!--             <div class="top-menu"> -->
+<!--                 <div class="top-bar-icon"> -->
+<!-- 					  <ui:include src="/tiers/liste_tiers_overlay.xhtml" /> -->
+<!--                 </div> -->
+<!--                 <div class="top-bar-icon"> -->
+<!-- 					   <ui:include src="/articles/liste_article_overlay.xhtml" /> -->
+<!--                 </div> -->
+                
+<!--             </div> -->
+            
+        </div>
+    </div>
+
+    
+</ui:composition>

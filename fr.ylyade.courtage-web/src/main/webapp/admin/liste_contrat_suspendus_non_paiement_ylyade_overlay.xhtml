@@ -1,0 +1,186 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<o:importConstants type="fr.ylyade.courtage.app.LgrTab" />
+	
+	<p:commandLink id="listeContratSuspendusNonPaiementYlyadeBtn" >
+		<i class="top-submenu-icon fa fa-fw fa-user"></i>
+		<span><h:outputText value="Liste des contrats suspendus pour non paiement"/></span>
+	</p:commandLink>
+	
+	<p:overlayPanel id="idlisteContratSuspendusNonPaiementYlyadePanel" for="listeContratSuspendusNonPaiementYlyadeBtn" hideEffect="fade" dynamic="true" 
+		dismissable="true" appendToBody="true" widgetVar="wvOverlaylisteContratSuspendusNonPaiementYlyade" showCloseIcon="true">
+		<h:form>
+		<div class="dashboard-title" style="background:#f6f6f6;">
+              <h:panelGrid columns="3" cellpadding="5">
+<!--             	<h:graphicImage name="dashboard/tier.svg" library="images" height="35px" style="margin-top:1px;" /> -->
+                <p:outputLabel value="Liste des contrats suspendus pour non paiement" style="font-size:20px;"/>
+              </h:panelGrid>  
+              <p:separator/>
+        </div>
+        
+	 	
+	<p:dataTable id="dataTablelisteContratSuspendusNonPaiementYlyade" var="taDevisRcPro"
+				widgetVar="wvDataTablelisteContratSuspendusNonPaiementYlyade"
+				value="#{dashYlyadeController.listContratSuspendusNonPaiementYlyade}"
+				rowKey="#{taDevisRcPro.id}"
+				selection="#{contratRcdController.selectedTaDossierRcdDTOs}"
+				dblClickSelect="true"
+				styleClass="datatable mt10"
+				resizableColumns="true"
+				paginator="true" 
+				rows="#{msg.modele_datatable_ligne_par_page_debut}"
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+				
+				<p:ajax event="rowSelect" delay="#{msg.datatable_rowselect_delay}" listener="#{contratRcdController.onRowSelect}"
+				 update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionDevisRcPro),@widgetVar(wvMenuDevisRcPro)"
+				  oncomplete="activeTabCenter('#{LgrTab.CSS_CLASS_TAB_DEVIS_RCPRO}');PF('wvOverlaylisteContratSuspendusNonPaiementYlyade').hide();scrollToTop();"/>
+			
+				<f:facet name="header">  
+           			<h:outputText value="Liste des contrats suspendus pour non paiemente" />
+        		</f:facet>
+
+		  		<f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage library="images" name="excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="dataTablelisteContratSuspendusNonPaiementYlyade" fileName="liste_devis" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="pdf.png"  width="24"/>
+		                <p:dataExporter type="pdf" target="dataTablelisteContratSuspendusNonPaiementYlyade" fileName="liste_devis"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="csv.png"  width="24"/>
+		                <p:dataExporter type="csv" target="dataTablelisteContratSuspendusNonPaiementYlyade" fileName="liste_devis" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="xml.png"  width="24"/>
+		                <p:dataExporter type="xml" target="dataTablelisteContratSuspendusNonPaiementYlyade" fileName="liste_devis" />
+		            </h:commandLink>
+		            
+		            <p:commandLink id="idBtnListePrintEcranDevisContratSuspendusNonPaiementYlyade"
+							 title="Imprimer la liste"
+			onsuccess="window.open('#{request.contextPath}/output?__report=/reports/listesEditionsAdmin/ListeDevisContratSuspendusNonPaiementYlyade.rptdesign&amp;id_tiers=#{dashYlyadeController.listContratSuspendusNonPaiementYlyade}&amp;__format=pdf')"
+			actionListener="#{dashYlyadeController.actImprimerListeDevisContratSuspendusNonPaiementYlyade}"
+			process="@this" rendered="#{!contratRcdController.assurePib()}">
+					<p:graphicImage library="images" name="imprimante.png"  width="24"/>
+					</p:commandLink>
+					
+		        </f:facet>
+        
+        		<p:column selectionMode="multiple" style="width:16px;text-align:center" exportable="false"/>
+			
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					<p:commandButton title="Détail" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionDevisRcPro)" 
+						action="#{contratRcdController.detail}" icon="ui-icon-search"
+						disabled="#{contratRcdController.modeEcran.dataSetEnModif()}" oncomplete="PF('wvOverlaylisteContratSuspendusNonPaiementYlyade').hide();">
+						<f:setPropertyActionListener target="#{contratRcdController.selectedTaDossierRcdDTO}" value="#{taDevisRcPro}" />
+					</p:commandButton>
+				</p:column>
+
+<p:column sortBy="#{taDevisRcPro.dateEffet}" filterBy="#{taDevisRcPro.dateEffet}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Date d'effet" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.dateEffet}" ><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></h:outputText>
+				</p:column>
+				<p:column sortBy="#{taDevisRcPro.numDossierPolice}#{taDevisRcPro.lettrePjNumPolice}" filterBy="#{taDevisRcPro.numDossierPolice}#{taDevisRcPro.lettrePjNumPolice}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Numéro dossier/devis" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.numDossierPolice}#{taDevisRcPro.lettrePjNumPolice} - #{taDevisRcPro.numeroAvenant}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.codeAssure}" filterBy="#{taDevisRcPro.codeAssure}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Code assuré" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.codeAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.taAssureDTO.raisonSociale}" filterBy="#{taDevisRcPro.taAssureDTO.raisonSociale}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Raison Sociale" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.taAssureDTO.raisonSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.taAssureDTO.codeSiren}" filterBy="#{taDevisRcPro.taAssureDTO.codeSiren}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Siren" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.taAssureDTO.codeSiren}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.taAssureDTO.codeTAssure}" filterBy="#{taDevisRcPro.taAssureDTO.codeTAssure}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Type d'assuré" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.taAssureDTO.codeTAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.codeCourtier}" filterBy="#{taDevisRcPro.codeCourtier}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Code courtier" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.codeCourtier}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.nomDenominationSociale}" filterBy="#{taDevisRcPro.nomDenominationSociale}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Courtier" />
+					</f:facet>
+					<h:outputText value="#{taDevisRcPro.nomDenominationSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taDevisRcPro.contrat}" styleClass="center" filterBy="#{taDevisRcPro.contrat}" filterMatchMode="equals">
+					<f:facet name="header">
+						<h:outputText value="Contrat" />
+					</f:facet>
+					<f:facet name="filter">
+			                <p:selectOneButton onchange="PF('wvDataTablelisteContratSuspendusNonPaiementYlyade').filter()">
+			                    <f:converter converterId="javax.faces.Boolean" />
+			                    <f:selectItem itemLabel="Tous" itemValue="" />
+			                    <f:selectItem itemLabel="Vrai" itemValue="true" />
+			                    <f:selectItem itemLabel="Faux" itemValue="false" />
+			                </p:selectOneButton>
+			            </f:facet>
+					<p:selectBooleanCheckbox value="#{taDevisRcPro.contrat}" disabled="true"/>
+				</p:column>
+				
+				
+				
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					
+					<p:commandButton title="Supprimer" icon=" ui-icon-trash" widgetVar="widgetVarBtnSupprimerDevisRcProListe"
+						action="#{contratRcdController.actSupprimer}"
+						process="@this"
+						update="@widgetVar(wvDataTablelisteContratSuspendusNonPaiementYlyade)">
+						<f:setPropertyActionListener target="#{contratRcdController.selectedTaDossierRcdDTO}" value="#{taDevisRcPro}" />
+						<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce devis ?" icon="ui-icon-alert" />
+					</p:commandButton>
+						
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</p:overlayPanel>
+	
+</ui:composition>

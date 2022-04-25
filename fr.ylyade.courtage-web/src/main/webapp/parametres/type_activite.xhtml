@@ -1,0 +1,325 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeActivitePanel" widgetVar="wvTypeActivitePanel">
+
+		<p class="subtitle">Gestion des activité</p>
+
+		<p:panel id="idTypeActivitePanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeActiviteController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeActiviteController.handleReturnDialogTypes}" update="@widgetVar(wvTypeActivitePanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeActiviteController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeActiviteController.handleReturnDialogTypes}" update="@widgetVar(wvTypeActivitePanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeActiviteController.etatBouton('supprimer')}"
+				actionListener="#{typeActiviteController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeActivite)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeActiviteController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeActiviteController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeActivite" 
+			widgetVar="wvDataTableTypeActivite" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeActiviteController.values}" 
+			rowKey="#{table.id}"
+			draggableRows="true"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeActiviteController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeActiviteController.onRowSelect}" />
+			<p:ajax event="rowReorder" listener="#{typeActiviteController.onRowReorder}" update="@widgetVar(wvTypeActivitePanel)" />
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeActivite" fileName="type_activite" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeActivite" fileName="type_activite" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeActivite" fileName="type_activite" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeActivite" fileName="type_activite" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column style="width:16px">
+            <p:rowToggler />
+        	</p:column>
+			
+			<p:column sortBy="#{table.codeActivite}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeActivite}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblActivite}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.liblActivite}" />
+			</p:column>
+			
+<!-- 			<p:column sortBy="#{table.descriptionActivite}"> -->
+<!-- 				<f:facet name="header"> -->
+<!-- 					<h:outputText value="Description" /> -->
+<!-- 				</f:facet> -->
+<!-- 				<h:outputText value="#{table.descriptionActivite}" /> -->
+<!-- 			</p:column> -->
+			
+			<p:column sortBy="#{table.minCa}">
+				<f:facet name="header">
+					<h:outputText value="Palier minimum (CA)" />
+				</f:facet>
+				<h:outputText value="#{table.minCa}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.maxCa}">
+				<f:facet name="header">
+					<h:outputText value="Palier maximum (CA)" />
+				</f:facet>
+				<h:outputText value="#{table.maxCa}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.primeBase}">
+				<f:facet name="header">
+					<h:outputText value="Prime de base" />
+				</f:facet>
+				<h:outputText value="#{table.primeBase}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.codeClasse}">
+				<f:facet name="header">
+					<h:outputText value="Code type de classe" />
+				</f:facet>
+				<h:outputText value="#{table.codeClasse}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.codeFamilleActivite}">
+				<f:facet name="header">
+					<h:outputText value="Code famille d'activité" />
+				</f:facet>
+				<h:outputText value="#{table.codeFamilleActivite}" />
+			</p:column>
+			
+			
+			
+			
+			
+			<p:rowExpansion>
+
+                <h:outputText value="#{table.descriptionActivite}" />
+
+        	</p:rowExpansion>
+		
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeActiviteFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeActiviteController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeActiviteController.nouveau.codeActivite}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeActiviteController.nouveau.liblActivite}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							
+							<div class="ui-g-4">
+								<h:outputText value="description:"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputTextarea  value="#{typeActiviteController.nouveau.descriptionActivite}" 
+									rows="10"
+									cols="50"
+									validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_DESCRIPTION_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputTextarea>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Palier minimum (CA) :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeActiviteController.nouveau.minCa}" 
+									validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_MINCA_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Palier maximum (CA) :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeActiviteController.nouveau.maxCa}" 
+									validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_MAXCA_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Prime de base :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeActiviteController.nouveau.primeBase}" 
+									validator="#{typeActiviteController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_PRIMEBASE_ACTIVITE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							
+							
+							<div class="ui-g-4">
+								<h:outputText value="Famille d'activité :"/>
+							</div>
+							
+							<div class="ui-g-8">
+
+									<p:autoComplete value="#{typeActiviteController.taFamilleActiviteDTO}" required="true" completeMethod="#{typeActiviteController.typeFamilleActiviteAutoCompleteLight}"
+										disabled="#{typeActiviteController.editable()}" var="typeFamilleActivite" itemLabel="#{typeFamilleActivite.codeFamilleActivite}" itemValue="#{typeFamilleActivite}" forceSelection="true"
+										dropdown="true" placeholder="Votre choix" converter="entityConverter">
+										<p:column>
+											<h:outputText value="#{typeFamilleActivite.codeFamilleActivite}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{typeFamilleActivite.liblFamilleActivite}" />
+										</p:column>
+										<p:column>
+											<f:facet name="header">
+												<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{typeActiviteController.actDialogTypeFamilleActivite()}"
+													styleClass="btn-insert btn">
+													<p:ajax event="dialogReturn" listener="#{typeActiviteController.handleReturnDialogTypeFamilleActivite}" update="@parent:@parent" />
+												</p:commandButton>
+											</f:facet>
+															            	
+											
+										</p:column>
+
+										<f:attribute name="nomChamp" value="#{const.C_CODE_FAMILLE_ACTIVITE}" />
+										<p:ajax event="itemSelect" listener="#{typeActiviteController.autcompleteSelection}" update="@this" />
+									</p:autoComplete>
+								
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Type de classe :"/>
+							</div>
+							
+							<div class="ui-g-8">
+
+									<p:autoComplete value="#{typeActiviteController.taClasseDTO}" required="true" completeMethod="#{typeActiviteController.typeClasseAutoCompleteLight}"
+										disabled="#{typeActiviteController.editable()}" var="typeClasse" itemLabel="#{typeClasse.codeClasse}" itemValue="#{typeClasse}" forceSelection="true"
+										dropdown="true" placeholder="Votre choix" converter="entityConverter">
+										<p:column>
+											<h:outputText value="#{typeClasse.codeClasse}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{typeClasse.liblClasse}" />
+										</p:column>
+										<p:column>
+											<f:facet name="header">
+												<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{typeActiviteController.actDialogTypeClasse()}"
+													styleClass="btn-insert btn">
+													<p:ajax event="dialogReturn" listener="#{typeActiviteController.handleReturnDialogTypeClasse}" update="@parent:@parent" />
+												</p:commandButton>
+											</f:facet>
+															            	
+											
+										</p:column>
+
+										<f:attribute name="nomChamp" value="#{const.C_CODE_CLASSE}" />
+										<p:ajax event="itemSelect" listener="#{typeActiviteController.autcompleteSelection}" update="@this" />
+									</p:autoComplete>
+								
+							</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeActiviteController.etatBouton('enregistrer')}"
+									actionListener="#{typeActiviteController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeActiviteController.etatBouton('annuler')}"
+									actionListener="#{typeActiviteController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeActiviteController.etatBouton('annuler')}"
+									actionListener="#{typeActiviteController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

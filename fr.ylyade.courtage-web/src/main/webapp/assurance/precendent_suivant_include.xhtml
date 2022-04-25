@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+ 	<div class="ui-g-12">
+		<div class="ui-g-1">	
+			<p:commandButton value="Précédent" icon="fa fa-angle-double-left" style="background: #29b02a;"
+				oncomplete="precedentTabView(PF('wvTabviewDevisRcd'))" process="@this" rendered="#{masquePrecedent == null ? true : false}"/>
+		</div>
+		<div class="ui-g-10"/>	
+		<div class="ui-g-1">			 
+			<p:commandButton value="Suivant" icon="fa fa-angle-double-right" style="background: #29b02a;"
+				oncomplete="suivantTabView(PF('wvTabviewDevisRcd'))" process="@this" rendered="#{masqueSuivant == null ? true : false}"/>
+		</div>
+	</div>
+			
+</ui:composition>

@@ -1,0 +1,283 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idUtilisateurPanel" widgetVar="wvUtilisateurPanel">
+
+		<p class="subtitle">Gestion des utilisateurs</p>
+		
+		<p:panel id="idUtilisateurPanelDataTable" class="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton value="Ajouter" title="Insérer" process="@this"
+				update=":form:tabView,:form:messages,:form" 
+				actionListener="#{utilisateurController.actDialogTypes}"
+				styleClass="icon-insert icon" >
+				<p:ajax event="dialogReturn" listener="#{utilisateurController.handleReturnDialogTypes}" update="@widgetVar(wvUtilisateurPanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				update=":form:tabView,:form:messages,:form" 
+				actionListener="#{utilisateurController.actDialogModifier}"
+				styleClass="icon-update icon" >
+				<p:ajax event="dialogReturn" listener="#{utilisateurController.handleReturnDialogTypes}" update="@widgetVar(wvUtilisateurPanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Supprimer"
+				styleClass="icon-delete icon"
+				actionListener="#{utilisateurController.actSupprimer}" update="@widgetVar(wvDataTableUtilisateur)"
+				disabled="#{utilisateurController.etatBouton('supprimer')}" >
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				styleClass="icon-close icon menuitem-fermer-droite" onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+<!-- 				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" /> -->
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this" styleClass="btn-close btn menuitem-fermer-droite"
+				actionListener="#{utilisateurFController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+		
+		<p:dataTable id="idDataTableUtilisateur" 
+			widgetVar="wvDataTableUtilisateur" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{utilisateurController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			class="datatable"
+			selection="#{utilisateurController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{utilisateurController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableUtilisateur" fileName="util" />
+				</h:commandLink>
+
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableUtilisateur" fileName="util" />
+				</h:commandLink>
+
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableUtilisateur" fileName="util" />
+				</h:commandLink>
+
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableUtilisateur" fileName="util" />
+				</h:commandLink>
+			</f:facet>
+
+			<p:column sortBy="#{table.id}" filterBy="#{table.id}" filterMatchMode="contains">
+				<f:facet name="header">
+					<h:outputText value="ID" />
+				</f:facet>
+
+				<h:outputText value="#{table.id}" />
+			</p:column>
+
+			<p:column sortBy="#{table.identifiant}" filterBy="#{table.identifiant}" filterMatchMode="contains">
+				<f:facet name="header">
+					<h:outputText value="Email" />
+				</f:facet>
+
+				<h:outputText value="#{table.identifiant}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.nom}" filterBy="#{table.nom}" filterMatchMode="contains">
+				<f:facet name="header">
+					<h:outputText value="Nom" />
+				</f:facet>
+
+				<h:outputText value="#{table.nom}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.prenom}" filterBy="#{table.prenom}" filterMatchMode="contains">
+				<f:facet name="header">
+					<h:outputText value="Prénom" />
+				</f:facet>
+
+				<h:outputText value="#{table.prenom}" />
+			</p:column>
+			
+<!-- 			<p:column sortBy="#{table.email}" filterBy="#{table.email}" filterMatchMode="contains"> -->
+<!-- 				<f:facet name="header"> -->
+<!-- 					<h:outputText value="Email" /> -->
+<!-- 				</f:facet> -->
+
+<!-- 				<h:outputText value="#{table.email}" /> -->
+<!-- 			</p:column> -->
+			
+			<p:column sortBy="#{table.actif}" filterBy="#{table.actif}" filterMatchMode="contains" styleClass="center">
+				<f:facet name="header">
+					<h:outputText value="Actif" />
+				</f:facet>
+
+				<p:selectBooleanCheckbox value="#{table.actif}" disabled="true"/>
+			</p:column>
+			
+			<p:column sortBy="#{table.codeTUtilisateur}" filterBy="#{table.codeTUtilisateur}" filterMatchMode="contains" styleClass="center">
+				<f:facet name="header">
+					<h:outputText value="Type" />
+				</f:facet>
+				<h:outputText value="#{table.codeTUtilisateur}" />
+			</p:column>
+			
+<!-- 			<p:column sortBy="#{table.adminDossier}" filterBy="#{table.adminDossier}" filterMatchMode="contains"> -->
+<!-- 				<f:facet name="header"> -->
+<!-- 					<h:outputText value="Administrateur dossier" /> -->
+<!-- 				</f:facet> -->
+
+<!-- 				<p:selectBooleanCheckbox value="#{table.adminDossier}" disabled="true"/> -->
+<!-- 			</p:column> -->
+
+<!-- 			<p:column> -->
+<!-- 				<f:facet name="header"> -->
+<!-- 					<h:outputText value="Role" /> -->
+<!-- 				</f:facet> -->
+<!-- 				<ui:repeat value="${table.roles}" var="item"> -->
+<!-- 					<h:outputText value="#{item.taRole.role}, " /> -->
+<!-- 				</ui:repeat> -->
+<!-- 			</p:column> -->
+
+			<p:column sortBy="#{table.dernierAcces}">
+				<f:facet name="header">
+					<h:outputText value="Dernier accés" />
+				</f:facet>
+				<h:outputText value="#{table.dernierAcces}" >
+					<f:convertDateTime pattern="#{msg.date_pattern}" timeZone="#{msg.time_zone}"/>
+				</h:outputText>
+			</p:column>
+		</p:dataTable>
+
+		
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel visible="true" widgetVar="wvUtilisateurFormulairePanel">
+		<p:panel onLoad="reset()" resizable="false" rendered="#{utilisateurController.modeEcran.dataSetEnModif()}">
+			<f:validateBean disabled="true">
+
+				<div class="ui-g">
+				
+<!-- 					<div class="ui-g-12">
+						<div class="ui-g-4">
+							<h:outputText value="Login :" />
+						</div>
+						<div class="ui-g-8">
+							<p:inputText value="#{utilisateurController.nouveau.identifiant}"/>
+						</div>
+					</div> -->
+					
+<!-- 					<div class="ui-g-12"> -->
+<!-- 						<div class="ui-g-4"> -->
+<!-- 							<h:outputText value="Nom :" /> -->
+<!-- 						</div> -->
+<!-- 						<div class="ui-g-8"> -->
+<!-- 							<p:inputText value="#{utilisateurController.nouveau.nom}"/> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+
+<!-- 					<div class="ui-g-12"> -->
+<!-- 						<div class="ui-g-4"> -->
+<!-- 							<h:outputText value="Prénom :" /> -->
+<!-- 						</div> -->
+<!-- 						<div class="ui-g-8"> -->
+<!-- 							<p:inputText value="#{utilisateurController.nouveau.prenom}"/> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+
+
+
+<!-- 					<div class="ui-g-12"> -->
+<!-- 						<div class="ui-g-4"> -->
+<!-- 							<h:outputText value="Actif :" /> -->
+<!-- 						</div> -->
+<!-- 						<div class="ui-g-8"> -->
+<!-- 							<p:selectBooleanCheckbox value="#{utilisateurController.nouveau.actif}" /> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+					
+					<div class="ui-g-12">
+						<div class="ui-g-4">
+							<h:outputText value="Email (sert d'identifiant) :" />
+						</div>
+						<div class="ui-g-8">
+							<p:inputText value="#{utilisateurController.nouveau.email}" validator="#{utilisateurController.validateObject}">
+							<f:attribute name="nomChamp" value="#{const.C_IDENTIFIANT}" />
+									<p:ajax event="blur" update="@this" />
+							</p:inputText>
+						</div>
+					</div>
+
+					<div class="ui-g-12">
+						<div class="ui-g-4">
+							<h:outputText value="Mot de passe :" />
+						</div>
+						<div class="ui-g-8">
+							<p:password value="#{utilisateurController.pwd}" match="pwd2" placeholder="Nouveau mot de passe" autocomplete="false" />
+						</div>
+					</div>
+
+					<div class="ui-g-12">
+						<div class="ui-g-4">
+							<h:outputText value="Mot de passe (confirmation) :" />
+						</div>
+						<div class="ui-g-8">
+							<p:password id="pwd2" value="#{utilisateurController.pwd2}" autocomplete="false" />
+						</div>
+					</div>
+
+					<div class="ui-g-12">
+							<p:panel header="Roles">
+								<p:selectManyCheckbox value="#{utilisateurController.listeChoixRoles}" converter="entityConverter">
+									<f:selectItems value="#{utilisateurController.listeRoles}" var="r" itemLabel="#{r.liblRole}" itemValue="#{r}" />
+								</p:selectManyCheckbox>
+							</p:panel>
+					</div>
+
+					
+					<div class="ui-g-12 text-center">
+							<p:commandButton value="Enregistrer" styleClass="btn-save btn"
+								disabled="#{utilisateurController.etatBouton('enregistrer')}"
+								update="@widgetVar(wvUtilisateurPanel), @widgetVar(wvUtilisateurFormulairePanel)"
+								actionListener="#{utilisateurController.actEnregistrer}" />
+
+							<p:commandButton value="Annuler"
+								styleClass="btn-cancel btn"
+								disabled="#{utilisateurController.etatBouton('annuler')}"
+								process="@this"
+								update="@widgetVar(wvUtilisateurPanel), @widgetVar(wvUtilisateurFormulairePanel)"
+								actionListener="#{utilisateurController.actAnnuler}"
+								rendered="#{dansDialogue != null ? false : true}" />
+
+							<p:commandButton value="Annuler"
+								styleClass="btn-cancel btn" process="@this"
+								disabled="#{utilisateurController.etatBouton('annuler')}"
+								actionListener="#{utilisateurController.actFermerDialog}"
+								rendered="#{dansDialogue != null ? true : false}" />
+					</div>
+					
+				</div>
+
+			</f:validateBean>
+		</p:panel>
+	</p:panel>
+	
+</ui:composition>

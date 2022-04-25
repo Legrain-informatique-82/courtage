@@ -1,0 +1,2 @@
+INSERT INTO public.ta_t_courtier (id_t_courtier, libl_courtier, code, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (4, 'Agent d''Assurance', 'Pr1', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_courtier (id_t_courtier, libl_courtier, code, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (5, 'Courtier d''Assurance', 'Pr2', null, null, null, null, null, 0);

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Novarisks</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images:favicon.ico']}" />
+    </h:head>
+
+    <h:body styleClass="containerLogin">
+    
+	    <f:facet name="last">
+			<!-- surcharge des CSS primefaces -->
+			 <h:outputStylesheet name="css/layout-blue.css" library="icarus-layout" />
+			<h:outputStylesheet library="css" name="theme-ylyade.css" />
+		</f:facet>
+		
+		<h:form>
+		
+<!--         <div class="logo-container"> -->
+<!--             <h:graphicImage id="logo" library="images" name="logo_ylyade_rvb.jpg" /> -->
+<!--         </div> -->
+
+        <div class="ui-g">
+        
+            <p:panel header="Login" styleClass="panel-login" rendered="true">
+            	<div class="ui-g-12" style="padding-top:35px;">
+            		<!-- <h:graphicImage id="logo" library="images" name="logo-NOVARISKS-RVB.png" width="150" height="100" /> -->
+            		<h:graphicImage id="logo" library="images" name="Logo-Nova-Risks-Underwriting.png" width="150" height="100" />
+            		
+            	</div>
+    
+                <div class="ui-g-12" style="padding-top:15px;">
+                    <p:inputText id="mail" value="#{auth.username}" placeholder="Adresse e-mail" styleClass="j_username"
+						required="false" size="25" />
+                </div>
+                <div class="ui-g-12" style="padding-top:10px;">
+                   <p:password value="#{auth.password}" placeholder="mot de passe" styleClass="j_password" size="25"
+						autocomplete="on" required="false" title="mot de passe" />
+                </div>
+                <div class="ui-g-2"></div>
+<!--                 <div class="ui-g-8 login-input-container"> -->
+<!--                     <div class="ui-g-12 ui-md-6 ui-lg-6"> -->
+<!--                         <p:selectBooleanCheckbox value="#{selectBooleanView.value1}" style="padding-left:10px;"/> -->
+<!--                         <h:outputText value="Remember me" style="padding-left:5px;"/> -->
+<!--                     </div> -->
+<!--                     <div class="ui-g-12 ui-md-6 ui-lg-6"> -->
+<!--                         <p:commandLink styleClass="link-decoration" value="Forget Password?" /> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--                 <div class="ui-g-2"></div> -->
+<!--                 <p:button id="loginButton" value="Login" outcome="dashboard"></p:button> -->
+				<div class="ui-g-4">
+                <p:commandButton id="idBtnLogin" styleClass="btn_login" action="#{auth.login}" value="Connexion" ajax="false" />
+                </div>
+               <div class="ui-g-4">
+					<p:commandButton styleClass="btn_mdp_oublier" action="#{auth.mdpOublie}" value="Mot de passe oublié ?" ajax="false" />
+				</div>
+				<div class="ui-g-12">
+				<p:messages id="messages" showDetail="true" closable="true">
+    			</p:messages>
+                </div>
+            </p:panel>
+            <p:panel header="Site en maintenance" styleClass="panel-login" rendered="false">
+              <p:outputLabel> Le site extranet.ylyade.com est actuellement en maintenance. Merci de réessayer plus tard.</p:outputLabel>
+            </p:panel>
+            
+            
+        </div>
+        
+        <div class="ui-g">
+        	<p:panel header="Vous n'avez pas de compte ?" styleClass="panel-login" rendered="true">
+        		<div class="ui-g-6">
+        		 
+            		<p:button outcome="creation_compte_courtier" value="Créer un compte courtier"></p:button>
+            		</div>
+            		<div class="ui-g-6">
+					<p:button disabled="true" outcome="creation_compte_assure" value="Accès Assuré"></p:button>
+					</div>
+            
+        		
+        		
+            </p:panel> 	
+           
+           <div class="ui-g-12 footer-login">
+                <span>Novarisks Underwriting</span>
+                <span>All rights reserved.</span>
+            </div>
+            
+        </div>
+        
+       <!--  <h:outputStylesheet name="css/layout-blue.css" library="icarus-layout" /> -->
+        
+        <p:defaultCommand target="idBtnLogin" />
+
+		</h:form>
+
+        <style type="text/css">
+            html {height: 100%;}
+            .ui-button-text, .ui-button-text-only .ui-button-text{padding:8px !important; transition:none !important;}
+            .ui-panel .ui-panel-title {font-size: 17px;}
+        </style>
+        
+        <ui:include src="/google_analytics.xhtml" />
+
+<!--         <h:outputStylesheet name="css/layout-#{guestPreferences.theme}.css" library="icarus-layout" /> -->
+    </h:body>
+
+</html>

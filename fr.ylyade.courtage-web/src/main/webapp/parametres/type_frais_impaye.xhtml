@@ -1,0 +1,172 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeFraisImpayePanel" widgetVar="wvTypeFraisImpayePanel">
+
+		<p class="subtitle">Gestion des types de frais d'impayé</p>
+
+		<p:panel id="idTypeFraisImpayePanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeFraisImpayeController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeFraisImpayeController.handleReturnDialogTypes}" update="@widgetVar(wvTypeFraisImpayePanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeFraisImpayeController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeFraisImpayeController.handleReturnDialogTypes}" update="@widgetVar(wvTypeFraisImpayePanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeFraisImpayeController.etatBouton('supprimer')}"
+				actionListener="#{typeFraisImpayeController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeFraisImpaye)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeFraisImpayeController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeFraisImpayeController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeFraisImpaye" 
+			widgetVar="wvDataTableTypeFraisImpaye" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeFraisImpayeController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeFraisImpayeController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeFraisImpayeController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeFraisImpaye" fileName="type_frais_impaye" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeFraisImpaye" fileName="type_frais_impaye" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeFraisImpaye" fileName="type_frais_impaye" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeFraisImpaye" fileName="type_frais_impaye" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeTFraisImpaye}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeTFraisImpaye}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblFactureFraisImpaye}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.liblFactureFraisImpaye}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.montant}">
+				<f:facet name="header">
+					<h:outputText value="Montant" />
+				</f:facet>
+				<h:outputText value="#{table.montant}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeFraisImpayeFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeFraisImpayeController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText disabled="#{!typeStatutController.modeEcran.dataSetEnInsertion()}" value="#{typeFraisImpayeController.nouveau.codeTFraisImpaye}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFraisImpayeController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_FRAIS_IMPAYE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFraisImpayeController.nouveau.liblFactureFraisImpaye}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFraisImpayeController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_FACTURE_FRAIS_IMPAYE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Montant :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFraisImpayeController.nouveau.montant}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFraisImpayeController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_MONTANT}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeFraisImpayeController.etatBouton('enregistrer')}"
+									actionListener="#{typeFraisImpayeController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeFraisImpayeController.etatBouton('annuler')}"
+									actionListener="#{typeFraisImpayeController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeFraisImpayeController.etatBouton('annuler')}"
+									actionListener="#{typeFraisImpayeController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

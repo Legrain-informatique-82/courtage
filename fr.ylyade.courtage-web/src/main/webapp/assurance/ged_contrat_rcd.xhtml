@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+<!-- 	<p:dataList value="#{contratRcdController.listeByType}" var="values" type="unordered"> -->
+		<p:dataList value="#{contratRcdController.listTaGedUtilisateurDTO}" var="values" type="unordered" widgetVar="wvDataListGedContratRcd">
+		
+			<f:facet name="header">
+	        	<p:outputLabel value="Documents de votre contrat"/>
+	     	</f:facet>
+	
+			<p:column>
+<!-- 			<p:panel header="Document à fournir" rendered="#{!contratRcdController.findByIdDocAndByIdContratRcProDTO(values.idListeRefDoc)}"> -->
+				<p:panel header="#{values.liblDoc}" rendered="#{values.fichierDoc == null}">
+     				   
+     				<p:outputLabel value="#{values.description}"/>
+     				 <!-- != 'Autre (1)' or values.liblDoc != 'Autre (2)' or values.liblDoc != 'Autre (3)' or values.liblDoc != 'Autre (4)' or values.liblDoc != 'Autre (5)' -->
+     				  
+					<p:fileUpload
+						fileUploadListener="#{contratRcdController.handleFileUpload}"
+						mode="advanced" dragDropSupport="false" multiple="false" auto="true"
+						update="@widgetVar(wvDataListGedContratRcd)" sizeLimit="#{msg.email_taille_max_piecejonte_10mo}" fileLimit="1"
+						label="Parcourir"
+						uploadLabel="Envoyer"
+						disabled="#{!values.liblDoc.startsWith('Autre')}"
+						cancelLabel="Annuler"
+						allowTypes="#{msg.email_type_fichier_autorise}">
+						<f:attribute name="param" value="#{values.id}" />				
+					
+					</p:fileUpload>
+	
+					<p:growl id="messages" showDetail="true" />
+				</p:panel>
+
+				<p:panel header="#{values.liblDoc}" rendered="#{values.fichierDoc != null}">
+	<!-- 			<p:panel header="Document bien envoyé"> -->
+	     				   
+	     			<p:outputLabel value=" #{values.description}"/>
+	     			
+	     			<p:button href="/GEDServlet/#{values.id}" value="Télécharger le document"/>
+	     				   	
+	     			<!-- <p:commandButton value="Télécharger le document" process="@this" ajax="false" icon="ui-icon-arrowthick-1-s">
+						<f:setPropertyActionListener value="#{values}" target="#{contratRcdController.selectedTaGedUtilisateurDTO}" />
+						<f:attribute name="param" value="#{values.id}" /> 
+						<p:fileDownload value="#{contratRcdController.file}" />
+					</p:commandButton> -->
+	
+					<p:commandButton value="Renvoyer le document" process="@this" disabled="#{!values.liblDoc.startsWith('Autre')}" update="@widgetVar(wvDataListGedContratRcd)" actionListener="#{contratRcdController.supprimerDoc}">
+						<f:attribute name="param" value="#{values.id}" />
+						<p:confirm header="Confirmation" message="Attention : Voulez-vous vraiment supprimer le document puis en renvoyer un ?" icon="ui-icon-alert" />
+					</p:commandButton>
+					
+					<p:commandButton value="Validation Novarisks" process="@this" disabled="#{!values.liblDoc.startsWith('Autre')}" update="@widgetVar(wvDataListGedContratRcd)"
+					 	rendered="#{auth.isYlyade() or auth.isAdmin()}"
+					  	actionListener="#{contratRcdController.validationYlyade}">
+						<f:attribute name="param" value="#{values.id}" />
+					</p:commandButton>
+					
+					
+					<p:commandButton value="Validation Courtier" process="@this" disabled="#{!values.liblDoc.startsWith('Autre')}" update="@widgetVar(wvDataListGedContratRcd)"
+					 	rendered="#{auth.isCourtier() or auth.isAdmin()}"
+					  	actionListener="#{contratRcdController.validationCourtier}">
+						<f:attribute name="param" value="#{values.id}" />
+					</p:commandButton>
+					
+					<p:commandButton value="Validation Super Assureur" process="@this" disabled="#{!values.liblDoc.startsWith('Autre')}" update="@widgetVar(wvDataListGedContratRcd)"
+					 	rendered="#{auth.isSuperAssureur() or auth.isAdmin()}"
+					  	actionListener="#{contratRcdController.validationSuperAssureur}">
+						<f:attribute name="param" value="#{values.id}" />
+					</p:commandButton>
+					
+				</p:panel>
+
+			</p:column>
+
+		</p:dataList>
+			
+</ui:composition>

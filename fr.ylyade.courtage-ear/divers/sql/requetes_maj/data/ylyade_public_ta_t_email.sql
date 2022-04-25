@@ -1,0 +1,2 @@
+INSERT INTO public.ta_t_email (id_t_email, code_t_email, libl_t_email, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (1, 'EmPer', 'Email personnel', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_email (id_t_email, code_t_email, libl_t_email, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (2, 'EmPro', 'Email professionnel', null, null, null, null, null, 0);

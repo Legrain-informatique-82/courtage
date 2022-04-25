@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template_dialog_lgr.xhtml">
+	
+	<ui:define name="head">
+		<title>Paiement par carte bancaire - Stripe</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form >
+<!-- 		<ui:include src="#{onglet.template}"> -->
+<!-- 			<ui:param name="paramId" value="#{onglet.paramId}" /> -->
+<!-- 		</ui:include> -->
+<!-- 			<ui:include src="type_servicewebexterne.xhtml"> -->
+<!-- 				<ui:param name="dansDialogue" value="true" /> -->
+<!-- 			</ui:include> -->
+
+			<div class="ui-g">
+				<div class="ui-g-12" style="padding: 0">
+					<div class="panier-bandeau-titre" style="height: 60px; text-align: center">
+						VOTRE REGLEMENT PAR CARTE BANCAIRE TTC
+						<br/>
+						<p:graphicImage library="images" name="paiement/cadenas.png" height="16px"/> Espace sécurisé
+					</div>
+				</div>
+				<div class="ui-g-12 ui-md-12 ui-lg-12" style="padding: 0;">
+					<p:panelGrid columns="1" style="width:100%; height: 100%;" styleClass="panier">
+						<f:facet name="header">
+							<p:outputLabel value="Montant total à payer : #{paiementCbController.totalTTC} €" />
+						</f:facet>
+						
+						<p:panelGrid columns="2" style="margin:auto; height: 100%;">
+
+
+							<p:outputLabel value="Nom du porteur :" />
+							<p:inputText value="#{paiementCbController.nomCarte}" />
+							
+							<p:outputLabel value="Numéro :" />
+							<p:inputText value="#{paiementCbController.numCarte}" />
+							
+							<p:outputLabel value="Mois :" />
+							<p:selectOneMenu value="#{paiementCbController.moisCarte}" style="width:150px">
+								<f:selectItems var="p" itemLabel="#{p}" itemValue="#{p}" value="#{paiementCbController.listeMoisCB}" />
+							</p:selectOneMenu>
+							
+							<p:outputLabel value="Année :" />
+							<p:selectOneMenu value="#{paiementCbController.anneeCarte}" style="width:150px">
+								<f:selectItems var="p" itemLabel="#{p}" itemValue="#{p}" value="#{paiementCbController.listeAnneeCB}" />
+							</p:selectOneMenu>
+							
+							<p:outputLabel value="Cryptogramme :" />
+							<p:inputText value="#{paiementCbController.cryptoCarte}" />
+							
+							
+						</p:panelGrid>
+						<!-- 				<p:outputLabel value="Type :" /> -->
+						<!-- 				<p:inputText value="#{paiementCbController.typeCarte}" /> -->
+						
+						<f:facet name="footer">
+							<div class="panier-bandeau-titre" style="text-align: center">
+								<p:commandButton value="Annuler" actionListener="#{paiementCbController.actAnnuler}" style="margin-right:50px;"/>
+								<p:commandButton value="Payer" actionListener="#{paiementCbController.actPayer}"/>
+							</div>
+						</f:facet>
+
+					</p:panelGrid>
+				</div>
+			</div>
+							
+		</h:form>
+	</ui:define>
+     
+</ui:composition>

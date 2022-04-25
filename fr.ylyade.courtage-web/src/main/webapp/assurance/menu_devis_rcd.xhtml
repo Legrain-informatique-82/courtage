@@ -1,0 +1,153 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+	
+	<div style="text-align: center">
+		<p:outputLabel value="Devis N° " />
+<!-- 		<p:inputText  -->
+<!-- 			value="#{devisRcdController.selectedTaDevisRcProDTO.numDossierPolice}" -->
+<!-- 			validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 			disabled="#{devisRcdController.editable()}"> -->
+<!-- 			<f:attribute name="nomChamp" value="#{const.C_NUM_DEVIS_RCPRO}" /> -->
+<!-- 			<p:ajax event="blur" update="@this" /> -->
+<!-- 		</p:inputText> -->
+<!-- 		<p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numDossierPolice} - #{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant}"/> -->
+		<!-- <p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numDossierPolice}"/> -->
+		<p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numDossierPolice}#{devisRcdController.selectedTaDossierRcdDTO.lettrePjNumPolice}"/>
+		<p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null?' - ':''}"/>
+		<p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null?devisRcdController.selectedTaDossierRcdDTO.numeroAvenant:''}"/>
+	    <p:outputLabel value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null?' (Avenant)':''}"/>
+		
+	</div>
+<p:panel widgetVar="wvMenuDevisPanel">
+	<p:panel styleClass="menu-onglet" widgetVar="wvMenuDevisRcPro">
+<!-- 				<p:commandButton value="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuDevisRcPro').show()" /> -->
+				
+		<p:commandButton value="Enregistrer" icon="fa fa-save"
+			actionListener="#{devisRcdController.actEnregistrer}"
+			process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeDevisRcPro),
+			@widgetVar(wvDataTableListeDevisRcPro),@widgetVar(wvTabviewDevisRcd),
+			@widgetVar(wvDataListGedDevisRcd),
+			 @widgetVar(wvPanelStatutDevis)"
+			disabled="#{devisRcdController.etatBouton('enregistrer')}"
+			rendered="#{auth.isCourtier() or auth.isYlyade()}" styleClass="#{devisRcdController.classBoutonEnregistrer}"/>
+		
+<!-- 		<p:commandButton value="Ajouter" styleClass="icon-insert icon" -->
+<!-- 			actionListener="#{devisRcdController.actInserer}" process="@this" -->
+<!-- 			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvPanelEntete),@widgetVar(wvMenuListeDevisRcPro),@widgetVar(wvDataTableListeDevisRcPro),@widgetVar(wvBandeauActionDevisRcPro)" -->
+<!-- 			disabled="#{devisRcdController.etatBouton('inserer')}" -->
+<!-- 			rendered="#{auth.isCourtier()}" /> -->
+
+
+
+		<p:commandButton  value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null? 'Valider Avenant' : 'Demande de souscription'}" icon="fa fa-pencil-square-o"
+			actionListener="#{devisRcdController.actSoumettreASouscription}" process="@this" styleClass="#{devisRcdController.classBoutonSouscrire}"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvPanelEntete),@widgetVar(wvMenuListeDevisRcPro),
+				@widgetVar(wvDataTableListeDevisRcPro),@widgetVar(wvBandeauActionDevisRcPro),@widgetVar(wvMenuListeContratRcPro),@widgetVar(wvDataTableListeContratRcPro),@widgetVar(wvPanelStatutDevis)"
+			disabled="#{devisRcdController.etatBouton('inserer')
+			 or devisRcdController.taDossierRcd.soumisSouscription==true 
+			 or devisRcdController.selectedTaDossierRcdDTO.validationGlobaleGedCourtier!=true }"
+			rendered="#{(auth.isCourtier() or auth.isYlyade())}">
+			<p:confirm header="Confirmation" message="Etes vous sur de vouloir souscrire ce devis ?" icon="ui-icon-alert" />
+			</p:commandButton>
+			
+<!-- 			and (!devisRcdController.erreurBloquante() or !devisRcdController.selectedTaDossierRcdDTO.montantPrime ==null) -->
+<!-- 		    and (devisRcdController.selectedTaDossierRcdDTO.soumisEtude==false or devisRcdController.selectedTaDossierRcdDTO.soumisEtude==null ) -->
+<!-- 		    or (devisRcdController.selectedTaDossierRcdDTO.soumisEtude==true and !devisRcdController.isSoumisEtudeMaisPasValiderYlyadeNiAssureur())} -->
+			
+<!-- 			<p:tooltip id="toolTipFadeSouscription" for="tooltipSouscription" -->
+<!-- 	                         value="Vous ne pouvez souscrire un devis qu'après avoir enregistré le devis et validé sa GED." -->
+<!-- 	                         position="top"/> -->
+		
+		<p:commandButton value="Modifier" icon="fa fa-pencil"
+			actionListener="#{devisRcdController.actModifier}"
+			process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeDevisRcPro),@widgetVar(wvDataTableListeDevisRcPro)"
+			disabled="#{devisRcdController.etatBouton('modifier') || (devisRcdController.taDossierRcd.soumisSouscription==true and !auth.isYlyade())}"
+			rendered="#{auth.isCourtier() or auth.isYlyade()}" />
+			
+			
+			
+			
+			<!-- BOUTONS POUR ASSUREUR UNIQUEMENT -->
+			<p:commandButton value="Enregistrer la nouvelle prime" icon="fa fa-save"
+			actionListener="#{devisRcdController.actEnregistrer}"
+			process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeDevisRcPro),
+			@widgetVar(wvDataTableListeDevisRcPro),@widgetVar(wvTabviewDevisRcd),
+			@widgetVar(wvDataListGedDevisRcd),@widgetVar(wvPrimeNetteAssureur),
+			 @widgetVar(wvPanelStatutDevis)"
+			disabled="#{devisRcdController.enModifPrimeAssureur == false}"
+			rendered="#{auth.isSuperAssureur() and devisRcdController.taDossierRcd.soumisEtudeAssureur == true and devisRcdController.taDossierRcd.validationAssureurApresetude != true}" />
+			
+			<p:commandButton value="Modifier la prime" styleClass="icon-update icon"
+			actionListener="#{devisRcdController.actModifierPrimeAssureur}"
+			process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeDevisRcPro),@widgetVar(wvDataTableListeDevisRcPro), @this, @widgetVar(wvPrimeNetteAssureur)"
+			disabled="#{devisRcdController.enModifPrimeAssureur == true}"
+			rendered="#{auth.isSuperAssureur() and devisRcdController.taDossierRcd.soumisEtudeAssureur == true and devisRcdController.taDossierRcd.validationAssureurApresetude != true}" />
+			<!-- FIN BOUTON POUR ASSUREUR -->
+		
+		<p:commandButton value="Annuler" icon="fa fa-ban"
+			actionListener="#{devisRcdController.actAnnuler}" process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvMenuListeDevisRcPro),@widgetVar(wvDataTableListeDevisRcPro)"
+			disabled="#{devisRcdController.etatBouton('annuler')}" rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+			<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		
+		<p:commandButton value="Supprimer"
+			icon="fa fa-trash"
+			actionListener="#{devisRcdController.actSupprimer}"
+			process="@this"
+			update="idPanelAdresse,:form:messages,@form,@widgetVar(wvDataTableListeDevisRcPro)"
+			disabled="#{devisRcdController.etatBouton('supprimer') or devisRcdController.taDossierRcd.soumisSouscription==true}"
+			rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+			<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce devis ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		
+		<p:commandButton value="Fermer"
+			icon="fa fa-close" process="@this"
+			actionListener="#{devisRcdController.actFermer}"
+			update=":form:messages,@widgetVar(wvMenuListeDevisRcPro),@widgetVar(wvDataTableListeDevisRcPro)"
+			disabled="#{devisRcdController.etatBouton('fermer')}"
+			onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+			<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours et fermer l'onglet ?" icon="ui-icon-alert"
+				disabled="#{!devisRcdController.modeEcran.dataSetEnModif()}" />
+		</p:commandButton>
+		
+		<p:commandButton value="Imprimer" icon="fa fa-print"
+			onsuccess="window.open('#{request.contextPath}/output?__report=/reports/PropositionTechniqueEtTarifaireAssurance/PropositionTechniqueEtTarifaireAssurance.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+			actionListener="#{devisRcdController.actImprimer}"
+			disabled="#{devisRcdController.etatBouton('imprimer')}" 
+			process="@this" rendered="#{!devisRcdController.assurePib()}"/>
+		
+		<p:commandButton value="Imprimer" icon="fa fa-print"
+			onsuccess="window.open('#{request.contextPath}/output?__report=/reports/PropositionTechniqueEtTarifaireAssurance/PropositionTechniqueEtTarifaireAssurancePib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+			actionListener="#{devisRcdController.actImprimer}"
+			disabled="#{devisRcdController.etatBouton('imprimer')}" 
+			process="@this" rendered="#{devisRcdController.assurePib()}"/>
+			
+		<p:commandButton value="Liste" icon="fa fa-list" oncomplete="PF('wvOverlayListeDevisRcPro').show();" process="@this" />
+		
+<!-- 		<p:commandButton value="Test Impression" styleClass="icon-print icon" -->
+<!-- 					onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestation/AttestationAssuranceRcDecennalePib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDevisRcProDTO.id}&amp;__format=pdf')" -->
+<!-- 					actionListener="#{devisRcdController.actImprimer}" disabled="#{devisRcdController.etatBouton('imprimer')}" /> -->
+		
+	</p:panel>
+	</p:panel>
+	
+	<!-- STATUTS DU DOSSIER -->
+<p:panel widgetVar="wvPanelStatutDevis"  styleClass="panel-statut-label"  header="Statut du devis" >
+	<p:dataList  value="#{devisRcdController.selectedTaDossierRcdDTO.taTStatut}" var="statut" emptyMessage="Aucun statut">
+		<p:column sortBy="statut.liblTStatut">
+       		<p:outputLabel styleClass="statut-label"> #{statut.liblTStatut}</p:outputLabel>
+        </p:column>
+    </p:dataList>
+	
+</p:panel>
+</ui:composition>

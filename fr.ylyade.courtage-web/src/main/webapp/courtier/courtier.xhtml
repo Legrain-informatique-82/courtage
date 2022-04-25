@@ -1,0 +1,703 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:f="http://java.sun.com/jsf/core" 
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:ui="http://java.sun.com/jsf/facelets" 
+				xmlns:p="http://primefaces.org/ui" 
+				xmlns:lgr="http://legrain.fr/ui"
+				xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+						
+
+
+
+	<p:tabView id="idTabViewCourtier" styleClass="verticalTab" binding="#{courtierController.tabViewCourtier}"  
+				cache="false"
+				dynamic="true">
+
+		<p:ajax event="tabChange" update="@widgetVar(panelListeAdresseCourtier),
+										 @widgetVar(panelDetailAdresseCourtier),
+										 @widgetVar(panelComptesBancairesCourtier),
+										 idTabGedCourtier,
+										 ff,
+										 @widgetVar(panelEmailEnvoyesCourtier)" 
+			listener="#{courtierController.onTabChange}"/>
+	
+
+		<p:tab title="Courtier" titleStyleClass="tab-min tab-tiers" titletip="Courtier">
+		
+			<p:menubar styleClass="menu-onglet">
+				<p:menuitem value="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuCourtier').show()" />
+				<p:menuitem value="Enregistrer" styleClass="icon-save icon" actionListener="#{courtierController.actEnregistrer}"
+					process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,idPanelComptaCourtier2,:form:messages,@form,@widgetVar(wvMenuListeCourtier),@widgetVar(wvDataTableListeCourtier)"
+					disabled="#{courtierController.etatBouton('enregistrer')}" />
+				<p:menuitem value="Ajouter" styleClass="icon-insert icon" actionListener="#{courtierController.actInserer}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(panelIdentite),@widgetVar(wvMenuListeCourtier),@widgetVar(wvDataTableListeCourtier),@widgetVar(wvBandeauActionCourtier)"
+					disabled="#{courtierController.etatBouton('inserer')}" rendered="#{auth.isYlyade()}"/>
+				<p:menuitem value="Modifier" styleClass="icon-update icon" actionListener="#{courtierController.actModifier}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvMenuListeCourtier),@widgetVar(wvDataTableListeCourtier)"
+					disabled="#{courtierController.etatBouton('modifier')}" />
+				<p:menuitem value="Annuler" styleClass="icon-cancel icon" actionListener="#{courtierController.actAnnuler}"
+					process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvMenuListeCourtier),@widgetVar(wvDataTableListeCourtier)"
+					disabled="#{courtierController.etatBouton('annuler')}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours ?" icon="ui-icon-alert" />
+				</p:menuitem>
+				<p:menuitem value="Supprimer" styleClass="icon icon-delete menuitem-poubelle-droite"
+					actionListener="#{courtierController.actSupprimer}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvDataTableListeCourtier)"
+					disabled="#{courtierController.etatBouton('supprimer')}" rendered="#{auth.isYlyade()}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce Courtier ?" icon="ui-icon-alert" />
+				</p:menuitem>
+				<p:menuitem value="Fermer" styleClass="icon icon-close menuitem-fermer-droite" process="@this"
+					actionListener="#{courtierController.actFermer}" update=":form:messages,@widgetVar(wvMenuListeCourtier),@widgetVar(wvDataTableListeCourtier)"
+					disabled="#{courtierController.etatBouton('fermer')}" onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+					<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert"
+						disabled="#{!courtierController.modeEcran.dataSetEnModif()}" />
+				</p:menuitem>
+				<p:menuitem value="Imprimer" styleClass="icon-print icon"
+					onsuccess="window.open('#{request.contextPath}/output?__report=/reports/courtier/FicheCourtier.rptdesign&amp;id_tiers=#{courtierController.selectedTaCourtierDTO.id}&amp;__format=pdf')"
+					actionListener="#{courtierController.actImprimerFiche}" disabled="#{courtierController.etatBouton('imprimer')}" />
+				<p:menuitem value="Liste" styleClass="icon icon-liste" oncomplete="PF('wvOverlayListeCourtier').show();" rendered="#{auth.isYlyade()}"/>
+			</p:menubar>
+
+			<div class="ui-g">
+				<div class="ui-g-12">
+				
+					<p:fieldset style="margin-bottom:20px;" widgetVar="wvBandeauActionCourtier">
+						<h:panelGrid columns="10" cellpadding="5">
+							<p:outputLabel value="Etat" />
+								<p:selectBooleanButton id="value2" value="#{courtierController.selectedTaCourtierDTO.actif}" disabled="#{courtierController.editable() or !auth.isYlyade()}"
+									onLabel="Actif" offLabel="Inactif" onIcon="ui-icon-check" offIcon="ui-icon-close">
+									<p:ajax event="change" update="@this" />
+								</p:selectBooleanButton>
+						</h:panelGrid>
+					</p:fieldset>
+					
+				</div>
+
+				<div class="ui-g-12">
+					<div class="ui-g-6">
+						<p:panel id="idPanelIdentite" header="Identité" toggleable="true" widgetVar="panelIdentite">
+
+							<h:panelGrid columns="2" cellpadding="10">
+							
+								<p:outputLabel value="Code courtier" styleClass="labelchob" />
+								<p:inputText id="idCode" value="#{courtierController.selectedTaCourtierDTO.codeCourtier}" required="true" validator="#{courtierController.validateCourtier}"
+									disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_COURTIER}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+								<p:outputLabel value="Type courtier" />
+								<p:autoComplete value="#{courtierController.taTCourtierDTO}" required="true" completeMethod="#{courtierController.typeCourtierAutoCompleteLight}"
+									disabled="#{courtierController.editable()}" var="typeCourtier" itemLabel="#{typeCourtier.codeTCourtier}" itemValue="#{typeCourtier}" forceSelection="true"
+									dropdown="true" placeholder="Type de courtier" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeCourtier.codeTCourtier}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeCourtier.liblTCourtier}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{courtierController.actDialogTypeCourtier}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{courtierController.handleReturnDialogTypeCourtier}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeCourtier.compteTCourtier}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_COURTIER}" />
+									<p:ajax event="itemSelect" listener="#{courtierController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+									
+								<p:outputLabel value="Nom" />
+								<p:inputText id="NomCourtier" value="#{courtierController.selectedTaCourtierDTO.nom}" required="true"
+								 validatorMessage="Le nom doit étre renseigner"
+								 validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_NOM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								
+								<p:outputLabel value="Prénom" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.prenom}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_PRENOM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+	
+								<p:outputLabel value="Titre Fonction" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.titreFonction}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_TITRE_FONCTION}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Date accord tarif" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.dateAccordTarif}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_NOM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+	
+								<p:outputLabel value="Groupe tarif" />
+								<p:autoComplete value="#{courtierController.taTGroupeTarifDTO}" required="true" completeMethod="#{courtierController.typeCourtierAutoCompleteLight}"
+									disabled="#{courtierController.editable()}" var="typeGroupeTarif" itemLabel="#{typeGroupeTarif.codeGroupe}" itemValue="#{typeGroupeTarif}" forceSelection="true"
+									dropdown="true" placeholder="Type de groupe tarif" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeGroupeTarif.codeGroupe}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeGroupeTarif.nomGroupe}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeGroupeTarif.tauxGroupe}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{courtierController.actDialogTypeCourtier}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{courtierController.handleReturnDialogTypeCourtier}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeCourtier.compteTCourtier}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_GROUPE}" />
+									<p:ajax event="itemSelect" listener="#{courtierController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+								
+								<p:outputLabel value="Taux groupe" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.tauxGroupe}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_TAUX_GROUPE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+				
+							</h:panelGrid>
+						</p:panel>
+
+					</div>
+
+					<div class="ui-g-6 ui-g-nopad">
+							<div class="ui-g-12">
+
+								<p:panel id="idPanelAdresse" header="Adresse" toggleable="true" widgetVar="panelAdresse">
+
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:outputLabel value="Ligne" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.adresseLigne1}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_1}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ligne (2)" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.adresseLigne2}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_2}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ligne (3)" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.adresseLigne3}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_3}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Code postal" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.codePostal}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_CODE_POSTAL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ville" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.ville}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_VILLE}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Pays" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.pays}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_PAYS}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+
+							<div class="ui-g-12">
+
+								<p:panel id="idPanelContact" header="Contact" toggleable="true" widgetVar="panelContact">
+
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:outputLabel value="Téléphone" />
+										<p:inputText maxlength="20" value="#{courtierController.selectedTaCourtierDTO.numeroTel}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_NUMERO_TEL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Adresse email (sert d'identifiant)" />
+										<p:inputText id="inputTextEmailCourtier" value="#{courtierController.selectedTaCourtierDTO.adresseEmail}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_EMAIL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+						
+						<div class="ui-g-12">
+
+								<p:panel id="idPanelConnexion" header="Connexion" toggleable="true" widgetVar="panelConnexion">
+
+									<h:panelGrid columns="2" cellpadding="10">
+<!-- 										<p:outputLabel value="Identifiant" /> -->
+<!-- 										<p:inputText maxlength="20" value="#{courtierController.selectedTaCourtierDTO.identifiant}" validator="#{courtierController.validateCourtier}" -->
+<!-- 											disabled="#{courtierController.editable()}"> -->
+<!-- 											<f:attribute name="nomChamp" value="#{const.C_IDENTIFIANT}" /> -->
+<!-- 											<p:ajax event="blur" update="@this" /> -->
+<!-- 										</p:inputText> -->
+
+										<p:outputLabel value="Modifier le mot de passe" />
+										<p:selectBooleanCheckbox value="#{courtierController.modifierMotDePasse}" disabled="#{courtierController.editable()}">
+											<p:ajax event="change" update="@this, @widgetVar(panelConnexion)" />
+										</p:selectBooleanCheckbox>
+
+										<p:outputLabel value="Mot de passe" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.password}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable() || !courtierController.modifierMotDePasse}">
+											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}" />
+											<p:ajax event="blur" update="@this, idComplexPassword" />
+										</p:inputText>
+										
+										<p:outputLabel id="idComplexPasswordLabel" value="Complexité du mot de passe : ">
+<!-- 											<h:outputLink id="tooltipLinkCOmplexPassword" value="#"> -->
+<!-- 	        									<i class="fa fa-question-circle"></i> -->
+<!-- 	    									</h:outputLink> -->
+	    								</p:outputLabel>
+	    								
+										<p:outputLabel id="idComplexPassword" value="#{courtierController.passwordComplex()}" />
+<!-- 										<p:tooltip id="toolTipFadeComplexPassword" for="idComplexPassword" -->
+<!-- 	   						  						value="Pour une sécurité optimale, votre mot de passe devrait avoir au moins 8 caractères, -->
+<!-- 	   						  						au moins une minuscule et une majuscule, au moins un chiffre,  -->
+<!--  	   						  						  au moins un caractère spécial et pas d'espace."  -->
+<!-- 	   						  						position="top"/> -->
+										
+										<p:outputLabel value="Confirmation du mot de passe" />
+										<p:inputText value="#{courtierController.selectedTaCourtierDTO.passwordConfirm}" validator="#{courtierController.validateCourtier}"
+											disabled="#{courtierController.editable() || !courtierController.modifierMotDePasse}">
+											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}_CONFIRMATION" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+										
+
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+					</div>
+
+				</div>
+
+
+					<div class="ui-g-6">
+						<p:panel id="idPanelComptaCourtier" header="Divers" toggleable="true" widgetVar="panelComptaCourtier">
+							<h:panelGrid columns="2" cellpadding="10">
+	
+								<p:outputLabel value="Suspendu" />
+								<p:selectBooleanCheckbox value="#{courtierController.selectedTaCourtierDTO.suspendu}" disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<p:ajax event="change" update="@this" />
+								</p:selectBooleanCheckbox>
+
+								
+								<p:outputLabel value="Effectif total" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.effectifTotal}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+								<p:outputLabel value="Civilité" />
+								<p:autoComplete value="#{courtierController.taTCiviliteDTO}" required="true" completeMethod="#{courtierController.typeCiviliteAutoCompleteLight}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}" var="typeCivilite" itemLabel="#{typeCivilite.codeTCivilite}" itemValue="#{typeCivilite}" forceSelection="true"
+									dropdown="true" placeholder="Type de courtier" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeCivilite.codeTCivilite}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeCivilite.liblTCivilite}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{courtierController.actDialogTypeCourtier}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{courtierController.handleReturnDialogTypeCourtier}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeCourtier.compteTCourtier}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_CIVILITE}" />
+									<p:ajax event="itemSelect" listener="#{courtierController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+
+								<p:outputLabel value="Forme juridique" />
+								<p:autoComplete value="#{courtierController.taTJuridiqueDTO}" required="true" completeMethod="#{courtierController.typeJuridiqueAutoCompleteLight}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}" var="typeJuridique" itemLabel="#{typeJuridique.codeTJuridique}" itemValue="#{typeJuridique}" forceSelection="true"
+									dropdown="true" placeholder="Type juridique" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeJuridique.codeTJuridique}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeJuridique.liblTJuridique}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{courtierController.actDialogTypeCourtier}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{courtierController.handleReturnDialogTypeCourtier}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeCourtier.compteTCourtier}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_COURTIER}" />
+									<p:ajax event="itemSelect" listener="#{courtierController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+	
+<!-- 								<p:outputLabel value="Commissions brutes" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.comBrutes}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_COM_BRUTES}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Commissions brutes IARD" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.comBrutesIard}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_COM_BRUTES_IARD}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+							
+								<p:outputLabel value="Connu Novarisks" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.connuYlyade}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_CONNU_YLYADE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+<!-- 								<p:outputLabel value="CA IARD Pourcent Entreprise" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.caIardPourcentEntreprise}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CA_IARD_POURCENT_ENTREPRISE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+							
+<!-- 								<p:outputLabel value="CA IARD Pourcent Particulier" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.caIardPourcentParticulier}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CA_IARD_POURCENT_PARTICULER}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+
+							</h:panelGrid>
+						</p:panel>
+					</div>
+					
+					<div class="ui-g-6">
+						<p:panel id="idPanelComptaCourtier2" header="Divers 2" toggleable="true" widgetVar="panelComptaCourtier2">
+							<h:panelGrid columns="2" cellpadding="10">
+
+								<p:outputLabel  value="Code siret" styleClass="labelchob"/>
+								<p:inputText id="siret" value="#{courtierController.selectedTaCourtierDTO.codeSiret}" required="true"  validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_SIRET}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+<!-- 								<p:message for="siret" display="icon" /> -->
+								
+								
+<!-- 								<p:outputLabel  value="Code siren" styleClass="labelchob"/> -->
+<!-- 								<p:inputText id="siren" value="#{courtierController.selectedTaCourtierDTO.codeSiren}" required="true"  validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CODE_SIREN}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								
+								<p:outputLabel  value="Code APE" styleClass="labelchob"/>
+								<p:inputText id="ape" value="#{courtierController.selectedTaCourtierDTO.codeApe}" required="true" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">								
+									<f:attribute name="nomChamp" value="#{const.C_CODE_APE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+<!-- 								<p:message for="ape" display="icon" /> -->
+								
+								
+<!-- 								<p:outputLabel value="TVA Intra. Comm." styleClass="labelchob"/> -->
+<!-- 								<p:inputText id="tva" value="#{courtierController.selectedTaCourtierDTO.tvaIntraComm}" required="true" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_TVA_INTRA_COMM}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Logo" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.logo}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_LOGO}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Qualite" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.qualite}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_QUALITE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								<p:outputLabel value="Numéro ORIAS" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.numOrias}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_NUM_ORIAS}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								
+								<p:outputLabel value="Dénomination sociale" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.nomDenominationSociale}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_NOM_DENOMINATION_SOCIALE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+<!-- 								<p:outputLabel value="Numéro RCS" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.numRcs}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_RCS}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								<p:outputLabel value="Numéro RC Pro." />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.numRcPro}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_NUM_RC_PRO}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+						
+<!-- 								<p:outputLabel value="Numéro greffe" /> -->
+<!-- 								<p:inputText value="#{courtierController.selectedTaCourtierDTO.numGreffe}" validator="#{courtierController.validateCourtier}" -->
+<!-- 									disabled="#{courtierController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_GREFFE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								<p:outputLabel value="Capital social" />
+								<p:inputText value="#{courtierController.selectedTaCourtierDTO.capitalSocial}" validator="#{courtierController.validateCourtier}"
+									disabled="#{courtierController.editable() or (!auth.isAdmin() and !auth.isYlyade())}">
+									<f:attribute name="nomChamp" value="#{const.C_CAPITAL_SOCIAL}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+							</h:panelGrid>
+						</p:panel>
+					</div>
+					
+			</div>
+
+		</p:tab>
+
+<!-- 		<p:tab title="Adresses" titleStyleClass="tab-min" titletip="Adresse" disabled="#{courtierController.disabledTab('')}"> -->
+<!-- 			<div class="dashboard-title" style="background: #f6f6f6; margin-bottom: 15px;"> -->
+<!-- 				<h:panelGrid columns="4" cellpadding="5"> -->
+<!-- 					<h:graphicImage name="dashboard/tier.svg" library="images" height="35px" style="margin-top:1px;" /> -->
+<!-- 					<p:outputLabel value="Liste des adresses du Courtier#{courtierController.selectedTaCourtierDTO.nomCourtier} " style="font-size:20px;" /> -->
+<!-- 				</h:panelGrid> -->
+<!-- 			</div> -->
+<!-- 			<p:menubar styleClass="menu-onglet" widgetVar="wvMenuAdresseCourtier"> -->
+<!-- 								<p:menuitem title="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuCourtier').show()" /> -->
+<!-- 								<p:separator styleClass="separateur-menu-vertical"/> -->
+<!-- 				<p:menuitem title="Enregistrer les modifications en cours" styleClass="icon-save icon" -->
+<!-- 					actionListener="#{courtierController.adresseController.actEnregistrer}" process="@this" -->
+<!-- 					update="@widgetVar(panelListeAdresseCourtier), @widgetVar(panelDetailAdresseCourtier),@widgetVar(panelAdresse), @widgetVar(wvMenuAdresseCourtier)" -->
+<!-- 					disabled="#{courtierController.adresseController.etatBouton('enregistrer')}" oncomplete="geocode()" /> -->
+<!-- 				<p:menuitem title="Ajouter une nouvelle adresse" styleClass="icon-insert icon" actionListener="#{courtierController.adresseController.actInserer}" -->
+<!-- 					process="@this" update="@widgetVar(panelListeAdresseCourtier), @widgetVar(panelDetailAdresseCourtier), @widgetVar(wvMenuAdresseCourtier)" -->
+<!-- 					disabled="#{courtierController.adresseController.etatBouton('inserer')}" /> -->
+<!-- 				<p:menuitem title="Modifier l'adresse courante" styleClass="icon-update icon" actionListener="#{courtierController.adresseController.actModifier}" -->
+<!-- 					process="@this" update="@widgetVar(panelListeAdresseCourtier), @widgetVar(panelDetailAdresseCourtier), @widgetVar(wvMenuAdresseCourtier)" -->
+<!-- 					disabled="#{courtierController.adresseController.etatBouton('modifier')}" /> -->
+<!-- 				<p:menuitem title="Annuler les modifications en cours" styleClass="icon-cancel icon" -->
+<!-- 					actionListener="#{courtierController.adresseController.actAnnuler}" process="@this" -->
+<!-- 					update="@widgetVar(panelListeAdresseCourtier), @widgetVar(panelDetailAdresseCourtier), @widgetVar(wvMenuAdresseCourtier)" -->
+<!-- 					disabled="#{courtierController.adresseController.etatBouton('annuler')}" /> -->
+<!-- 				<p:menuitem title="Supprimer l'adresse courante" styleClass="icon icon-delete menuitem-poubelle-droite" -->
+<!-- 					actionListener="#{courtierController.adresseController.actSupprimer}" process="@this" -->
+<!-- 					update="@widgetVar(panelListeAdresseCourtier), @widgetVar(panelDetailAdresseCourtier), @widgetVar(wvMenuAdresseCourtier)" -->
+<!-- 					disabled="#{courtierController.adresseController.etatBouton('supprimer')}"> -->
+<!-- 					<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cette adresse ?" icon="ui-icon-alert" /> -->
+<!-- 				</p:menuitem> -->
+				
+<!-- 			</p:menubar> -->
+
+<!-- 			<p:panel header="Liste des adresses du tiers" widgetVar="panelListeAdresseCourtier"> -->
+<!-- 				<p:dataTable value="#{courtierController.adresseController.values}" var="a" rowKey="#{a.id}" styleClass="datatable mt10" -->
+<!-- 					selection="#{courtierController.adresseController.selectedTaAdresseDTO}" selectionMode="single" sortBy="#{a.codeTAdr}" expandableRowGroups="true"> -->
+
+<!-- 					<p:ajax event="rowSelect" delay="#{msg.datatable_rowselect_delay}" listener="#{courtierController.adresseController.onRowSelect}" -->
+<!-- 						update="@widgetVar(panelDetailAdresseCourtier), @widgetVar(wvMenuAdresseCourtier)" oncomplete="geocode()" /> -->
+<!-- 										<p:ajax event="rowReorder" listener="#{courtierController.adresseController.onRowReorder}" update="@this" />	 -->
+<!-- 					<p:headerRow> -->
+<!-- 						<p:column colspan="8"> -->
+<!-- 							<h:outputText value="#{a.codeTAdr}" /> -->
+<!-- 						</p:column> -->
+<!-- 					</p:headerRow> -->
+
+<!-- 					<p:column headerText="Ligne"> -->
+<!-- 						<h:outputText value="#{a.adresse1Adresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Ligne (2)"> -->
+<!-- 						<h:outputText value="#{a.adresse2Adresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Ligne (3)"> -->
+<!-- 						<h:outputText value="#{a.adresse3Adresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Code postal"> -->
+<!-- 						<h:outputText value="#{a.codepostalAdresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Ville"> -->
+<!-- 						<h:outputText value="#{a.villeAdresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Pays"> -->
+<!-- 						<h:outputText value="#{a.paysAdresse}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Type"> -->
+<!-- 						<h:outputText value="#{a.codeTAdr}" /> -->
+<!-- 					</p:column> -->
+<!-- 					<p:column headerText="Ordre"> -->
+<!-- 						<h:outputText value="#{a.ordre}" /> -->
+<!-- 					</p:column> -->
+<!-- 				</p:dataTable> -->
+<!-- 				<br /> -->
+<!-- 				<p:commandButton value="changer l'ordre des adresses" title="Changer l'ordre" process="@this" -->
+<!-- 					update="@this,@widgetVar(widgetVarReorderAdresseForm)" styleClass="btn-update btn" oncomplete="PF('adresseReorderDlg').show()" -->
+<!-- 					actionListener="#{courtierController.actDialogAdresseReorder}"> -->
+<!-- 					<p:ajax event="dialogReturn" listener="#{courtierController.adresseController.handleReturnDialogAdresseReorder}" -->
+<!-- 						update="@widgetVar(panelListeAdresseCourtier)" /> -->
+<!-- 				</p:commandButton> -->
+<!-- 				<br /> -->
+<!-- 			</p:panel> -->
+<!-- 			<p:panel header="Adresses" widgetVar="panelDetailAdresseCourtier"> -->
+<!-- 				<div class="ui-g-4"> -->
+<!-- 					<h:panelGrid columns="2" cellpadding="10"> -->
+<!-- 						<p:outputLabel value="Ligne" /> -->
+<!-- 						<p:inputText id="idLigne1" value="#{courtierController.adresseController.selectedTaAdresseDTO.adresse1Adresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_ADRESSE1_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Ligne (2)" /> -->
+<!-- 						<p:inputText id="idLigne2" value="#{courtierController.adresseController.selectedTaAdresseDTO.adresse2Adresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_ADRESSE2_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Ligne (3)" /> -->
+<!-- 						<p:inputText id="idLigne3" value="#{courtierController.adresseController.selectedTaAdresseDTO.adresse3Adresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_ADRESSE3_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Code postal" /> -->
+<!-- 						<p:inputText id="idCodePostal" value="#{courtierController.adresseController.selectedTaAdresseDTO.codepostalAdresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_CODEPOSTAL_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Ville" /> -->
+<!-- 						<p:inputText id="idVille" value="#{courtierController.adresseController.selectedTaAdresseDTO.villeAdresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_VILLE_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Pays" /> -->
+<!-- 						<p:inputText id="idPays" value="#{courtierController.adresseController.selectedTaAdresseDTO.paysAdresse}" -->
+<!-- 							validator="#{courtierController.adresseController.validateAdresse}" disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_PAYS_ADRESSE}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+
+<!-- 						<p:outputLabel value="Type d'adresse" /> -->
+<!-- 						<p:autoComplete value="#{courtierController.adresseController.taTAdrDTO}" required="true" -->
+<!-- 							completeMethod="#{courtierController.adresseController.typeAdresseAutoCompleteLight}" disabled="#{courtierController.adresseController.editable()}" -->
+<!-- 							var="typeAdresse" itemLabel="#{typeAdresse.codeTAdr}" itemValue="#{typeAdresse}" forceSelection="true" dropdown="true" -->
+<!-- 							placeholder="Type d'adresse" converter="entityConverter"> -->
+<!-- 							<p:column> -->
+<!-- 								<h:outputText value="#{typeAdresse.codeTAdr}" /> -->
+<!-- 							</p:column> -->
+<!-- 							<p:column> -->
+<!-- 								<h:outputText value="#{typeAdresse.liblTAdr}" /> -->
+<!-- 							</p:column> -->
+<!-- 							<p:column> -->
+<!-- 								<f:facet name="header"> -->
+<!-- 									<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" -->
+<!-- 										actionListener="#{courtierController.adresseController.actDialogTypeAdresse}" styleClass="btn-insert btn"> -->
+<!-- 										<p:ajax event="dialogReturn" listener="#{courtierController.adresseController.handleReturnDialogTypeAdresse}" update="@parent:@parent" /> -->
+<!-- 									</p:commandButton> -->
+<!-- 								</f:facet> -->
+<!-- 								<h:outputText value="#{typeCourtier.compteTCourtier}" /> -->
+<!-- 							</p:column> -->
+
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_CODE_T_ADR}" /> -->
+<!-- 							<p:ajax event="itemSelect" listener="#{courtierController.adresseController.autcompleteSelection}" update="@this" /> -->
+<!-- 						</p:autoComplete> -->
+<!-- 						<p:outputLabel value="par défaut" /> -->
+<!-- 						<p:selectBooleanCheckbox id="idDefaut" value="#{courtierController.adresseController.selectedTaAdresseDTO.defaut}" -->
+<!-- 							disabled="#{courtierController.adresseController.editable()}"> -->
+<!-- 							<p:ajax event="change" update="@this" /> -->
+<!-- 						</p:selectBooleanCheckbox> -->
+<!-- 					</h:panelGrid> -->
+<!-- 				</div> -->
+<!-- 				<div class="ui-g-8"> -->
+<!-- 					<p:gmap widgetVar="pmap" center="#{courtierController.adresseController.centerGeoMap}" zoom="#{courtierController.adresseController.zoomGeoMap}" -->
+<!-- 						type="ROADMAP" style="width:100%;height:230px" model="#{courtierController.adresseController.mapModel}"> -->
+<!-- 						<p:ajax event="geocode" listener="#{courtierController.adresseController.onGeocode}" update="@this" /> -->
+<!-- 					</p:gmap> -->
+<!-- 				</div> -->
+<!-- 			</p:panel> -->
+<!-- 		</p:tab> -->
+		
+		<p:tab title="GED Courtier" titleStyleClass="tab-min" titletip="GED Courtier" id="idTabGedCourtier">
+		
+			<ui:include src="ged_courtier.xhtml" />
+		
+
+		</p:tab>	
+		
+		<p:tab title="Bordereaux de commission" titleStyleClass="tab-min" titletip="Bordereaux de commission" id="idTabBordereau">
+			<ui:include src="bordereaux.xhtml" />
+		</p:tab>	
+		
+	</p:tabView>
+	
+
+</ui:composition>

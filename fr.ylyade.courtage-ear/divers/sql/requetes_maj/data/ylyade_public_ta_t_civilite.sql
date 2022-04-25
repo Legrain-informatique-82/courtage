@@ -1,0 +1,4 @@
+INSERT INTO public.ta_t_civilite (id_t_civilite, code_t_civilite, libl_t_civilite, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (1, 'Cv1', 'Mr', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_civilite (id_t_civilite, code_t_civilite, libl_t_civilite, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (2, 'Cv2', 'Madame', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_civilite (id_t_civilite, code_t_civilite, libl_t_civilite, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (3, 'Cv3', 'Mlle', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_civilite (id_t_civilite, code_t_civilite, libl_t_civilite, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (4, 'Cv4', 'Mademoiselle', null, null, null, null, null, 0);

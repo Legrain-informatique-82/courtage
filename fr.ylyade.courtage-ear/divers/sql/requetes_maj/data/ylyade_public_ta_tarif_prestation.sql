@@ -1,0 +1,1 @@
+INSERT INTO public.ta_tarif_prestation (id_tarif_prestation, montant_prestation, libl_prestation, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_tarif_prestation) VALUES (1, 750.00, 'Attestation spécifique de chantier', null, null, null, null, null, 1, 'AtestNomin');

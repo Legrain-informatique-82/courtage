@@ -1,0 +1,5 @@
+<jboss-app>
+
+	<security-domain>YlyadeRealm</security-domain>
+
+</jboss-app>

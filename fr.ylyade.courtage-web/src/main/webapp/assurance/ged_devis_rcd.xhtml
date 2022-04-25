@@ -1,0 +1,195 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+<!-- 	<p:dataList value="#{devisRcdController.listeByType}" var="values" type="unordered"> -->
+		<p:dataList value="#{devisRcdController.listeTaGedUtilisateurDTO}" var="values" type="unordered" widgetVar="wvDataListGedDevisRcd">
+		
+			<f:facet name="header">
+	        	<p:outputLabel value="Documents de votre devis"/><br/>
+	        	
+	    		<p:commandButton 
+					id="idButtonValidateGedRcdCourtier"
+					value="Valider la GED"
+					process="@this"
+					icon="fa fa-check"
+					widgetVar="wvboutonValidateGedRcdCourtier"
+					rendered="#{auth.isCourtier()}"
+					disabled="#{devisRcdController.isValidationGlobaleCourtier()}"
+					update="@widgetVar(wvboutonValidateGedRcdCourtier),@widgetVar(wvMenuDevisPanel), @widgetVar(wvPanelStatutDevis), @form, @widgetVar(wvMenuDevisRcPro)"
+					actionListener="#{devisRcdController.setValidationGlobaleGedCourtier}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir valider la GED ?" icon="ui-icon-alert" />
+				</p:commandButton>
+				
+				<p:commandButton 
+					id="idButtonValidateGedRcdYlyade"
+					value="Valider la GED"
+					process="@this"
+					icon="fa fa-check"
+					widgetVar="wvboutonValidateGedRcdYlyade"
+					rendered="#{auth.isYlyade()}"
+					disabled="#{devisRcdController.selectedTaDossierRcdDTO.isValidationGlobaleGedYlyade()}"
+					update="@widgetVar(wvboutonValidateGedRcdYlyade), @widgetVar(wvPanelStatutDevis)"
+					actionListener="#{devisRcdController.setValidationGlobaleGedYlyade}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir valider la GED ?" icon="ui-icon-alert" />
+				</p:commandButton>
+				<p:tooltip id="toolTipFadeValiderGedYlyade" for="idButtonValidateGedRcdYlyade"
+	   						  value="Vous ne pouvez validé la Ged que si le courtier l'a déjà validé au préalable."
+	   						  position="top"/>
+	   						  
+	   			<p:commandButton 
+					id="idButtonEnvoiPiecesInvalideYlyade"
+					process="@this"
+					icon="fa fa-paper-plane"
+					widgetVar="wvboutonEnvoiPiecesInvalideYlyade"
+					rendered="#{auth.isYlyade()}"
+					actionListener="#{devisRcdController.actEnvoiMailPiecesInvalides}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir envoyer un mail au courtier pour l'informer des pièces non valides ?" icon="ui-icon-alert" />
+				</p:commandButton>
+				<p:tooltip id="toolTipEnvoiPiecesInvalideYlyade" for="idButtonEnvoiPiecesInvalideYlyade"
+	   						  value="Envoi un mail (le mail 5) au courtier pour lui signaler que des pièces ont été refusés par Novarisks."
+	   						  position="top"/>
+				
+	     	</f:facet>
+
+			
+			
+			<p:column rendered="#{(values.codeListeRefDoc==PieceRcPro15 or values.codeListeRefDoc==PieceRcPro16 or values.codeListeRefDoc==PieceRcPro17) and devisRcdController.selectedTaDossierRcdDTO.numeroAvenant==null ?'false':'true'}">
+<!-- 			<p:panel header="Document à fournir" rendered="#{!devisRcdController.findByIdDocAndByIdDevisRcProDTO(values.idListeRefDoc)}"> -->
+				<p:panel header="#{values.liblDoc}" rendered="#{values.fichierDoc == null}">
+     				   
+     				<p:outputLabel value="#{values.description}"/>
+     				  
+					<p:fileUpload
+						fileUploadListener="#{devisRcdController.handleFileUpload}"
+						mode="advanced" dragDropSupport="false" multiple="false" auto="true"
+						update="@widgetVar(wvDataListGedDevisRcd)" sizeLimit="#{msg.email_taille_max_piecejonte_10mo}" fileLimit="1"
+						label="Parcourir"
+						uploadLabel="Envoyer"
+						cancelLabel="Annuler"
+						allowTypes="#{msg.email_type_fichier_autorise}">
+						<f:attribute name="param" value="#{values.id}" />				
+					
+					</p:fileUpload>
+	
+					<p:growl id="messages" showDetail="true" />
+				</p:panel>
+
+				<p:panel header="#{values.liblDoc}" rendered="#{values.fichierDoc != null}">
+	<!-- 			<p:panel header="Document bien envoyé"> -->
+	     				   
+	     			<p:outputLabel value=" #{values.description}"/>
+	     				   	
+<!-- 	     			<p:commandButton value="Télécharger le document" onclick="PrimeFaces.monitorDownload(start, stop);" ajax="false" icon="ui-icon-arrowthick-1-s"> -->
+<!-- 						<f:attribute name="param" value="#{values.id}" />  -->
+<!-- 						<p:fileDownload value="#{devisRcdController.afficheDocument(values.id)}" /> -->
+<!-- 					</p:commandButton> -->
+					
+
+					<p:button href="/GEDServlet/#{values.id}" value="Télécharger le document"/>
+	
+					<p:commandButton value="Renvoyer le document" process="@this"
+					rendered="#{auth.isCourtier()}"
+					 update="@widgetVar(wvDataListGedDevisRcd)" actionListener="#{devisRcdController.supprimerDoc}">
+						<f:attribute name="param" value="#{values.id}" />
+						<p:confirm header="Confirmation" message="Attention : Voulez-vous vraiment supprimer le document puis en renvoyer un ?" icon="ui-icon-alert" />
+					</p:commandButton>
+					
+					<p:commandButton value="Pièce valide" process="@this"
+						 widgetVar="wvValidateGedYlyadeYes"
+						 update="@widgetVar(wvDataListGedDevisRcd), @widgetVar(wvValidateYlyade)"
+					 	disabled="#{devisRcdController.isDocumentValidateYlyadeYes(values.id)}"
+					 	rendered="#{auth.isYlyade() or auth.isAdmin()}"
+					  	actionListener="#{devisRcdController.validationDocumentYlyade(true, values.id)}">
+					</p:commandButton>
+					
+					
+					<p:commandButton value="Pièce non valide" process="@this"
+						 widgetVar="wvValidateGedYlyadeNo"
+						 update="@widgetVar(wvDataListGedDevisRcd), @widgetVar(wvValidateYlyade)"
+					 	disabled="#{devisRcdController.isDocumentValidateYlyadeNo(values.id)}"
+					 	rendered="#{auth.isYlyade() or auth.isAdmin()}"
+					  	actionListener="#{devisRcdController.validationDocumentYlyade(false, values.id)}">
+					</p:commandButton>
+					
+					
+<!-- 					<p:panel rendered="#{auth.isYlyade()}"> -->
+<!-- 						<p:outputLabel value="Pièce valide :" styleClass="labelchob"/> -->
+<!-- 						<p:selectOneRadio value="#{values.validationYlyade}" > -->
+<!-- 					            <f:selectItem itemLabel="oui" itemValue="true" /> -->
+<!-- 						        <f:selectItem itemLabel="non" itemValue="false" />  -->
+<!-- 						</p:selectOneRadio> -->
+<!-- 					</p:panel> -->
+					
+					<p:commandButton value="Validation courtier" process="@this"
+					 update="@widgetVar(wvDataListGedDevisRcd),@widgetVar(wvValidateGedCourtier),idButtonValidateGedRcdCourtier"
+						widgetVar="wvValidateGedCourtier"
+					 	disabled="#{devisRcdController.isDocumentValidateCourtier(values.id)}"
+					 	rendered="#{auth.isCourtier() or auth.isAdmin()}"
+					  	actionListener="#{devisRcdController.validationCourtier}">
+						<f:attribute name="param" value="#{values.id}" />
+					</p:commandButton>
+					
+<!-- 					<p:commandButton value="Validation Super Assureur" process="@this" update="@widgetVar(wvDataListGedDevisRcd)" -->
+<!-- 					 	disabled="#{devisRcdController.isDocumentValidateSuperAssureur(values.id)}" -->
+<!-- 					 	rendered="#{auth.isSuperAssureur() or auth.isAdmin()}" -->
+<!-- 					  	actionListener="#{devisRcdController.validationSuperAssureur}"> -->
+<!-- 						<f:attribute name="param" value="#{values.id}" /> -->
+<!-- 					</p:commandButton> -->
+
+					<p:fieldset legend="Commentaire" toggleable="true" collapsed="false" rendered="#{auth.isCourtier() or auth.isYlyade()}">
+						<p:inputTextarea value="#{values.commentaireCourtier}" process="@this" placeholder="Commentaire courtier"
+							style="width:100%"
+							update="@this"
+							disabled="#{!auth.isCourtier()}"
+						 	rendered="#{auth.isCourtier() or auth.isYlyade()}">
+						 	<p:ajax/>
+						</p:inputTextarea>
+						<p:commandButton value="Enregistrer le commentaire" process="@this"
+							disabled="#{!auth.isCourtier()}"
+							action="#{devisRcdController.actEnregistrerCommentaireCourtierDocumentGed}">
+							<f:setPropertyActionListener value="#{values}" target="#{devisRcdController.selectedTaGedUtilisateurDTO}" />
+						</p:commandButton>
+					</p:fieldset>
+					
+					<p:fieldset legend="Commentaire Novarisks" toggleable="true" collapsed="false" rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+						<p:inputTextarea value="#{values.commentaireYlyade}" process="@this" placeholder="Commentaire Novarisks"
+							style="width:100%"
+							update="@this"
+							disabled="#{!auth.isYlyade()}"
+						 	rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+						 	<p:ajax/>
+						</p:inputTextarea>
+						<p:commandButton value="Enregistrer le commentaire" process="@this"
+							disabled="#{!auth.isYlyade()}"
+							action="#{devisRcdController.actEnregistrerCommentaireYlyadeDocumentGed}">
+							<f:setPropertyActionListener value="#{values}" target="#{devisRcdController.selectedTaGedUtilisateurDTO}" />
+						</p:commandButton>
+					</p:fieldset>
+					
+					<p:fieldset legend="Commentaire" toggleable="true" collapsed="false" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+						<p:inputTextarea value="#{values.commentaireSuperAssureur}" process="@this" placeholder="Commentaire assureur"
+							style="width:100%"
+							update="@this"
+							disabled="#{!auth.isSuperAssureur()}"
+						 	rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+						 	<p:ajax/>
+						</p:inputTextarea>
+						<p:commandButton value="Enregistrer le commentaire" process="@this"
+							disabled="#{!auth.isSuperAssureur()}"
+							action="#{devisRcdController.actEnregistrerCommentaireAssureurDocumentGed}">
+							<f:setPropertyActionListener value="#{values}" target="#{devisRcdController.selectedTaGedUtilisateurDTO}" />
+						</p:commandButton>
+					</p:fieldset>
+					
+				</p:panel>
+
+			</p:column>
+
+		</p:dataList>
+			
+</ui:composition>

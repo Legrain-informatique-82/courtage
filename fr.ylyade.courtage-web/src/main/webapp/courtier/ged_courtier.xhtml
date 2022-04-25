@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+<!-- 	<h:form enctype="multipart/form-data"> -->
+<p:panel header="Document de votre compte Courtier : #{courtierController.selectedTaCourtierDTO.nom}">
+
+<h:panelGrid columns="1"> 
+
+            <h:outputText value="Documents attendus : #{courtierController.gedCourtierController.nbDocAttendu},
+             Documents envoyés : #{courtierController.gedCourtierController.nbDocUploader},
+             Documents validés : #{courtierController.gedCourtierController.nbDocValider}" />
+        </h:panelGrid>
+</p:panel> 
+	<p:dataList id="ff" value="#{courtierController.gedCourtierController.listeByType}" var="values" type="unordered">
+			
+
+		<p:column>
+			<p:panel header="#{values.liblDoc}" rendered="#{!courtierController.gedCourtierController.findByIdDocAndByIdCourtierDTO(values.id)}">
+     			<p:outputLabel value="#{values.description}"/>
+					
+				<p:fileUpload
+					fileUploadListener="#{courtierController.gedCourtierController.handleFileUpload}"
+					mode="advanced" dragDropSupport="false" multiple="true"
+					update="@form" sizeLimit="#{msg.email_taille_max_piecejonte_10mo}" fileLimit="1"
+					label="Parcourir"
+					process="@this"
+					uploadLabel="Envoyer"
+					cancelLabel="Annuler"
+					allowTypes="#{msg.email_type_fichier_autorise}">
+					<f:attribute name="param" value="#{values.id}" />
+				</p:fileUpload>
+<!-- 				<p:commandButton value="Envoyer un document" process="@this" update="@form"  -->
+<!-- 				  	actionListener="#{courtierController.gedCourtierController.ouvreDialogTelechargement}"> -->
+<!-- 					<f:attribute name="param" value="#{values.id}" /> -->
+<!-- 				</p:commandButton> -->
+
+
+				<p:growl id="messages" showDetail="true" />
+			</p:panel>
+
+			<p:panel header="#{values.liblDoc}" rendered="#{courtierController.gedCourtierController.findByIdDocAndByIdCourtierDTO(values.id)}">
+     				   
+     			<p:outputLabel value="#{values.description}"/>
+     				   	
+     			<p:commandButton value="Télécharger le document"  process="@this" update="@form" ajax="false" icon="ui-icon-arrowthick-1-s">
+					<f:setPropertyActionListener value="#{values}" target="#{courtierController.gedCourtierController.selectedTaListeRefDocDTO}" />
+					<p:fileDownload value="#{courtierController.gedCourtierController.file}" />
+				</p:commandButton>
+
+				<p:commandButton value="Renvoyer le document" process="@this" update="@form" actionListener="#{courtierController.gedCourtierController.supprimerDoc}">
+<!-- 				<f:setPropertyActionListener value="#{values}" target="#{courtierController.selectedTaListeRefDoc}" /> -->
+					<f:attribute name="param" value="#{values.id}" />
+					<p:confirm header="Confirmation" message="Attention : Voulez-vous vraiment supprimer le document puis en renvoyer un ?" icon="ui-icon-alert" />
+				</p:commandButton>
+				
+				<p:commandButton value="Valider le document" process="@this" update="@form" 
+				    rendered="#{auth.isYlyade()}"
+				 	disabled="#{courtierController.gedCourtierController.isDocumentValidateYlyade(values.id)}"
+				  	actionListener="#{courtierController.gedCourtierController.validationYlyade}">
+					<f:attribute name="param" value="#{values.id}" />
+				</p:commandButton> 
+				
+			</p:panel>
+
+		</p:column>
+
+	</p:dataList>
+<!--  </h:form> -->
+			
+</ui:composition>

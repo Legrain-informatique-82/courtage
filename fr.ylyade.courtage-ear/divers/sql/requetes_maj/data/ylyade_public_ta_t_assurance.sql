@@ -1,0 +1,3 @@
+INSERT INTO public.ta_t_assurance (id_t_assurance, libl_t_assurance, code_assurance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (4, 'Responsabilité Civile Décenale & Professionnele des Entreprises du Batiment', 'AS1', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_assurance (id_t_assurance, libl_t_assurance, code_assurance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (5, 'Dommages Ouvrage', 'As2', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_assurance (id_t_assurance, libl_t_assurance, code_assurance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (6, 'GFA', 'As3', null, null, null, null, null, 0);

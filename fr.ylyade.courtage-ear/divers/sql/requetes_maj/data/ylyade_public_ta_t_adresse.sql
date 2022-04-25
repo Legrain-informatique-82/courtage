@@ -1,0 +1,2 @@
+INSERT INTO public.ta_t_adresse (id_t_adresse, code_t_adresse, libl_t_adresse, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (31, 'Ad1', 'Personnelle', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_adresse (id_t_adresse, code_t_adresse, libl_t_adresse, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (32, 'Ad2', 'Professionnelle', null, null, null, null, null, 0);

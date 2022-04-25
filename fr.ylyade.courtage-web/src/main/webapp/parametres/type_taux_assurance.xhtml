@@ -1,0 +1,210 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeTauxAssurancePanel" widgetVar="wvTypeTauxAssurancePanel">
+
+		<p class="subtitle">Gestion des types de taux par assurance</p>
+
+		<p:panel id="idTypeTauxAssurancePanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeTauxAssuranceController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeTauxAssuranceController.handleReturnDialogTypes}" update="@widgetVar(wvTypeTauxAssurancePanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeTauxAssuranceController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeTauxAssuranceController.handleReturnDialogTypes}" update="@widgetVar(wvTypeTauxAssurancePanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeTauxAssuranceController.etatBouton('supprimer')}"
+				actionListener="#{typeTauxAssuranceController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeTauxAssurance)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeTauxAssuranceController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeTauxAssuranceController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeTauxAssurance" 
+			widgetVar="wvDataTableTypeTauxAssurance" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeTauxAssuranceController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeTauxAssuranceController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeTauxAssuranceController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeTauxAssurance" fileName="type_taux_assurance" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeTauxAssurance" fileName="type_taux_assurance" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeTauxAssurance" fileName="type_taux_assurance" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeTauxAssurance" fileName="type_taux_assurance" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeTauxAssurance}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeTauxAssurance}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.libelleTauxAssurance}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.libelleTauxAssurance}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.tauxTauxAssurance}">
+				<f:facet name="header">
+					<h:outputText value="Taux / valeurs" />
+				</f:facet>
+				<h:outputText value="#{table.tauxTauxAssurance}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.codeTAssurance}">
+				<f:facet name="header">
+					<h:outputText value="code type assurance" />
+				</f:facet>
+				<h:outputText value="#{table.codeTAssurance}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeTauxAssuranceFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeTauxAssuranceController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeTauxAssuranceController.nouveau.codeTauxAssurance}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeTauxAssuranceController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_TAUX_ASSURANCE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libellé :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeTauxAssuranceController.nouveau.libelleTauxAssurance}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeTauxAssuranceController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_TAUX_ASSURANCE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Taux / Valeurs :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeTauxAssuranceController.nouveau.tauxTauxAssurance}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeTauxAssuranceController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_TAUX_TAUX_ASSURANCE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Type d'assurance :"/>
+							</div>
+							<div class="ui-g-8">
+
+									<p:autoComplete value="#{typeTauxAssuranceController.taTAssuranceDTO}" required="true" completeMethod="#{typeTauxAssuranceController.typeAssuranceAutoCompleteLight}"
+										disabled="#{typeTauxAssuranceController.editable()}" var="typeAssurance" itemLabel="#{typeAssurance.codeTAssurance}" itemValue="#{typeAssurance}" forceSelection="true"
+										dropdown="true" placeholder="Votre choix" converter="entityConverter">
+										<p:column>
+											<h:outputText value="#{typeAssurance.codeTAssurance}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{typeAssurance.liblTAssurance}" />
+										</p:column>
+										<p:column>
+											<f:facet name="header">
+												<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{typeTauxAssuranceController.actDialogTypeAssurance()}"
+													styleClass="btn-insert btn">
+													<p:ajax event="dialogReturn" listener="#{typeTauxAssuranceController.handleReturnDialogTypeAssurance}" update="@parent:@parent" />
+												</p:commandButton>
+											</f:facet>
+											
+											
+										</p:column>
+
+										<f:attribute name="nomChamp" value="#{const.C_CODE_T_ASSURANCE}" />
+										<p:ajax event="itemSelect" listener="#{typeTauxAssuranceController.autcompleteSelection}" update="@this" />
+									</p:autoComplete>
+									
+						</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeTauxAssuranceController.etatBouton('enregistrer')}"
+									actionListener="#{typeTauxAssuranceController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeTauxAssuranceController.etatBouton('annuler')}"
+									actionListener="#{typeTauxAssuranceController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeTauxAssuranceController.etatBouton('annuler')}"
+									actionListener="#{typeTauxAssuranceController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

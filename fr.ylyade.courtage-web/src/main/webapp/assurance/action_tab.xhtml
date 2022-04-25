@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+	<p:panel widgetVar="wvActionPanel" header="Action à apporter au dossier" >
+	
+	
+	
+<!-- 	actions Courtier -->
+		
+		
+	
+<!-- 	actions Ylyade -->
+		
+		<p:commandButton id="ValidationGlobaleDevisYlyadeBtn" value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null? 'Valider Avenant' : 'Valider le devis'}" process="@this"
+			widgetVar="wvValidateYlyade"
+			disabled="#{devisRcdController.validationGlobaleYlyade()}"
+			update="@this, @widgetVar(wvPanelStatutDevis)"
+			rendered="#{auth.isYlyade() or auth.isAdmin()}"
+			actionListener="#{devisRcdController.validationYlyade}">
+			<p:confirm header="Confirmation" message="Etes vous sur de vouloir valider ce devis ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		<p:tooltip id="toolTipFade" for="ValidationGlobaleDevisYlyadeBtn"
+                   value="Vous ne pouvez valider un devis qu'après avoir validé la Ged et une fois que le paiement de la première échéance a été effectué (et validé dans le cas du paiement par chèque et virement). "
+                   position="top"/>
+		
+		
+		
+<!-- 	actions Assureur	 -->
+					
+		<p:commandButton value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null? 'Valider Avenant' : 'Valider le devis'}" process="@this"
+						 widgetVar="wvValidateAssureurYes"
+						 update="@this,@widgetVar(wvActionPanel), @widgetVar(wvPanelStatutDevis)"
+						 disabled="#{devisRcdController.isValidateSuperAssureur()}"
+					 	 rendered="#{auth.isSuperAssureur()}"
+					  	 actionListener="#{devisRcdController.validationSuperAssureur(true)}">
+					  	 <p:confirm header="Confirmation" message="Etes vous sur de vouloir valider ce devis ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		
+		<p:commandButton value="#{devisRcdController.selectedTaDossierRcdDTO.numeroAvenant!= null? 'Refuser Avenant' : 'Refuser le devis'}" process="@this"
+						 widgetVar="wvValidateAssureurNo"
+						 update="@this,@widgetVar(wvActionPanel), @widgetVar(wvPanelStatutDevis)"
+						 disabled="#{devisRcdController.isValidateSuperAssureur()}"
+					 	 rendered="#{auth.isSuperAssureur()}"
+					  	 actionListener="#{devisRcdController.validationSuperAssureur(false)}">
+					  	 <p:confirm header="Confirmation" message="Etes vous sur de vouloir refuser ce devis ?" icon="ui-icon-alert" />
+		</p:commandButton>
+	</p:panel>
+	
+	<p:panel widgetVar="wvActionPanelSoumisEtude" header="Action à apporter au dossier soumis à etude" rendered="#{devisRcdController.selectedTaDossierRcdDTO.soumisEtude == true}" >
+<!-- 	rendered="#{devisRcdController.isSoumisEtude()}" -->
+	
+		<p:commandButton value="Soumettre à étude Assureur" process="@this"
+						 widgetVar="wvSoumettreExpertiseAssureurBtn"
+						 disabled="#{devisRcdController.isValidationApresEtudeYlyade()}"
+						 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis)"
+					 	 rendered="#{auth.isYlyade() or auth.isAdmin()}"
+					  	 actionListener="#{devisRcdController.soumettreAExpertiseAssureur}">
+					  	  <p:confirm header="Confirmation" message="Etes vous sur de vouloir soumettre ce devis à l'étude Assureur ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		<p:commandButton id="ValidateSoumisExpertiseYlyadeBtn"
+						 value="Valider le dossier soumis à étude" process="@this"
+						 widgetVar="wvValidateSoumisExpertiseYlyadeBtn"
+						 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis)"
+						 disabled="#{devisRcdController.isValidationApresEtudeYlyade() or devisRcdController.selectedTaDossierRcdDTO.primeNetteYlyade==null}" 
+					 	 rendered="#{auth.isYlyade() or auth.isAdmin()}"
+					  	 actionListener="#{devisRcdController.validationApresEtudeYlyade(true)}">
+					  	  <p:confirm header="Confirmation" message="Etes vous sur de valider ce devis suite à l'étude ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		<p:tooltip id="toolTipFadeValidateSoumisExpertiseYlyade" for="ValidateSoumisExpertiseYlyadeBtn"
+                   value="Vous ne pouvez valider un devis soumis à expertise qu'après avoir rentré une nouvelle prime de base nette pour le recalcul de la prime finale."
+                   position="top"/>
+		
+		<p:commandButton value="Refuser définitivement le dossier soumis à étude" process="@this"
+						 widgetVar="wvRefuseDefSoumisExpertiseYlyadeBtn"
+						 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis)"
+						 disabled="#{devisRcdController.isValidationApresEtudeYlyade()}"
+						 rendered="#{auth.isYlyade() or auth.isAdmin()}"
+						 actionListener="#{devisRcdController.refusDefinitifYlyade()}">
+						  <p:confirm header="Confirmation" message="Etes vous sur de vouloir refuser ce devis définitivement ?" icon="ui-icon-alert" />
+		</p:commandButton>
+
+		<!-- ASSUREUR -->
+		<p:commandButton id="ValidateSoumisExpertiseAssureurBtn" 
+								 value="Valider le dossier soumis à étude" process="@this"
+								 widgetVar="wvValidateSoumisExpertiseAssureurBtn"
+								 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis), @form"
+								 disabled="#{devisRcdController.isValidationAssureurApresEtude() or devisRcdController.selectedTaDossierRcdDTO.primeNetteAssureur==null}"
+							 	 rendered="#{auth.isSuperAssureur() and devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == true}"
+							  	 actionListener="#{devisRcdController.validationAssureurApresEtude(true)}">
+							  	  <p:confirm header="Confirmation" message="Etes vous sur de vouloir valider ce devis suite à l'étude ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		<p:tooltip id="toolTipFadeValidateSoumisExpertiseAssureur" for="ValidateSoumisExpertiseAssureurBtn"
+                   value="Vous ne pouvez valider un devis soumis à expertise qu'après avoir rentré une nouvelle prime de base nette pour le recalcul de la prime finale."
+                   position="top"/>
+                   
+		<p:commandButton value="Refuser le dossier soumis à étude" process="@this"
+								 widgetVar="wvRefuseSoumisExpertiseAssureurBtn"
+								 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis), @form"
+								 disabled="#{devisRcdController.isValidationAssureurApresEtude() or devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == null}"
+							 	 rendered="#{auth.isSuperAssureur() and devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == true}"
+							  	 actionListener="#{devisRcdController.validationAssureurApresEtude(false)}">
+							  	  <p:confirm header="Confirmation" message="Etes vous sur de vouloir refuser ce devis suite à l'étude ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		<p:commandButton value="Refuser définitivement le dossier soumis à étude" process="@this"
+								 widgetVar="wvRefuseDefSoumisExpertiseAssureurBtn"
+								 update="@this,@widgetVar(wvActionPanelSoumisEtude), @widgetVar(wvPanelStatutDevis)"
+								 disabled="#{devisRcdController.isValidationAssureurApresEtude() or devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == null}"
+							 	 rendered="#{auth.isSuperAssureur()}"
+							  	 actionListener="#{devisRcdController.refusDefinitifAssureur()}">
+							  	 <p:confirm header="Confirmation" message="Etes vous sur de vouloir refuser définitivement ce devis ?" icon="ui-icon-alert" />
+		</p:commandButton>
+		</p:panel>
+
+			
+</ui:composition>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:lgr="http://legrain.fr/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>Novarisks</title>
+        <link rel="shortcut icon" type="image/x-icon" href="#{resource['images:favicon.ico']}" />
+    </h:head>
+
+    <h:body styleClass="containerLogin">
+    
+	    <f:facet name="last">
+			<!-- surcharge des CSS primefaces -->
+			 <h:outputStylesheet library="css" name="theme-ylyade.css" />
+		</f:facet>
+		
+		<h:form id="creationCourtierForm">
+			
+		
+<!--         <div class="logo-container"> -->
+<!--             <h:graphicImage id="logo" library="images" name="logo_ylyade_rvb.jpg" /> -->
+<!--         </div> -->
+        <div class="ui-g">
+            	
+                <p:panel header="CREATION D'UN COMPTE COURTIER/AGENT" styleClass="panel-login">
+	                <p:messages id="messages" autoUpdate="true" showDetail="true" closable="true">
+		    		</p:messages>
+						
+						<div class="ui-g-12" style="padding-top:35px;">
+            		<h:graphicImage id="logo" library="images" name="Logo-Nova-Risks-Underwriting.png" width="150" height="100" />
+            	</div>
+					<!-- Remonter des messages d'erreur du controleur pour affichage par PrimeFaces -->
+<!-- 					<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" /> -->
+					<h:panelGrid columns="3" cellpadding="10">
+						<f:facet name="header">
+							<p:outputLabel styleClass="titre_formulaire"  value="Formulaire de création de compte courtier/agent " />
+						</f:facet>
+					
+	<!-- 				<h:outputLabel for="nomCabinet" value="Nom du cabinet : " /> -->
+	<!-- 					<p:inputText value="#{creationCourtierController.courtier.nomCabinet}" -->
+	<!-- 						placeholder="Renseigner le numéro de cabinet" -->
+	<!-- 						styleClass="j_password" size="25" autocomplete="off" -->
+	<!-- 						validatorMessage="Les mots de passe doivent contenir au moins 1 caractère en majuscule et 1 chiffre." /> -->
+	
+						<h:outputLabel value="Nom du gérant " style="text-transform: uppercase" />
+						<p:inputText id="nomGerant" style="text-transform: uppercase"  value="#{creationCourtierController.contactEntreprise.nom}" placeholder="Renseigner le nom du gérant"
+						   size="25" autocomplete="off" required="true" validatorMessage="Le nom doit étre renseigner" />
+							<p:message for="nomGerant" display="icon" />
+					
+	
+						<h:outputLabel value="Prénom du gérant " style="text-transform: uppercase" />
+						<p:inputText id="prenomGerant" style="text-transform: uppercase"  value="#{creationCourtierController.contactEntreprise.prenom}" placeholder="Renseigner le prénom du gérant"
+							 size="25" autocomplete="off" required="true" validatorMessage="Le nom doit étre renseigner" />
+							<p:message for="prenomGerant" display="icon" />
+							
+						<h:outputLabel value="Nom de la société " style="text-transform: uppercase" />
+						<p:inputText id="nomSociete" style="text-transform: uppercase"  value="#{creationCourtierController.courtier.nomDenominationSociale}" placeholder="Renseigner le nom de la société"
+							 size="25" autocomplete="off" required="true" validatorMessage="Le nom de la société doit etre renseigner" />
+							<p:message for="nomSociete" display="icon" />
+					
+						<h:outputLabel value="Numéro de Siret " style="text-transform: uppercase" />
+						<p:inputText id="numeroSiret" style="text-transform: uppercase"  value="#{creationCourtierController.courtier.codeSiret}" placeholder="Renseigner le numéro de siret"
+							 size="25" autocomplete="off" required="true" />
+							<p:message for="numeroSiret" display="icon" />
+							
+						<h:outputLabel value="Adresse " style="text-transform: uppercase" />
+						<p:inputText id="adresse" style="text-transform: uppercase"  value="#{creationCourtierController.contactEntreprise.taAdresse.adresseLigne1}" placeholder="Renseigner l'adresse"
+							 size="25" autocomplete="off" required="true" validatorMessage="L'adresse doit etre renseigner" />
+							<p:message for="adresse" display="icon" />
+							
+						<h:outputLabel value="Code Postal " style="text-transform: uppercase" />
+						<p:inputText id="postal" style="text-transform: uppercase"  value="#{creationCourtierController.contactEntreprise.taAdresse.codePostal}" placeholder="Renseigner le code postal"
+							 size="25" autocomplete="off" required="true" validatorMessage="Le code Postal doit etre renseigner" />
+							<p:message for="postal" display="icon" />
+							
+						<h:outputLabel value="Ville " style="text-transform: uppercase" />
+						<p:inputText id="ville" style="text-transform: uppercase"  value="#{creationCourtierController.contactEntreprise.taAdresse.ville}" placeholder="Renseigner la ville"
+							 size="25" autocomplete="off" required="true" validatorMessage="La ville doit être renseigner" />
+							<p:message for="ville" display="icon" />
+					
+						<h:outputLabel value="Téléphone " style="text-transform: uppercase" />
+						<p:inputText id="numerotel" style="text-transform: uppercase"  value="#{creationCourtierController.tel.numeroTel}"
+						 placeholder="Renseigner le numéro de téléphone"
+							 size="25" autocomplete="off" required="true">
+							
+							</p:inputText>
+							<p:message for="numerotel" display="icon" />
+					
+						<h:outputLabel value="Email " style="text-transform: uppercase" />
+						<p:inputText id="email"  value="#{creationCourtierController.email.adresseEmail}" placeholder="Renseigner l'adresse email"
+						 validator="#{creationCourtierController.validateCourtier}"
+							 size="25" autocomplete="off" required="true">
+							 <f:attribute name="nomChamp" value="email" />
+<!-- 							 <p:ajax event="keyup" process="@this" update="@this" /> -->
+							<p:ajax event="blur" update="@this" />
+						</p:inputText>
+							<p:message for="email" display="icon" />
+							
+<!-- 						<h:outputText id="out1" value="#{creationCourtierController.email.adresseEmail}" /> -->
+							
+					
+	<!-- 				<h:outputLabel for="fax" value="Fax: " /> -->
+	<!-- 					<p:inputText  placeholder="Renseigner le numéro de fax" -->
+	<!-- 						styleClass="j_confirmpassword" size="25" autocomplete="off" /> -->
+	
+						<h:outputLabel value="Numéro ORIAS " style="text-transform: uppercase" />
+						<p:inputText id="numeroOrias" style="text-transform: uppercase"  value="#{creationCourtierController.courtier.numOrias}" placeholder="Renseigner le numéro ORIAS"
+							 size="25" autocomplete="off" required="true">
+							
+							</p:inputText>
+							<p:message for="numeroOrias" display="icon" />
+					
+<!-- 						<h:outputLabel value="Adresse e-mail: " /> -->
+<!-- 						<p:inputText  value="#{creationCourtierController.user.identifiant}" -->
+<!-- 							placeholder="adresse e-mail" -->
+<!-- 							styleClass="j_confirmpassword" size="25" autocomplete="off" /> -->
+					
+						<h:outputLabel value="Choisir un mot de passe " style="text-transform: uppercase" />
+						<p:inputText id="motDePasse" value="#{creationCourtierController.user.password}"
+						 	placeholder="choisir un mot de passe"
+							 size="25" autocomplete="off" required="true">
+							 <p:ajax event="blur" update="idComplexPassword" />
+						</p:inputText>
+							<p:message for="motDePasse" display="icon" />
+							
+							
+							
+						<h:outputLabel id="idComplexPasswordLabel" value="Complexité du mot de passe : ">
+	    				</h:outputLabel>
+	    								
+						<p:outputLabel id="idComplexPassword" value="#{creationCourtierController.passwordComplex()}" />
+						<p:message for="idComplexPassword" display="icon" />
+						
+						
+						
+					
+						<h:outputLabel value="Confirmer le mot de passe " style="text-transform: uppercase" />
+						<p:inputText id="confirmerMotDePasse" value="#{creationCourtierController.confirmPassword}"
+						 	placeholder="confirmer le mot de passe"
+							 size="25" autocomplete="off" required="true" />
+							<p:message for="confirmerMotDePasse" display="icon" />
+					
+						<p:commandButton styleClass="btn_login" action="#{creationCourtierController.login()}" value="Connexion" update="creationCourtierForm" ajax="false"/>
+						<p:button styleClass="btn_retour" outcome="login" value="Retour à l'écran de connexion"/>
+					
+					</h:panelGrid>
+				</p:panel>
+                            
+            
+        </div>
+        
+        <div class="ui-g">
+           <div class="ui-g-12 footer-login">
+                <span>Novarisks</span>
+                <!-- <span>Legrain Informatique</span> -->
+                <span>All rights reserved.</span>
+            </div>
+        </div>
+        
+         <h:outputStylesheet name="css/layout-#{auth.themeCouleur}.css" library="icarus-layout" /> 
+        
+<!--         <p:defaultCommand target="idBtnLogin" /> -->
+
+		</h:form>
+
+        <style type="text/css">
+            html {height: 100%;}
+            .ui-button-text, .ui-button-text-only .ui-button-text{padding:8px !important; transition:none !important;}
+            .ui-panel .ui-panel-title {font-size: 17px;}
+        </style>
+
+    </h:body>
+
+</html>

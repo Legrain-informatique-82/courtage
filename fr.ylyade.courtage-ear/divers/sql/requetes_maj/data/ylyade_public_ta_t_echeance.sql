@@ -1,0 +1,3 @@
+INSERT INTO public.ta_t_echeance (id_t_echeance, taux_echeance, libl_t_echeance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_echeance) VALUES (1, 0.00, 'Annuel', null, null, null, null, null, 0, 'ANNUEL');
+INSERT INTO public.ta_t_echeance (id_t_echeance, taux_echeance, libl_t_echeance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_echeance) VALUES (2, 4.00, 'Semestriel', null, null, null, null, null, 0, 'SEMESTRIEL');
+INSERT INTO public.ta_t_echeance (id_t_echeance, taux_echeance, libl_t_echeance, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj, code_t_echeance) VALUES (3, 7.00, 'Trimestriel', null, null, null, null, null, 0, 'TRIMESTRIEL');

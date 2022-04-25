@@ -1,0 +1,217 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<o:importConstants type="fr.ylyade.courtage.app.LgrTab" />
+	
+	<p:commandLink id="listeAssureBtn" >
+		<i class="top-submenu-icon fa fa-fw fa-user"></i>
+		<span><h:outputText value="Liste des assurés"/></span>
+	</p:commandLink>
+	
+	<p:overlayPanel id="idListeAssurePanel" for="listeAssureBtn" hideEffect="fade" dynamic="true" 
+		dismissable="true" appendToBody="true" widgetVar="wvOverlayListeAssure" showCloseIcon="true">
+		<h:form>
+		<div class="dashboard-title" style="background:#f6f6f6;">
+              <h:panelGrid columns="3" cellpadding="5">
+<!--             	<h:graphicImage name="dashboard/tier.svg" library="images" height="35px" style="margin-top:1px;" /> -->
+                <p:outputLabel value="Liste des assurés" style="font-size:20px;"/>
+              </h:panelGrid>  
+              <p:separator/>
+        </div>
+        
+	<p:menubar styleClass="menu-onglet" widgetVar="wvMenuListeAssure" id="idMenuListeAssure">
+		 <p:menuitem value="Ajouter un nouveau Assure" update=":form:tabView,:form:messages,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure),@widgetVar(wvBandeauActionAssure)" 
+		 actionListener="#{assureController.nouveau}" styleClass="icon icon-insert" disabled="#{assureController.etatBouton('inserer')}" oncomplete="PF('wvOverlayListeAssure').hide();"/>
+	
+<!-- 		 <p:menuitem title="Ajouter un nouveau Assure" update=":form:tabView,:form:messages,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure),@widgetVar(wvBandeauActionAssure)"  -->
+<!-- 		 actionListener="#{assureController.nouveau}" styleClass="icon icon-insert" disabled="#{assureController.etatBouton('inserer')}" oncomplete="PF('wvOverlayListeAssure').hide();"/> -->
+
+		 <p:menuitem title="Rafraîchir la liste" update="@form,:form:messages" actionListener="#{assureController.refresh}" styleClass="icon icon-refresh" disabled="#{assureController.modeEcran.dataSetEnModif()}"/>
+		 
+	</p:menubar>
+	
+	<p:sticky target="idMenuListeAssure" />
+	
+
+	 	
+	<p:dataTable id="dataTableListeAssure" var="taAssure"
+				widgetVar="wvDataTableListeAssure"
+				value="#{assureController.values}"
+				rowKey="#{taAssure.id}"
+				selection="#{assureController.selectedTaAssureDTOs}"
+				dblClickSelect="true"
+				styleClass="datatable mt10"
+				resizableColumns="true"
+				paginator="true" 
+				rows="#{msg.modele_datatable_ligne_par_page_debut}"
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+				disabledSelection="#{assureController.modeEcran.dataSetEnModif()}">
+				
+				<p:ajax event="rowSelect" delay="#{msg.datatable_rowselect_delay}" listener="#{assureController.onRowSelect}" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionAssure)" oncomplete="activeTabCenter('#{LgrTab.CSS_CLASS_TAB_ASSURE}');PF('wvOverlayListeAssure').hide();scrollToTop();"/>
+			
+				<f:facet name="header">  
+           			<h:outputText value="Assure" />
+        		</f:facet>
+
+		  		<f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage library="images" name="excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="dataTableListeAssure" fileName="liste_assure" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="pdf.png"  width="24"/>
+		                <p:dataExporter type="pdf" target="dataTableListeAssure" fileName="liste_assure"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="csv.png"  width="24"/>
+		                <p:dataExporter type="csv" target="dataTableListeAssure" fileName="liste_assure" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="xml.png"  width="24"/>
+		                <p:dataExporter type="xml" target="dataTableListeAssure" fileName="liste_assure" />
+		            </h:commandLink>
+		            
+		            <p:commandLink id="idBtnListePrintEcranListeAssure"
+							 title="Imprimer la liste"
+							 onsuccess="window.open('#{request.contextPath}/output?__report=/reports/listesEditionsAssure/ListeAssure.rptdesign&amp;id_tiers=#{assureController.values}&amp;__format=pdf')"
+		               		actionListener="#{assureController.actImprimer}"
+		               		process="@this" rendered="#{!devisRcdController.assurePib()}">		               		
+		                <p:graphicImage library="images" name="imprimante.png"  width="24"/>		                
+		            </p:commandLink>
+		            
+		        </f:facet>
+        
+        		<p:column selectionMode="multiple" style="width:16px;text-align:center" exportable="false"/>
+			
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					<p:commandButton title="Détail" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionAssure)" 
+						action="#{assureController.detail}" icon="ui-icon-search"
+						disabled="#{assureController.modeEcran.dataSetEnModif()}" oncomplete="PF('wvOverlayListeAssure').hide();">
+						<f:setPropertyActionListener target="#{assureController.selectedTaAssureDTO}" value="#{taAssure}" />
+					</p:commandButton>
+				</p:column>
+        
+<!-- 				<p:column sortBy="#{taAssure.id}"> -->
+<!-- 					<f:facet name="header"> -->
+<!-- 						<h:outputText value="ID" /> -->
+<!-- 					</f:facet> -->
+<!-- 					<h:outputText value="#{taAssure.id}" /> -->
+<!-- 				</p:column> -->
+
+				<p:column sortBy="#{taAssure.codeAssure}" filterBy="#{taAssure.codeAssure}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Code" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.raisonSociale}" filterBy="#{taAssure.raisonSociale}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Raison sociale" />
+					</f:facet>
+					<h:outputText value="#{taAssure.raisonSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.nom}" filterBy="#{taAssure.nom}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{taAssure.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.prenom}" filterBy="#{taAssure.prenom}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Prénom" />
+					</f:facet>
+					<h:outputText value="#{taAssure.prenom}" />
+				</p:column>
+				
+
+				
+<!-- 				<p:column sortBy="#{taAssure.codeSiren}" filterBy="#{taAssure.codeSiren}" filterMatchMode="contains"> -->
+<!-- 					<f:facet name="header"> -->
+<!-- 						<h:outputText value="SIREN" /> -->
+<!-- 					</f:facet> -->
+<!-- 					<h:outputText value="#{taAssure.codeSiren}" /> -->
+<!-- 				</p:column> -->
+				
+<!-- 				<p:column sortBy="#{taAssure.codeGroupe}" filterBy="#{taAssure.codeGroupe}" filterMatchMode="contains"> -->
+<!-- 					<f:facet name="header"> -->
+<!-- 						<h:outputText value="Code groupe" /> -->
+<!-- 					</f:facet> -->
+<!-- 					<h:outputText value="#{taAssure.codeGroupe}" /> -->
+<!-- 				</p:column> -->
+				
+				<p:column sortBy="#{taAssure.codeTAssure}" filterBy="#{taAssure.codeTAssure}" styleClass="center" filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="Type Assure" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeTAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.codeCourtier}" filterBy="#{taAssure.codeCourtier}" filterMatchMode="contains" styleClass="center" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+					<f:facet name="header">
+						<h:outputText value="Code Courtier" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeCourtier}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.nomDenominationSociale}" filterBy="#{taAssure.nomDenominationSociale}" filterMatchMode="contains" styleClass="center" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+					<f:facet name="header">
+						<h:outputText value="Courtier" />
+					</f:facet>
+					<h:outputText value="#{taAssure.nomDenominationSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.client}" styleClass="center" filterBy="#{taAssure.client}" filterMatchMode="equals">
+					<f:facet name="header">
+						<h:outputText value="Prospect ou client" />
+					</f:facet>
+					<f:facet name="filter">
+			                <p:selectOneButton onchange="PF('wvDataTableListeAssure').filter()">
+			                    <f:converter converterId="javax.faces.Boolean" />
+			                    <f:selectItem itemLabel="Tous" itemValue="" />
+			                    <f:selectItem itemLabel="Client" itemValue="true" />
+			                    <f:selectItem itemLabel="Prospect" itemValue="false" />
+			                </p:selectOneButton>
+			            </f:facet>
+			            <h:outputText value="#{taAssure.client ? 'Client': 'Prospect'}" />
+<!-- 					<p:selectBooleanCheckbox value="#{taAssure.client}" disabled="true"/> -->
+				</p:column>
+				
+				
+				
+				<p:column style="width:28px" exportable="false">
+					<f:facet name="header">
+						<h:outputText value="" />
+					</f:facet>
+					
+<!-- 					<p:commandButton title="Supprimer" icon=" ui-icon-trash" widgetVar="widgetVarBtnSupprimerAssureListe" -->
+<!-- 						action="#{assureController.actSupprimer}" -->
+<!-- 						process="@this" -->
+<!-- 						update="@widgetVar(wvDataTableListeAssure)"> -->
+<!-- 						<f:setPropertyActionListener target="#{assureController.selectedTaAssureDTO}" value="#{taAssure}" /> -->
+<!-- 						<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce assure ?" icon="ui-icon-alert" /> -->
+<!-- 					</p:commandButton> -->
+						
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</p:overlayPanel>
+	
+</ui:composition>

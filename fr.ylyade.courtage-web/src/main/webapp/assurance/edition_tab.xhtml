@@ -1,0 +1,565 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+	<p:panel widgetVar="wvEditionContratPanel" header="Editions" >
+		<h:panelGrid columns="2" cellpadding="3" layout="grid" style="align:center;">
+			
+			<p:outputLabel value="Imprimer attestation d'assurance :  " rendered="#{!contratRcdController.assurePib()}"/>
+			<p:commandButton icon="fa fa-print"
+			 onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestation/AttestationAssuranceRcDecennale.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')" 
+			actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this"
+			 rendered="#{!contratRcdController.assurePib()}">
+			</p:commandButton>
+			
+			<p:outputLabel value="Imprimer attestation d'assurance Pib:  " rendered="#{contratRcdController.assurePib()}"/>
+			<p:commandButton icon="fa fa-print"
+				onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestation/AttestationAssuranceRcDecennalePib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+				actionListener="#{contratRcdController.actImprimer}"
+				disabled="#{contratRcdController.etatBouton('imprimer')}" 
+				process="@this"
+				 rendered="#{contratRcdController.assurePib()}"/>
+			
+			<p:outputLabel value="Imprimer conditions particulières :  "  rendered="#{!contratRcdController.assurePib()}"/>			
+			<p:commandButton  icon="fa fa-print"
+				onsuccess="window.open('#{request.contextPath}/output?__report=/reports/conditionsParticulieres/ConditionsParticulieres.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+				actionListener="#{contratRcdController.actImprimer}"
+				disabled="#{contratRcdController.etatBouton('imprimer')}" 
+				process="@this" rendered="#{!contratRcdController.assurePib()}"/>
+			
+			<p:outputLabel value="Imprimer conditions particulières :  " rendered="#{contratRcdController.assurePib()}"/>		
+			<p:commandButton icon="fa fa-print"
+				onsuccess="window.open('#{request.contextPath}/output?__report=/reports/conditionsParticulieres/ConditionsParticulieresPib.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+				actionListener="#{contratRcdController.actImprimer}"
+				disabled="#{contratRcdController.etatBouton('imprimer')}" 
+				process="@this" rendered="#{contratRcdController.assurePib()}"/>
+				
+				
+				
+				
+				
+				
+				
+
+			 	<p:outputLabel value="Imprimer Avis d'échéance : " rendered="#{contratRcdController.premiereEcheanceNonPayee != null}"/>
+				<p:commandButton icon="ui-icon-print" title="Imprimer l'avis d'échéance"
+										action="#{contratRcdController.actImprimerAvisEcheance}" process="@this"
+										onsuccess="window.open('#{request.contextPath}/output?__report=/reports/gestionComptable/AvisEcheance.rptdesign&amp;id_tiers=#{contratRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+										rendered="#{contratRcdController.premiereEcheanceNonPayee != null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaEcheanceDTO}" value="#{contratRcdController.premiereEcheanceNonPayee}" />
+				</p:commandButton> 
+				
+				<p:outputLabel value="Imprimer le relevé de sinistralité : "/>
+				<p:commandButton icon="fa fa-print"
+				 onsuccess="window.open('#{request.contextPath}/output?__report=/reports/sinistralite/ReleveDeSinistralite.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')" 
+				actionListener="#{contratRcdController.actImprimerReleveDeSinistralite}"
+				 disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this">
+				</p:commandButton> 
+				
+
+			
+			
+<!-- 				<p:outputLabel value="Imprimer conditions particulières :  "/> -->
+<!-- 				<p:commandButton icon="fa fa-print" onsuccess="window.open('#{request.contextPath}/output?__report=/reports/conditionsParticulieres/ConditionsParticulieres.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"  -->
+<!-- 				actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}"> -->
+<!-- 				</p:commandButton> -->
+				
+							
+									
+				<p:panel rendered="false">
+					<p:outputLabel value="Imprimer Avis de mise en demeure :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer Avis de résiliation :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer Avis de résiliation à l'échéance :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer Avis de suspension de garantie :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer Avis d'échéance :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer la relance :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+					
+					<p:outputLabel value="Imprimer l'attestation nominative :  "/>
+					<p:commandButton icon="fa fa-print"
+					 onsuccess="" 
+					actionListener="#{contratRcdController.actImprimer}" disabled="#{contratRcdController.etatBouton('imprimer')}" process="@this" rendered="#{!contratRcdController.assurePib()}">
+					</p:commandButton>
+				</p:panel>
+				
+		</h:panelGrid>
+		<p:panel id="ImpressionAttestationNominativePanel" header="Attestations nominatives"  toggleable="true"  rendered="true">
+				
+				<p:commandButton value="Création d'une attestation nominative" title="Insérer" process="@this"
+						update=":form:tabView,:form:messages,:form" 
+						actionListener="#{contratRcdController.actInsererAttestationNominative()}"
+						oncomplete="PF('wvCreationAttestationNominativeDialog').show()"
+						styleClass="icon-insert icon" >
+				    </p:commandButton>
+				    
+				    
+					<p:dataTable
+					widgetVar="wvDatatableAttestationNominative"
+					value="#{contratRcdController.listeAttestationNominative}"
+					var="attest"
+					emptyMessage="Aucune attestations nominative"
+					selection="#{contratRcdController.selectedTaAttestationNominative}">
+					
+					<f:facet name="header">
+						Attestations nominatives crées pour ce contrat :
+					</f:facet>
+					<p:column style="width:16px">
+            			<p:rowToggler />
+        			</p:column>
+					
+					<p:column headerText="Date d'effet" styleClass="center">
+						<p:outputLabel value="#{attest.dateEffet}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+					</p:column>
+					<p:column headerText="Date de début" styleClass="center">
+						<p:outputLabel value="#{attest.dateDebut}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+					</p:column>
+					<p:column headerText="Date de fin" styleClass="center">
+						<p:outputLabel value="#{attest.dateFin}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+					</p:column>
+					<p:column headerText="Nom du Maître d'ouvrage" styleClass="center">
+						<p:outputLabel value="#{attest.nomMaitreOuvrage}" />
+					</p:column>
+					<p:column headerText="Nature de l'ouvrage" styleClass="center">
+						<p:outputLabel value="#{attest.natureOuvrage}" />
+					</p:column>
+					<p:column headerText="Montant à payer" styleClass="center">
+						<p:outputLabel value="#{attest.taTarifPrestation.montantPrestation} €" />
+					</p:column>
+
+					<p:rowExpansion>
+					            <p:panelGrid  columns="2" columnClasses="label,value" style="width:500px">
+									<p:outputLabel value="Date ouverture chantier : " styleClass="center" style="font-weight : bold"/>
+									<p:outputLabel value="#{attest.dateOuvertureChantier}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+									
+									<p:outputLabel value="Date reception définitive :" styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.dateReceptionDefinitive}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+									
+									<p:outputLabel value="Date d'intervention de l'assuré : " styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.dateInterventionAssure}"><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{contratRcdController.timeZone}" /></p:outputLabel>
+									
+									<p:outputLabel value="Qualité de l'assuré : " styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.qualiteAssure}" />
+										
+									<p:outputLabel value="Travaux effectués : " styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.travauxEffectue}" />
+									
+									<p:outputLabel value="Montant Marché HT : " styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.montantMarcheHt}" />
+									
+									<p:outputLabel value="Effectif chantier : " styleClass="center" style="font-weight : bold"/>
+										<p:outputLabel value="#{attest.effectifChantier}" />
+										
+							        <p:dataList value="#{attest.taAttestationActivites}" var="act" type="ordered">
+								        <f:facet name="header">
+								            Activités séléctionnées
+								        </f:facet>
+								        #{act.taActivite.liblActivite}
+								    </p:dataList>
+									
+					            </p:panelGrid>
+				   </p:rowExpansion>
+
+
+					
+					<p:column  headerText="" styleClass="center">
+						<p:commandButton value="Modifier"
+							 disabled="#{attest.taReglementPrestation.dateReglement != null or attest.validationCourtier}"
+							  update="@widgetVar(wvDatatableAttestationNominative), :form:tabView,:form:messages,:form"
+							  oncomplete="PF('wvCreationAttestationNominativeDialog').show()"
+							  action="#{contratRcdController.actModifierAttestation(attest)}"
+							   process="@this" >
+							<f:setPropertyActionListener value="#{attest}" target="#{contratRcdController.selectedTaAttestationNominative}" />
+						</p:commandButton>	
+					</p:column>
+					
+					
+					<p:column styleClass="center" >
+								<f:facet name="header">
+									<h:outputText value="Validation et Paiement" />
+								</f:facet>
+								
+								<!-- BOUTONS DE VALIDATIONS -->
+								<!-- COURTIER -->
+								<h:panelGroup rendered="#{!attest.validationYlyade and auth.isCourtier()}" >
+									<p:commandButton  value="Soumettre à Novarisks" action="#{contratRcdController.actValidationCourtierAttestation(attest)}" process="@this"
+										disabled="#{attest.validationCourtier and !attest.validationYlyade}" update="@widgetVar(wvDatatableAttestationNominative)">
+									</p:commandButton>
+								</h:panelGroup>
+								
+								<!-- NOVARISKS -->
+								<h:panelGroup rendered="#{auth.isYlyade() and !attest.validationYlyade and attest.validationCourtier}" >
+									<p:commandButton value="Validation Novarisks" action="#{contratRcdController.actValidationYlyadeAttestation(attest)}" process="@this"
+										disabled="#{attest.validationYlyade}" update="@widgetVar(wvDatatableAttestationNominative)">
+									</p:commandButton>
+								</h:panelGroup>
+								
+								
+								<!-- BOUTONS DE PAIEMENT -->
+								<h:panelGroup rendered="#{attest.taTReglement.codeTReglement=='CB' and attest.validationYlyade}" >
+									<p:commandButton value="Payer avec Stripe" action="#{contratRcdController.actDialoguePaiementAttestationNominativeParCarte}" process="@this"
+										disabled="#{attest.taReglementPrestation.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+										<p:ajax event="dialogReturn" listener="#{contratRcdController.handleReturnDialoguePaiementAttestationNominativeParCarte}"
+										 update="@widgetVar(wvDatatableAttestationNominative)" />
+										 <!-- ATTENTION : l'event dialogReturn ne se déclenchant plus, j'ai deplacé du code de la méthode #{contratRcdController.handleReturnDialoguePaiementAttestationNominativeParCarte} dans le PaiementCbController  -->
+									</p:commandButton>
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{attest.taTReglement.codeTReglement=='VIR' and attest.validationYlyade}" >
+									<p:commandButton value="Virement effectué par le courtier" title="Virement effectué par le courtier" 
+										rendered="#{auth.isCourtier() or auth.isYlyade()}" 
+										action="#{contratRcdController.actVirementReglementAttestationNominativeEffectueCourtier}" process="@this" 
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateVirementEffectue!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+
+									<p:commandButton value="Attestation réglée" title="Attestation réglée (virement reçu)" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{contratRcdController.actVirementReglementAttestationNominativeValide}" process="@this" 
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+								</h:panelGroup>
+								
+								<!-- CHEQUE -->
+								<h:panelGroup rendered="#{attest.taTReglement.codeTReglement=='CHEQUE' and attest.validationYlyade}" >
+									<p:commandButton value="Chèque envoyé" title="Chèque envoyé par le courtier" 
+										rendered="#{auth.isCourtier() or auth.isYlyade()}" 
+										action="#{contratRcdController.actChequeReglementAttestationNominativeEnvoyeCourtier}" process="@this"
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateEnvoiChequeParCourtier!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+									<br/>
+									<p:commandButton value="Chèque reçu" title="Chèque reçu par Novarisks" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{contratRcdController.actChequeReglementAttestationNominativeRecu}" process="@this" 
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateReceptionCheque!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+									<p:commandButton value="Déposé banque" title="Chèque déposé banque" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{contratRcdController.actChequeReglementAttestationNominativeEncaisse}" process="@this" 
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateDepotCheque!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+									<p:commandButton value="Attestation réglée" title="Attestation réglée (chèque encaissé)" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{contratRcdController.actChequeReglementAttestationNominativeValide}" process="@this" 
+										update="@widgetVar(wvDatatableAttestationNominative)"
+										disabled="#{attest.taReglementPrestation.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+									</p:commandButton>
+								</h:panelGroup>
+								
+
+					</p:column>
+					
+					<p:column styleClass="center" style="width:50px">
+								<f:facet name="header">
+									<h:outputText value="Réglé" />
+								</f:facet>
+								<p:selectBooleanCheckbox value="#{attest.taReglementPrestation.dateReglement != null ? 'true':'false'}" disabled="true" />
+					</p:column>
+							
+					<p:column styleClass="center" style="width:100px" rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+								<f:facet name="header">
+									<h:outputText value="Imprimer l'attestation" />
+								</f:facet>
+								<p:commandButton icon="ui-icon-print" title="Imprimer l'attestation nominative" 
+										action="#{contratRcdController.actImprimerAttestationNominative}" process="@this"
+										onsuccess="window.open('#{request.contextPath}/output?__report=/reports/attestationNominative/AttestationNominative.rptdesign&amp;id_tiers=#{contratRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+										rendered="#{attest.taReglementPrestation.dateReglement != null}">
+										<f:setPropertyActionListener target="#{contratRcdController.selectedTaAttestationNominative}" value="#{attest}" />
+								</p:commandButton>
+					</p:column>
+					
+					</p:dataTable>
+					
+					
+					
+						
+				</p:panel>
+	</p:panel>
+	
+    <p:dialog header="Création d'attestation nominative" widgetVar="wvCreationAttestationNominativeDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+        <p:panel widgetVar="wvCreationAttestationNominativePanel" >
+        <p:messages for="idMontantMarcheHT" closable="true" autoUpdate="true" >
+				</p:messages>
+			<p:scrollPanel style="width:1050px;height:750px">
+        	<h:panelGrid columns="2" cellpadding="3" layout="grid" style="align:center;width:100%">
+				
+				<p:outputLabel value="Numéro de contrat : " styleClass="labelchob"/>
+									<p:inputText disabled="true" value="#{contratRcdController.selectedTaContratRcProDTO.numDossierPolice} - #{contratRcdController.selectedTaContratRcProDTO.numeroAvenant}"> 
+									</p:inputText>
+									
+							
+							<p:outputLabel value="Nom de l'assuré : " styleClass="labelchob"/>
+							<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaDossierRcdDTO.taAssureDTO.nom}"
+									disabled="true">
+							</p:inputText>
+								
+							<p:outputLabel value="Prénom de l'assuré : " styleClass="labelchob"/>
+							<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaDossierRcdDTO.taAssureDTO.prenom}"
+									disabled="true">
+							</p:inputText>
+							
+							<p:outputLabel value="Nom du courtier : " styleClass="labelchob"/>
+							<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaDossierRcdDTO.codeCourtier}"
+									disabled="true">
+							</p:inputText>
+								
+							<p:outputLabel value="Code du courtier : " styleClass="labelchob"/>
+							<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaDossierRcdDTO.nomDenominationSociale}"
+									disabled="true">
+							</p:inputText>
+							
+							
+							<p:outputLabel value="Date d'effet souhaitée : " styleClass="labelchob"/>
+									<p:calendar disabled="true" value="#{contratRcdController.selectedTaAttestationNominative.dateEffet}"
+										pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+									    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+										showOn="button" timeZone="#{msg.time_zone}" >
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar>
+									
+									
+									<p:outputLabel value="Valable et couvrant les chantiers du : " styleClass="labelchob"/>
+									<p:calendar disabled="true" value="#{contratRcdController.selectedTaAttestationNominative.dateDebut}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+									    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar>
+									
+									<p:outputLabel value="au : " styleClass="labelchob"/>
+									<p:calendar disabled="true" value="#{contratRcdController.selectedTaAttestationNominative.dateFin}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+									    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar>
+									
+								   <p:outputLabel value="Adresse du chantier : " styleClass="labelchob"/>
+									<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaAttestationNominative.adresseChantier}">
+									<p:ajax update="@this"/>
+									</p:inputText> 
+									
+									<p:outputLabel value="Nom du maître d'ouvrage : " styleClass="labelchob"/>
+									<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaAttestationNominative.nomMaitreOuvrage}">
+									<p:ajax update="@this"/>
+									</p:inputText>
+									
+									<p:outputLabel value="Date d'ouverture du chantier : " styleClass="labelchob"/>
+									<!-- <p:calendar value="#{contratRcdController.selectedTaAttestationNominative.dateOuvertureChantier}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+									    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar> -->
+									 <p:calendar  value="#{contratRcdController.selectedTaAttestationNominative.dateOuvertureChantier}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar> 
+									
+									<p:outputLabel value="Nature de l'ouvrage : " styleClass="labelchob"/>
+									<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaAttestationNominative.natureOuvrage}">
+									<p:ajax update="@this"/>
+									</p:inputText>
+									
+									<p:outputLabel value="Coût total de construction TTC : " />
+									<p:inputNumber style="width:80%;" value="#{contratRcdController.selectedTaAttestationNominative.coutTotalConstructionTtc}"
+									 symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" styleClass="labelchob">
+									 <p:ajax update="@this"/>
+									</p:inputNumber>
+									
+									<p:outputLabel value="Date de réception définitive : " styleClass="labelchob"/>
+									<p:calendar  value="#{contratRcdController.selectedTaAttestationNominative.dateReceptionDefinitive}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar>
+									<!-- maxdate="#{devisRcdController.maxDatePlus12Mois()}" -->
+									
+									<p:outputLabel value="Date d'intervention de l'assuré : " styleClass="labelchob"/>
+									<p:calendar  value="#{contratRcdController.selectedTaAttestationNominative.dateInterventionAssure}" pattern="#{msg.date_pattern}"
+									    mask="true" locale="fr" navigator="true" readonlyInput="true"
+									    mindate="#{devisRcdController.now}"
+									    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+										showOn="button" timeZone="#{msg.time_zone}">
+										<p:ajax event="dateSelect" update="@this" />
+										<f:ajax event="blur" update="@this" />
+									</p:calendar>
+									
+									<p:outputLabel value="Qualité de l'assuré : " styleClass="labelchob"/>
+									<p:inputText style="width:80%;" value="#{contratRcdController.selectedTaAttestationNominative.qualiteAssure}">
+									<p:ajax update="@this"/>
+									</p:inputText>
+									
+									<p:outputLabel value="Travaux effectués : " styleClass="labelchob"/>
+<!-- 									<p:inputText  value="#{contratRcdController.selectedTaAttestationNominative.travauxEffectue}"> -->
+<!-- 									<p:ajax update="@this"/> -->
+<!-- 									</p:inputText> -->
+									
+									<p:row ><p:column>
+									<p:dataTable 
+							        	widgetVar="wvActiviteDataTableConsultation"
+							        	rendered="#{contratRcdController.editable() and !contratRcdController.assurePib()}"
+							        	var="act" 
+							        	value="#{contratRcdController.selectedTaActiviteDTOs}" 
+							        	expandableRowGroups="true" 
+							        	rowSelectMode="add"
+							        	sortBy="#{act.liblFamilleActivite}"
+							        	selection="#{contratRcdController.selectedTaActiviteDTOAttestationNominative}"
+							        	rowKey="#{act.id}" 
+							        	style="margin-bottom:0" >
+							        	
+							        	<p:ajax event="rowSelect" listener="#{contratRcdController.onActiviteSelectAttestationNominative}" update="@this" process="@this"/>
+		        						<p:ajax event="rowUnselect" listener="#{contratRcdController.onActiviteUnselectAttestationNominative}" update="@this" process="@this"/>
+		        						
+		        						 <p:column selectionMode="multiple" style="width:16px;text-align:center" visible="false"/>
+							   
+										<p:headerRow>
+								            <p:column colspan="2">
+								                <h:outputText value="#{act.liblFamilleActivite}" />
+								            </p:column>
+								        </p:headerRow>
+								        					
+								        <p:column headerText="Code activité" style="width:50px">
+								            <h:outputText value="#{act.codeActivite}" />
+								        </p:column>
+								        
+								        <p:column headerText="Nature de l'activité" style="width:300px">
+								            <h:outputText value="#{act.liblActivite}" />
+								        </p:column>
+								        
+								    </p:dataTable>
+								    
+								    <!-- ACTIVITE PIB -->
+								    <p:dataTable 
+							        	widgetVar="wvActiviteDataTableConsultation"
+							        	rendered="#{contratRcdController.editable() and contratRcdController.assurePib()}"
+							        	var="act" 
+							        	value="#{contratRcdController.selectedTaTauxRcproPibDTOs}" 
+							        	expandableRowGroups="true" 
+							      
+							        	sortBy="#{act.liblTauxRcproPib}"
+							        	
+							        	rowKey="#{act.id}" 
+							        	style="margin-bottom:0" >
+							        	<!-- rowSelectMode="add"
+							        	selection="#{contratRcdController.selectedTaTauxRcproPibDTOs} -->
+							        	
+							        	<p:ajax event="rowSelect" listener="#{contratRcdController.onActiviteSelectAttestationNominative}" update="@this" process="@this"/>
+		        						<p:ajax event="rowUnselect" listener="#{contratRcdController.onActiviteUnselectAttestationNominative}" update="@this" process="@this"/>
+		        						
+		        						 <p:column selectionMode="multiple" style="width:16px;text-align:center" visible="false"/>
+							   
+										<!-- <p:headerRow> -->
+											<p:column headerText="Code activité" style="width:50px">
+									            <h:outputText value="#{act.codeTauxRcproPib}" />
+									        </p:column>
+								            <p:column headerText="Activité PIB" colspan="2">
+								                <h:outputText value="#{act.liblTauxRcproPib}" />
+								            </p:column>
+								        <!-- </p:headerRow> -->
+								        					
+								        
+								        
+
+								      
+								        
+								    </p:dataTable>
+								    </p:column>
+									</p:row>
+									
+									<p:outputLabel value="Montant du marché HT (inférieur ou égal au CA Prévisionnel) : " />
+									<p:inputNumber style="width:80%;" id="idMontantMarcheHT" required="true" value="#{contratRcdController.selectedTaAttestationNominative.montantMarcheHt}"
+									 symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" styleClass="labelchob">
+<!-- 									  <f:validateDoubleRange minimum="0" maximum="#{contratRcdController.selectedTaDossierRcdDTO.chiffreAffaireExercicePrevisionnel}" /> -->
+									  <!-- <p:clientValidator event="blur" /> -->
+									  <p:ajax update="@this"/> 
+									</p:inputNumber>
+									
+									<p:outputLabel value="Effectif pour ce chantier : " styleClass="labelchob"/>
+									<p:inputNumber style="width:80%;"  value="#{contratRcdController.selectedTaAttestationNominative.effectifChantier}">
+									<p:ajax update="@this"/>
+									</p:inputNumber>
+									
+									<p:outputLabel value="Mode de règlement : " />
+									<p:selectOneRadio  value="#{contratRcdController.selectedTaAttestationNominative.taTReglement}"  converter="entityConverter">
+										<f:selectItems value="#{contratRcdController.listeTaTReglement}" var="r" itemLabel="#{r.liblTReglement}" itemValue="#{r}" />
+						            	<p:ajax process="@this" update="@this" listener="#{contratRcdController.actChangementPaiement}"/>
+							        </p:selectOneRadio>
+							        
+							       
+									
+									<p:commandButton ajax="true" id="validationAttestationNominativeBtn" value="Enregistrer" process="@this"
+											widgetVar="wvvalidationAttestationNominativeBtn"
+											update="@this, @widgetVar(wvDatatableAttestationNominative)"
+											oncomplete="PF('wvCreationAttestationNominativeDialog').hide()"
+											actionListener="#{contratRcdController.actEnregistrerAttestationNominative}">
+<!-- 											<p:confirm header="Confirmation" message="Etes-vous sûr de vouloir valider ces informations pour l'attestation nominative ?" icon="ui-icon-alert" />
+ -->									</p:commandButton>
+									
+								                   
+								     <p:commandButton value="Annuler"
+								      oncomplete="PF('wvCreationAttestationNominativeDialog').hide()"/>
+				
+			</h:panelGrid>
+			</p:scrollPanel>
+		</p:panel>
+    </p:dialog>
+    
+    
+    
+</ui:composition>

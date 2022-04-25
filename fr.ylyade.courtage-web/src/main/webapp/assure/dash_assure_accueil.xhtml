@@ -1,0 +1,229 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+<div class="dashboard">
+            <div class="dashboard-header">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-6">
+                        <div class="dashboard-title">
+                            
+                            <h2> Tableau de bord</h2>
+<!--                             <p style="display:inline-block;"><p:outputLabel value="Nom du dossier : #{dashBoardBean.tenantInfo.tenantId} (#{monCompteBean.dossierCourant.taTNiveau.libelle})"/> </p> -->
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 dashboard-buttons">
+<!--                         <button type="button"><i class="fa fa-floppy-o" aria-hidden="true"></i> </button> -->
+<!-- 						<p:commandButton icon="fa fa-shopping-cart" title="Panier" -->
+<!-- 							onstart="window.open('#{request.contextPath}/admin/renouvellement.xhtml?dossier=#{dashBoardBean.tenantInfo.tenantId}')"> -->
+<!-- 						</p:commandButton> -->
+<!--                         <button type="button"><i class="fa fa-trash" aria-hidden="true"></i> </button> -->
+<!--                         <button type="button"><i class="fa fa-print" aria-hidden="true"></i> </button> -->
+                        <p:commandButton value="Fermer" styleClass="icon icon-close menuitem-fermer-droite" process="@this" 
+							onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())"/>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+<!--                         <p:tabMenu activeIndex="#{param.i}" style="padding-left:40px"> -->
+<!--                             <p:menuitem value="Overview" outcome="/" icon="fa fa-star"> -->
+<!--                                 <f:param name="i" value="0" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Demos" outcome="/" icon="fa fa-search"> -->
+<!--                                 <f:param name="i" value="1" /> -->
+<!--                             </p:menuitem> -->
+<!--                             <p:menuitem value="Documentation" outcome="/" icon="fa fa-file"> -->
+<!--                                 <f:param name="i" value="2" /> -->
+<!--                             </p:menuitem> -->
+<!--                         </p:tabMenu> -->
+                    </div>
+                </div>
+            </div>
+       </div>
+		<div id="main-wrapper-content">
+       		<div class="ui-g">
+       			<div class="ui-g-12 ui-md-6">
+<!-- 					<p:panel header="Notifications Dossier" rendered="#{messageDossierController.afficheMessageDossier}" id="idTabViewNotificationDossierAccueil"> -->
+					<p:panel header="Notifications Dossier (temporaire)" rendered="false" id="idTabViewNotificationDossierAccueil">
+						<p:tabView orientation="right" styleClass="verticalTab" >
+<!-- 						 <c:forEach items="#{messageDossierController.listeMessage}" var="messDossier" > -->
+							<p:tab title="#{messDossier.titreMessage}" id="idTabNotificationDossierAccueil">
+							
+<!-- 								<h:panelGrid columns="2" cellpadding="10" style="width:75%;"> -->
+<!-- 									  #{messDossier.titreCorpsMessage}+#{messDossier.texte1Message}+#{messDossier.texte2Message}+#{messDossier.texte3Message} -->
+									<ui:include src="#{messDossier.titreCorpsMessage}" />
+									<ui:include src="#{messDossier.texte1Message}" />
+									<ui:include src="#{messDossier.texte2Message}" />
+									<ui:include src="#{messDossier.texte3Message}" />
+									<h:outputLabel escape="false" value="Message informatif" />
+									<br />
+									<h:outputLabel escape="false" value="Il vous reste 5 documents à envoyer pour l'activation de votre compte !" />
+ 									
+<!-- 								</h:panelGrid> -->
+							</p:tab>
+<!-- 						 </c:forEach> -->
+						</p:tabView>
+					</p:panel>
+				<p:panel header="Contrat Responsabilité Civile Décennale" rendered="true">
+					<h:panelGrid columns="1" cellpadding="10" style="align:center;width:100%;">
+					<h:panelGroup >
+					<div class="card">
+						<h3 align="center">RC Décennale</h3>
+						<p:outputLabel value="Date échéance du contrat : "/> 
+						<p:outputLabel value="31/12/2018">
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+						</p:outputLabel>
+						
+						<p:separator style="margin:15px 0px 15px 0px;"></p:separator>
+						<p:outputLabel value="Prochain réglement le : 30/06/2018"/>
+						<br /> 
+						<div class="card" style="text-align:center;">
+<!-- 						<p:outputLabel value="Montant : "/> -->
+						<p:outputLabel value="5 395,00 €" style="font-size:17px;margin:15px 0px 15px 0px;">
+						</p:outputLabel>
+						<br />
+						<p:commandButton value="Payer maintenant" style="margin:15px 0px 15px 0px;"></p:commandButton>
+						</div>
+						<h4 align="center">Autres informations</h4>
+						
+<!-- 						<p:separator></p:separator> -->
+					</div>
+					</h:panelGroup>
+
+					</h:panelGrid>
+					</p:panel>					
+				</div>
+				<div class="ui-g-12 ui-md-6">
+<!-- 					<p:panel header="Notifications Dossier" rendered="#{messageDossierController.afficheMessageDossier}" id="idTabViewNotificationDossierAccueil"> -->
+					
+				<p:panel header="Contrat Dommage Ouvrage" rendered="true">
+					<h:panelGrid columns="1" cellpadding="10" style="align:center;width:100%;">
+					<h:panelGroup >
+					<div class="card">
+						<h3 align="center">Dommage Ouvrage</h3>
+						<p:outputLabel value="Total TTC : "/> 
+						<p:outputLabel value="58 395,00 €">
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+						</p:outputLabel>
+						<p:separator></p:separator>
+						<p:outputLabel value="Nombre de contrat : "/> 
+						<p:outputLabel value="30"/>
+						<p:dataTable var="a"
+							value="#{monCompteBean.listeAutorisationDossier}"
+							selectionMode="single" rowKey="#{a.idAutorisation}" reflow="true"
+							sortBy="#{a.dateFin.toGregorianCalendar().time}">
+<!-- 							<f:facet name="header"> -->
+<!--         						Mes modules -->
+<!--     						</f:facet> -->
+							<!-- 							<p:column sortBy="#{taArticle.taProduit.code}" width="12%"> -->
+							<p:column width="12%">
+								<f:facet name="header">
+									<h:outputText value="Code" />
+								</f:facet>
+								<h:outputText value="#{a.taProduit.code}" />
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.taProduit.libelle}" width="38%"> -->
+							<p:column width="38%">
+								<f:facet name="header">
+									<h:outputText value="Nom" />
+								</f:facet>
+								<h:outputText value="#{a.taProduit.libelle}" />
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.dateAchat}" styleClass="center" width="25%"> -->
+							<p:column styleClass="center" width="25%">
+								<f:facet name="header">
+									<h:outputText value="Activé le" />
+								</f:facet>
+								<h:outputText value="#{a.dateAchat.toGregorianCalendar().time}">
+									<f:convertDateTime pattern="#{msg.date_pattern}"
+										timeZone="#{msg.time_zone}" />
+								</h:outputText>
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.dateFin}" styleClass="center" width="25%"> -->
+							<p:column styleClass="center" width="25%">
+								<f:facet name="header">
+									<h:outputText value="Expire le" />
+								</f:facet>
+								<h:outputText value="#{a.dateFin.toGregorianCalendar().time}"
+									styleClass="#{dashBoardBean.getClasseExpiration(a.dateFin.toGregorianCalendar().time)}">
+									<f:convertDateTime pattern="#{msg.date_pattern}"
+										timeZone="#{msg.time_zone}" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</div>
+					</h:panelGroup>
+
+					</h:panelGrid>
+					</p:panel>
+				<p:panel header="GFA" rendered="true">
+					<h:panelGrid columns="1" cellpadding="10" style="align:center;width:100%;">
+					<h:panelGroup >
+					<div class="card">
+						<h3 align="center">GFA</h3>
+						<p:outputLabel value="Total TTC : "/> 
+						<p:outputLabel value="58 395,00 €">
+<!-- 						<f:convertNumber type="currency" currencySymbol="#{msg.currency_code}" /> -->
+						</p:outputLabel>
+						<p:separator></p:separator>
+						<p:outputLabel value="Nombre de contrat : "/> 
+						<p:outputLabel value="30"/>
+						<p:dataTable var="a"
+							value="#{monCompteBean.listeAutorisationDossier}"
+							selectionMode="single" rowKey="#{a.idAutorisation}" reflow="true"
+							sortBy="#{a.dateFin.toGregorianCalendar().time}">
+<!-- 							<f:facet name="header"> -->
+<!--         						Mes modules -->
+<!--     						</f:facet> -->
+							<!-- 							<p:column sortBy="#{taArticle.taProduit.code}" width="12%"> -->
+							<p:column width="12%">
+								<f:facet name="header">
+									<h:outputText value="Code" />
+								</f:facet>
+								<h:outputText value="#{a.taProduit.code}" />
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.taProduit.libelle}" width="38%"> -->
+							<p:column width="38%">
+								<f:facet name="header">
+									<h:outputText value="Nom" />
+								</f:facet>
+								<h:outputText value="#{a.taProduit.libelle}" />
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.dateAchat}" styleClass="center" width="25%"> -->
+							<p:column styleClass="center" width="25%">
+								<f:facet name="header">
+									<h:outputText value="Activé le" />
+								</f:facet>
+								<h:outputText value="#{a.dateAchat.toGregorianCalendar().time}">
+									<f:convertDateTime pattern="#{msg.date_pattern}"
+										timeZone="#{msg.time_zone}" />
+								</h:outputText>
+							</p:column>
+
+							<!-- 							<p:column sortBy="#{a.dateFin}" styleClass="center" width="25%"> -->
+							<p:column styleClass="center" width="25%">
+								<f:facet name="header">
+									<h:outputText value="Expire le" />
+								</f:facet>
+								<h:outputText value="#{a.dateFin.toGregorianCalendar().time}"
+									styleClass="#{dashBoardBean.getClasseExpiration(a.dateFin.toGregorianCalendar().time)}">
+									<f:convertDateTime pattern="#{msg.date_pattern}"
+										timeZone="#{msg.time_zone}" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</div>
+					</h:panelGroup>
+
+					</h:panelGrid>
+					</p:panel>										
+				</div>
+			</div>
+		</div>       
+</ui:composition>

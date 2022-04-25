@@ -1,0 +1,3 @@
+INSERT INTO public.ta_t_travaux (id_t_travaux, libl_travaux, code_travaux, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (1, 'Construction neuve', 'Tcn', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_travaux (id_t_travaux, libl_travaux, code_travaux, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (2, 'Rénovation / Réhabilitation', 'Trr', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_travaux (id_t_travaux, libl_travaux, code_travaux, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (3, 'Extension', 'Te', null, null, null, null, null, 0);

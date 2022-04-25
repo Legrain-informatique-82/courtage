@@ -1,0 +1,206 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	
+	
+	<p:panel id="idBugPanel" widgetVar="widgetVarBugPanel" >
+		<p:menubar styleClass="menu-onglet">
+			<p:menuitem title="Rafraîchir" value="Rafraîchir" update="@form,:form:messages" actionListener="#{bugsBean.findBug}" styleClass="btn btn-refresh"/>
+			<p:menuitem value="Fermer"
+				styleClass="icon icon-close menuitem-fermer-droite" process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+			</p:menuitem>
+		</p:menubar>
+<!-- 		<p:commandButton value="Rafraîchir" title="Rafraîchir" update="@form,:form:messages" actionListener="#{bugsBean.findBug}" styleClass="btn btn-refresh"/> -->
+
+		<p:tabView>
+			<p:tab title="Nouveau ticket">
+				<p:panel id="idBugNouveauPanel" widgetVar="wvBugNouveauPanel">
+					<p:panel header="Ticket">
+						<div class="ui-g">
+							<div class="ui-g-1">
+								<h:outputText value="Résumé" styleClass="labelchob"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText value="#{bugsBean.nouveauBug.summary}" style="width:100%"/>
+							</div>
+							<div class="ui-g-1">
+								<h:outputText value="Description" styleClass="labelchob"/>
+							</div>
+							<div class="ui-g-11">
+								<h:inputTextarea value="#{bugsBean.nouveauBug.description}" style="width:100%;height: 200px;" />
+							</div>
+							
+							<div class="ui-g-11">
+							</div>
+							<div class="ui-g-1">
+								<p:commandButton value="Envoyer" title="Envoyer" update="@widgetVar(wvBugNouveauPanel), :form:messages" actionListener="#{bugsBean.createBug}" styleClass="btn btn-insert"/>
+							</div>
+						</div>
+						
+					</p:panel>
+					<p:panel header="Informations complémentaires">
+						<div class="ui-g">
+							
+							<div class="ui-g-1">
+								<h:outputText value="Message d'erreur"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText style="width:100%" value="#{bugsBean.complMessageErreur}"/>
+							</div>
+							
+							<div class="ui-g-1">
+								<h:outputText value="Date constatation"/>
+							</div>
+							<div class="ui-g-11">
+								<p:calendar value="#{bugsBean.complDateConstatation}" showOn="button"
+									pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true" timeZone="#{msg.time_zone}" >
+								</p:calendar>
+							</div>
+
+							<div class="ui-g-1">
+								<h:outputText value="N°dossier RCD"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText style="width:100%" value="#{bugsBean.complCodeDossierRCD}"/>
+							</div>
+							
+							<div class="ui-g-1">
+								<h:outputText value="Etat"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText style="width:100%" value="#{bugsBean.complEtat}"/>
+							</div>
+							
+							<div class="ui-g-1">
+								<h:outputText value="Code courtier"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText style="width:100%" value="#{bugsBean.complCodeCourtier}"/>
+							</div>
+							
+								<div class="ui-g-1">
+								<h:outputText value="Code assure"/>
+							</div>
+							<div class="ui-g-11">
+								<p:inputText style="width:100%" value="#{bugsBean.complCodeAssure}"/>
+							</div>
+							
+							<div class="ui-g-3">
+								<h:outputText value="Type acces (courtier/Novarisks/assuré/assureur)"/>
+							</div>
+							<div class="ui-g-9">
+								<p:inputText style="width:100%" value="#{bugsBean.complTypeAcces}"/>
+							</div>
+							
+							<div class="ui-g-11">
+							</div>
+							<div class="ui-g-1">
+								<p:commandButton value="Envoyer" title="Envoyer" update="@widgetVar(wvBugNouveauPanel), :form:messages" actionListener="#{bugsBean.createBug}" styleClass="btn btn-insert"/>
+							</div>
+						</div>
+						
+					</p:panel>
+				</p:panel>
+			</p:tab>
+		
+		<p:tab title="Liste des tickets">
+			<p:dataTable var="table"
+				value="#{bugsBean.listeBugs}" rowKey="#{table.id}"
+				selectionMode="single" styleClass="datatable"
+				selection="#{bugsBean.bug}" 
+				paginator="true"
+				rows="#{msg.modele_datatable_ligne_par_page_debut}"
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+				
+				<p:ajax event="rowSelect" update="@widgetVar(wvBugDetailPanel)" listener="#{bugsBean.detailBug}"/>
+	
+				<p:column sortBy="#{table.id}" filterBy="#{table.id}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="N°" />
+					</f:facet>
+	
+					<h:outputText value="#{table.id}" />
+				</p:column>
+				
+				<p:column sortBy="#{table.summary}" filterBy="#{table.summary}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Résumé" />
+					</f:facet>
+	
+					<h:outputText value="#{table.summary}" />
+				</p:column>
+				
+				<p:column sortBy="#{table.creationTime}" filterBy="#{table.creationTime}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Date" />
+					</f:facet>
+	
+					<h:outputText value="#{table.creationTime}" />
+				</p:column>
+				
+				<p:column sortBy="#{table.status}" filterBy="#{table.status}" filterMatchMode="contains" styleClass="center" sortable="true">
+					<f:facet name="header">
+						<h:outputText value="Status" />
+					</f:facet>
+	
+					<h:outputText value="#{table.status}" />
+				</p:column>
+				
+				<p:column styleClass="center" rendered="false">
+					<f:facet name="header">
+						<h:outputText value="Action" />
+					</f:facet>
+					<p:commandLink onclick="window.open('#{bugsBean.bugzillaURL}/show_bug.cgi?id=#{table.id}')">
+						<p:graphicImage library="images" name="show.jpg" title="Détail" alt="Détail" height="16" />
+					</p:commandLink>
+				</p:column>
+				
+			</p:dataTable>
+			
+			<p:separator/>
+			
+			<p:panel id="idBugDetailPanel" widgetVar="wvBugDetailPanel" header="Détail">
+				<h:panelGroup rendered="#{bugsBean.bug != null}">
+					<h:outputText value="N°Ticket : #{bugsBean.bug.id}" />
+					<br/>
+					<h:outputText value="Résumé : #{bugsBean.bug.summary}" />
+					<p:separator/>
+					<p:repeat value="#{bugsBean.listeCommentaire}" var="c">
+						<p:panel>
+<!-- 						<h:outputText value="#{c.id}"/>  -->
+						<h:outputText value="#{c.creationTime}"/> - <h:outputText value="#{c.creator}"/>
+<!-- 						<h:outputText value="#{c.attachmentId}"/> -->
+						<br/><br/>
+						
+						<p:outputLabel value="#{c.text}" escape="false"/>
+						</p:panel>
+						<p:separator/>
+					</p:repeat>
+					<div class="ui-g">
+						<div class="ui-g-1">
+							<h:outputText value="Nouveau commentaire" styleClass="labelchob"/>
+						</div>
+						<div class="ui-g-11">
+							<h:inputTextarea value="#{bugsBean.nouveauCommentaire}" style="width:100%;height: 200px;" />
+						</div>
+						<div class="ui-g-11">
+							</div>
+						<div class="ui-g-1">
+							<p:commandButton value="Envoyer" title="Envoyer" update="@widgetVar(wvBugDetailPanel), :form:messages" actionListener="#{bugsBean.createComment}" styleClass="btn btn-insert"/>
+						</div>
+					</div>
+				</h:panelGroup>
+			</p:panel>
+		</p:tab>
+		
+		</p:tabView>
+	</p:panel>
+
+</ui:composition>

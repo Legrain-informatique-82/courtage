@@ -1,0 +1,2070 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+	
+<!-- 	<p:remoteCommand name="rc" actionListener="#{devisRcdController.autorisationChangementOnglet}" process="@this" oncomplete="test(xhr, status, args);"/> -->
+	<p:remoteCommand name="onCellEditFinish" update="@(.pourcent)" actionListener="#{devisRcdController.onCellEditFinish}" process="@this"/>
+
+	<p:tabView id="idTabViewDevisRcPro" styleClass="verticalTab" binding="#{devisRcdController.tabViewDevisRcPro}" cache="false" widgetVar="wvTabviewDevisRcd">
+
+		<p:ajax event="tabChange"
+			update="@this,@widgetVar(panelListeAdresseDevisRcPro), @widgetVar(panelDetailAdresseDevisRcPro), 
+			@widgetVar(panelComptesBancairesDevisRcPro), @widgetVar(panelEmailEnvoyesDevisRcPro),@widgetVar(wvPanelPrime),@widgetVar(wvPanelReglement),@widgetVar(wvCommissionPanel)"
+			listener="#{devisRcdController.onTabChange}" /> <!-- onstart="return rr();" -->
+			
+
+		<p:tab rendered="#{devisRcdController.affichePremierOnglet}" id="idOngletDeclarationEngagement" title="Déclarations et engagements" titleStyleClass="#{devisRcdController.onglet1Valide?'onglet-valide':'onglet-erreur'}" titletip="Déclaration et engagement">
+		
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<p:panel header="LES CONDITIONS DE SOUSCRIPTION" toggleable="true" id="idPanelConditionSousCription" widgetVar="wvPanelConditionSousCription">
+						Je confirme que l’entreprise présentée répond aux caractéristiques suivantes :
+						
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Bénéficiant d’une expérience de 3 ans minimum dans les activités à garantir : " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.experienceActivite3ans}"  disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+<!-- 					        <p:outputLabel value="Bénéficiant d’une expérience de 5 ans minimum dans les activités à garantir : " styleClass="labelchob" /> -->
+<!-- 							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.experienceActivte5ans}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 					            <f:selectItem itemLabel="oui" itemValue="true" /> -->
+<!-- 					            <f:selectItem itemLabel="non" itemValue="false" /> -->
+<!-- 					            <p:ajax update="@this" /> -->
+<!-- 					        </p:selectOneRadio> -->
+					        
+					  	</h:panelGrid> 
+					        
+<!-- 					  	<p:outputLabel value="Pour les activités : 3 ; 5 ; 6 ; 7 ; 8 ; 9 ; 11 ; 15 ; 16 ; 17 ; 28-1 ; 30-1 ; 36"  /> -->
+					      
+					   	<h:panelGrid columns="2" cellpadding="10">   
+					   		<p:outputLabel value="Exerçant les activités dans la nomenclature ci-après (référentiel des activités RCD02 - 2017) : " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.exerceActiviteNomenclature}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Effectue des missions sur des ouvrages dont le cout de construction TTC ne dépasse pas 15 000 000 € : " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.coutOuvrageInferieur15k}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					       <!--  <p:outputLabel value="Montant de vos marchés de travaux HT maximum € : " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedMontantMarcheTravauxHTMin}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="50 000€" itemValue="50_000" />
+					            <f:selectItem itemLabel="100 000€" itemValue="100_000" />
+					            <f:selectItem itemLabel="250 000€" itemValue="250_000" />
+					            <f:selectItem itemLabel="500 000€" itemValue="500_000" />
+					            <f:selectItem itemLabel="1000 000€" itemValue="1_000_000" />
+					            <p:ajax update="@this" listener="#{devisRcdController.actRadioMontantMarcheTravauxHTMin}" />
+					        </p:selectOneRadio> -->
+					        
+					    </h:panelGrid>
+						
+					</p:panel>
+					
+					<p:panel header="LE PROPOSANT DECLARE (Réponse impérative)" toggleable="true" id="idPanelProposantDeclare" widgetVar="wvPanelProposantDeclare">
+
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Ne pas intervenir en qualité de Constructeur de Maisons Individuelles au titre de la loi de décembre 1990 : " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionConstructeurMaisonIndiv}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+						
+					        <p:outputLabel value="Ne pas intervenir en qualité de Contractant Général " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionContractantGeneral}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas intervenir en qualité d’Entreprise Générale du Bâtiment " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionBatiment}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas intervenir en qualité de Maître d’Œuvre, de BET d’AMO " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionMaitreOeuvre}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas Intervenir en qualité de promoteur immobilier " styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionImmobilier}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas intervenir en qualité de Fabricant / Négociant-Importateur de matériaux de construction." styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionFabricantMatConstruction}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas avoir une activité principale de négoce ou fabrication de matériaux de construction non suivie de pose" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.activitePrincNegoceFabrMatConstructionNonPose}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas réaliser de travaux de technique non courante" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.travauxTechniqueNonCourant}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Ne pas intervenir sur des monuments historiques" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.interventionMonumentHistorique}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Les produits mis en œuvre font l’objet d’un avis technique" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.avisTechnique}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Avoir mis en place le Document Unique d’évaluation des risques professionnels ou document unique" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.documentUnique}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="Respecter les règles de l’art telles qu’elles sont définies par les réglementations en vigueur, les Documents Techniques Unifiés ou les Normes établis par les Organismes compétents à caractère officiel, ou dans le marché de travaux concerné" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.respectRegles}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					        
+					        <p:outputLabel value="En cas de recours à la sous-traitance respecter les dispositions de la loi de 1975 sur la sous-traitance" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedSousTraitance1975}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="oui" />
+					            <f:selectItem itemLabel="non" itemValue="non" />
+					            <f:selectItem itemLabel="Pas concerné" itemValue="pas_concerne" />
+					            <p:ajax update="@this" listener="#{devisRcdController.actRadioSousTraitance1975}"/>
+					        </p:selectOneRadio>
+					        
+						</h:panelGrid>
+						
+					</p:panel>
+					
+				</div>
+				
+			</div>
+			
+			<ui:include src="./precendent_suivant_include.xhtml" >
+				<ui:param name="masquePrecedent" value="true" />
+			</ui:include>
+		</p:tab>
+
+			
+		<p:tab id="idOngletProposantDeclaration" title="Proposant et déclarations" titleStyleClass="#{devisRcdController.onglet2Valide?'onglet-valide':'onglet-erreur'}" titletip="Proposant et déclaration">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+				<div class="ui-g-12">
+				
+					<p:panel header="PROPOSANT" toggleable="true" id="idPanelAdresse" widgetVar="wvPanelProposant">
+
+						<h:panelGrid columns="2" cellpadding="10" style="width: 550px" styleClass="">
+						
+							<p:outputLabel value="Code assuré" styleClass="labelchob" />
+							<p:inputText style="width: 100%" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.codeAssure}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="true">
+								<f:attribute name="nomChamp" value="#{const.C_CODE_ASSURE}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+	
+							<p:outputLabel value="Type d'assuré" styleClass="labelchob"/>
+							<p:autoComplete inputStyle="width: 370px" value="#{devisRcdController.taTAssureDTO}"  required="true" completeMethod="#{devisRcdController.typeAssureAutoCompleteLight}"
+								disabled="true" var="typeAssure" itemLabel="#{typeAssure.codeTAssure}" itemValue="#{typeAssure}" forceSelection="true"
+								dropdown="false" placeholder="Type de assure" converter="entityConverter">
+								<p:column>
+									<h:outputText value="#{typeAssure.codeTAssure}" />
+								</p:column>
+								<p:column>
+									<h:outputText value="#{typeAssure.liblTAssure}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{devisRcdController.validateDevisRcPro}"
+											styleClass="btn-insert btn">
+											<p:ajax event="dialogReturn" listener="#{assureController.handleReturnDialogTypeAssure}" update="@parent:@parent" />
+										</p:commandButton>
+									</f:facet>
+								</p:column>
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_ASSURE}" />
+								<p:ajax event="itemSelect" listener="#{devisRcdController.autcompleteSelection}" update="@this, @widgetVar(wvPanelActivite)" />
+							</p:autoComplete>
+							
+							<p:outputLabel value="Raison sociale : " styleClass="labelchob"/>
+							<p:inputText style="width: 100%;text-transform: uppercase" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.raisonSociale}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_RAISON_SOCIALE}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="Forme juridique" styleClass="labelchob"/>
+							<p:autoComplete value="#{devisRcdController.taTJuridiqueDTO}" required="true" completeMethod="#{assureController.typeJuridiqueAutoCompleteLight}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}" var="typeJuridique" itemLabel="#{typeJuridique.codeTJuridique}" itemValue="#{typeJuridique}" forceSelection="true"
+								dropdown="true" placeholder="Type juridique" converter="entityConverter">
+								<p:column>
+									<h:outputText value="#{typeJuridique.codeTJuridique}" />
+								</p:column>
+								<p:column>
+									<h:outputText value="#{typeJuridique.liblTJuridique}" />
+								</p:column>
+								
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_COURTIER}" />
+								<p:ajax event="itemSelect" listener="#{devisRcdController.autcompleteSelection}" update="@this" />
+							</p:autoComplete>
+							
+							<p:outputLabel value="N° SIREN : " />
+							<p:inputText style="width: 100%;text-transform: uppercase" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.codeSiren}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_CODE_SIREN}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+	
+							<p:outputLabel value="Adresse de la société : " styleClass="labelchob"/>
+							<p:inputText style="width: 100%;text-transform: uppercase" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.adresseLigne1}" 
+								validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_1}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="Complément d'adresse : " styleClass="labelchob"/>
+							<p:inputText style="width: 100%;text-transform: uppercase" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.adresseLigne2}" 
+								validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_2}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+						</h:panelGrid>
+						
+						<h:panelGrid columns="4" cellpadding="10">
+						
+							<p:outputLabel value="Code postal : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.codePostal}" 
+								validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_CODE_POSTAL}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="Ville : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.ville}" 
+								validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}" style="text-transform: uppercase">
+								<f:attribute name="nomChamp" value="#{const.C_VILLE}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+						</h:panelGrid>
+						
+						<!-- <h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Entreprise à l'étranger :"/>
+							<p:selectBooleanCheckbox id="idCheckBoxDomiciliationEtranger" value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.domiciliationEtranger}" disabled="#{devisRcdController.editable()}" >
+								<p:ajax event="change" update="@this" />
+							</p:selectBooleanCheckbox>
+							
+						</h:panelGrid> -->
+					
+							
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Tel : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.numeroTel}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_NUMERO_TEL}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="E-mail : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.adresseEmail}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_ADRESSE_EMAIL}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+						
+							<p:outputLabel value="Dirigeant"/>
+							<p:outputLabel value="."/>
+							
+						</h:panelGrid>
+						
+						<h:panelGrid columns="6" cellpadding="10">	
+							<p:outputLabel value="Civilité" styleClass="labelchob"/>
+							<p:autoComplete value="#{devisRcdController.taTCiviliteDTO}" required="true" completeMethod="#{assureController.typeCiviliteAutoCompleteLight}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}" var="typeCivilite" itemLabel="#{typeCivilite.codeTCivilite}" itemValue="#{typeCivilite}" forceSelection="true"
+								dropdown="true" placeholder="civilite" converter="entityConverter">
+								<p:column>
+									<h:outputText value="#{typeCivilite.codeTCivilite}" />
+								</p:column>
+						
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_CIVILITE}" />
+								<p:ajax event="itemSelect" listener="#{devisRcdController.autcompleteSelection}" update="@this" />
+							</p:autoComplete>
+	
+							<p:outputLabel value="Nom : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.nom}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}" style="text-transform: uppercase">
+								<f:attribute name="nomChamp" value="#{const.C_NOM}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="Prénom : " styleClass="labelchob"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.prenom}" style="text-transform: uppercase" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_PRENOM}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							
+							<p:outputLabel value="Date de naissance : " styleClass="labelchob"/>
+							<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.dateNaissance}" 
+								pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+								showOn="false" timeZone="#{msg.time_zone}" mindate="#{devisRcdController.dateLimiteNaissance}" 
+								validator="#{devisRcdController.validateDevisRcPro}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_DATE_NAISSANCE}" />
+								<p:ajax event="dateSelect" update="@this" />
+								<f:ajax event="blur" update="@this" />
+							</p:calendar>
+
+							
+
+							
+							
+							<p:outputLabel value="" styleClass=""/>
+							<p:outputLabel value="" styleClass=""/>
+							
+							<p:outputLabel value="" styleClass=""/>
+							<p:outputLabel value="" styleClass=""/>
+							
+							<p:outputLabel value="Création d'un compte client pour l'assuré" rendered="#{devisRcdController.afficheMotDePasse()}"/>
+							<p:selectBooleanCheckbox value="#{devisRcdController.creationCompteClientAssure}" disabled="#{devisRcdController.editable()}" rendered="#{devisRcdController.afficheMotDePasse()}" >
+								<p:ajax event="change" update="@this, @widgetVar(wvMdpCptCliAssureDevisRcd), @widgetVar(wvMdpConfirmCptCliAssureDevisRcd)" />
+							</p:selectBooleanCheckbox>
+	
+							<p:outputLabel value="Mot de passe" styleClass="labelchob" rendered="#{devisRcdController.afficheMotDePasse()}"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.password}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editable() || !devisRcdController.creationCompteClientAssure}" rendered="#{devisRcdController.afficheMotDePasse()}"
+								widgetVar="wvMdpCptCliAssureDevisRcd">
+								<f:attribute name="nomChamp" value="#{const.C_PASSWORD}" />
+								<p:ajax event="blur" update="@this, idComplexPasswordAssure" />
+							</p:inputText>
+							
+							<p:outputLabel value="Confirmation du mot de passe" styleClass="labelchob" rendered="#{devisRcdController.afficheMotDePasse()}"/>
+							<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.passwordConfirm}" validator="#{devisRcdController.validateDevisRcPro}"
+								disabled="#{devisRcdController.editable() || !devisRcdController.creationCompteClientAssure}" rendered="#{devisRcdController.afficheMotDePasse()}" 
+								widgetVar="wvMdpConfirmCptCliAssureDevisRcd">
+								<f:attribute name="nomChamp" value="#{const.C_PASSWORD}_CONFIRMATION" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputText>
+							<p:outputLabel id="idComplexPasswordLabelAssure" value="Complexité du mot de passe : ">
+<!-- 											<h:outputLink id="tooltipLinkCOmplexPassword" value="#"> -->
+<!-- 	        									<i class="fa fa-question-circle"></i> -->
+<!-- 	    									</h:outputLink> -->
+	    					</p:outputLabel>
+	    								
+							<p:outputLabel id="idComplexPasswordAssure" value="#{devisRcdController.passwordComplex()}" />
+
+<!-- 							<p:outputLabel value="Mot de passe" styleClass="labelchob" rendered="#{devisRcdController.afficheMotDePasse()}"/> -->
+<!-- 							<p:password value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.password}" feedback="true"  -->
+<!-- 								disabled="#{devisRcdController.editable() || !devisRcdController.creationCompteClientAssure}" rendered="#{devisRcdController.afficheMotDePasse()}" -->
+<!-- 								widgetVar="wvMdpCptCliAssureDevisRcd"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_PASSWORD}" /> --> 
+<!-- 								<p:ajax event="blur" update="@this" /> --> 
+<!-- 							</p:password> -->
+							
+<!-- 							<p:outputLabel value="Confirmation du mot de passe" styleClass="labelchob" rendered="#{devisRcdController.afficheMotDePasse()}"/> -->
+<!-- 							<p:password value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.passwordConfirm}" -->
+<!-- 								disabled="#{devisRcdController.editable() || !devisRcdController.creationCompteClientAssure}" rendered="#{devisRcdController.afficheMotDePasse()}"  -->
+<!-- 								widgetVar="wvMdpConfirmCptCliAssureDevisRcd"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_PASSWORD}_CONFIRMATION" /> --> 
+<!-- 								<p:ajax event="blur" update="@this" /> -->
+<!-- 							</p:password> -->
+
+
+	
+						</h:panelGrid>
+				
+					</p:panel>
+					
+					<p:panel header="DECLARATIONS DU PROPOSANT" toggleable="true" id="idPanelDeclaration" widgetVar="wvPanelDeclarationProposant">
+					
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Date de création de l'entreprise: " /> 
+							<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.dateCreation}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+								showOn="button" timeZone="#{msg.time_zone}" mindate="#{devisRcdController.dateLimiteCreationEts}"  validator="#{devisRcdController.validateDevisRcPro}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+								<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" />
+								<p:ajax event="dateSelect" update="@this" />
+								<f:ajax event="blur" update="@this" />
+							</p:calendar>
+							
+						</h:panelGrid>
+
+						<p:outputLabel value="Nombre d’années d’expérience professionnelle dans le domaine d’activité : "/>
+						<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.anneesExperienceActivite}" validator="#{devisRcdController.validateDevisRcPro}"
+							disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+							<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}_0" />
+							<p:ajax event="blur" update="@this" />
+						</p:inputText>
+						<p:outputLabel value=" années (y compris en tant que salarié, vous devez être en mesure de nous fournir les justificatifs à la durée déclarée)." styleClass="labelchob"/>
+			
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Effectif de l'entreprise : " styleClass="labelchob"/>
+							<h:panelGroup>
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.effectifTotalExercice}" validator="#{devisRcdController.validateDevisRcPro}"
+									disabled="#{devisRcdController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								<p:outputLabel value=" personnes"/>
+							</h:panelGroup>
+							
+							<p:outputLabel value="Dont "/>
+							<h:panelGroup>
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.effectifSurChantier}" validator="#{devisRcdController.validateDevisRcPro}"
+									disabled="#{devisRcdController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}_2" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								<p:outputLabel value=" intervenant(s) sur le chantier"/>
+							</h:panelGroup>
+							
+							<p:outputLabel value="Dont "/>
+							<h:panelGroup>
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.effectifApprentis}" validator="#{devisRcdController.validateDevisRcPro}"
+									disabled="#{devisRcdController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}_3" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								<p:outputLabel value=" apprentis"/>
+							</h:panelGroup>
+							
+							<p:outputLabel value="Dont "/>
+								<h:panelGroup>
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.effectifCommerciauxAdministratifs}" validator="#{devisRcdController.validateDevisRcPro}"
+									disabled="#{devisRcdController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}_5" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								<p:outputLabel value=" commerciaux et d’administratifs"/>
+							</h:panelGroup>
+							
+							<p:outputLabel value="Dont "/>
+								<h:panelGroup>
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.effectifEncadrement}" validator="#{devisRcdController.validateDevisRcPro}"
+									disabled="#{devisRcdController.editable()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}_4" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								<p:outputLabel value=" encadrement"/>
+							</h:panelGroup>
+
+						</h:panelGrid>
+					</p:panel>
+					
+					<p:panel header="CERTIFICAT DE QUALIFICATION" toggleable="true" id="idPanelCertificatDeQualification" widgetVar="wvPanelCertificatDeQualification">
+<!-- 						<p:outputLabel value="Qualifications : " /> -->
+<!-- 						<p:inputText -->
+<!-- 							value="#{devisRcdController.selectedTaDossierRcdDTO.taAssureDTO.qualifications}" -->
+<!-- 							validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 							disabled="#{devisRcdController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_QULIFICATION}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputText> -->
+						<h:panelGrid columns="2" cellpadding="10">
+							<p:outputLabel value="Le proposant a-t-il obtenu un agrément QUALIBAT" styleClass="labelchob" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.qualibat}" disabled="#{devisRcdController.editable()}">
+					            <f:selectItem itemLabel="oui" itemValue="true" />
+					            <f:selectItem itemLabel="non" itemValue="false" />
+					            <p:ajax update="@this" />
+					        </p:selectOneRadio>
+					   	</h:panelGrid>
+					   	<p:outputLabel value="(Si Oui, joindre la copie)"/>
+					</p:panel>
+					
+					<p:panel header="CHIFFRE D'AFFAIRES" toggleable="true" id="idPanelCA" widgetVar="wvPanelCA">
+					
+<!-- 						<p:outputLabel value="Chiffre d’affaires HT prévisionnel de l’exercice : " styleClass="labelchob"/> -->
+<!-- 						<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.chiffreAffaireExercicePrevisionnel}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 							symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" -->
+<!-- 							disabled="#{devisRcdController.editable()}"> -->
+<!-- 							<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 							<p:ajax event="blur" update="@this" /> -->
+<!-- 						</p:inputNumber> -->
+						
+						<h:panelGrid columns="2" cellpadding="10" border="1">
+							<p:outputLabel value="Exercice"/>
+							<p:outputLabel value="CA total HT (fourniture et pose)"/>
+<!-- 							<p:outputLabel value="% de votre CA donné en sous-traitance"/> -->
+							
+							<p:outputLabel value="Dernier exercice ou Prévisionnel (si création)" />
+							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.chiffreAffaireExercicePrevisionnel}" validator="#{devisRcdController.validateDevisRcPro}"
+								symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" styleClass="labelchob"
+								disabled="#{devisRcdController.editable()}">
+<!-- 								devisRcdController.onglet3Valide?'onglet-valide':'onglet-erreur' -->
+								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+								<p:ajax event="blur" update="@this" listener="#{devisRcdController.majMontantCommissionPrevu}" />
+							</p:inputNumber>
+<!-- 							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.pourcentCaSousTraitDernierExercice}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 								disabled="#{devisRcdController.editable()}"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 								<p:ajax event="blur" update="@this" /> -->
+<!-- 							</p:inputNumber> -->
+							
+							<p:outputLabel value="Exercice N-1"/>
+							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.caTotalHtExerciceNMoins1}" validator="#{devisRcdController.validateDevisRcPro}"
+								symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}"
+								disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputNumber>
+<!-- 							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.pourcentCaSousTraitExerciceNMoins1}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 								disabled="#{devisRcdController.editable()}"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 								<p:ajax event="blur" update="@this" /> -->
+<!-- 							</p:inputNumber> -->
+							
+							<p:outputLabel value="Exercice N-2"/>
+							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.caTotalHtExerciceNMoins2}" validator="#{devisRcdController.validateDevisRcPro}"
+								symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}"
+								disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputNumber>
+<!-- 							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.pourcentCaSousTraitExerciceNMoins2}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 								disabled="#{devisRcdController.editable()}"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 								<p:ajax event="blur" update="@this" /> -->
+<!-- 							</p:inputNumber> -->
+						</h:panelGrid>
+					</p:panel>
+					
+				</div>
+			</div>
+			
+			<ui:include src="./precendent_suivant_include.xhtml">
+				<ui:param name="masquePrecedent" value="true" />
+			</ui:include>
+			
+		</p:tab>
+			
+
+
+		<p:tab id="idOngletAntecedant" title="Antécédents" titleStyleClass="#{devisRcdController.onglet3Valide?'onglet-valide':'onglet-erreur'}" titletip="Antécédents">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+
+<!-- 				<div class="ui-g-12"> -->
+<!-- 					<p:panel header="ANCIENNETE DE L'ENTREPRISE" toggleable="true"> -->
+<!-- 						<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.qualibat}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 					            <f:selectItem itemLabel="-12 mois" itemValue="12" /> -->
+<!-- 					            <f:selectItem itemLabel="12 à 36 mois" itemValue="12a36" /> -->
+<!-- 					            <f:selectItem itemLabel="+36 mois" itemValue="36" /> -->
+<!-- 					            <p:ajax update="@this" /> -->
+<!-- 					    </p:selectOneRadio> -->
+<!-- 					</p:panel> -->
+<!-- 				</div> -->
+				<div class="ui-g-12">
+				
+					<p:panel header="ANTECEDENTS D'ASSURANCE" toggleable="true" widgetVar="wvPanelAntecedent">
+						Dans les 24 derniers mois
+						<div class="ui-g-12">
+						<!-- ATTENTION : Avant c'etait 36 mois donc les champs en base conservent leur nom avec 36 dedans -->
+							<h:panelGrid columns="2" cellpadding="10">
+<!-- 								<f:facet name="header"> -->
+<!-- 								DÉCLARATION DU SOUSCRIPTEUR -->
+<!-- 								</f:facet> -->
+								
+								<p:outputLabel value="Etes vous ou avez vous été assuré pour le même risque ?" />
+								<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+						            <f:selectItem itemLabel="oui" itemValue="true" />
+						            <f:selectItem itemLabel="non" itemValue="false" />
+						            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe),@widgetVar(wvPanelAntecedent),@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}"/>
+						        </p:selectOneRadio>
+						        
+						    </h:panelGrid>
+						    <div class="ui-g-12">
+						    	 <div class="ui-g-4">
+							    	<p:outputLabel value="Nom de l'assureur" rendered="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}"/>
+							    </div>
+							    <div class="ui-g-4">
+							    	<h:panelGroup rendered="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}">
+								        <p:inputText id="aaa" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdNomAssureur}"
+								         validator="#{devisRcdController.validateDevisRcPro}" style="text-transform: uppercase;"
+											disabled="#{devisRcdController.editableSaufAvenantCourtier()}" required="false" requiredMessage="">
+											<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+											<p:ajax event="blur" update="@this,ddd" />
+										</p:inputText>
+										<!-- disabled="#{devisRcdController.editableSaufAvenantCourtier() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}" required="true" -->
+										<p:message id="ddd" for="aaa" style="display:inline-grid;"/>
+									</h:panelGroup>
+							    </div>
+						    </div>
+						   
+						    <p:outputLabel value="Si oui par quel type de contrat ?" rendered="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}"/>
+						    
+						    <p:panel rendered="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}">
+							    <div class="ui-g">
+							    	<div class="ui-g-12">
+									    <div class="ui-g-4">
+									    </div>
+									    <div class="ui-g-4">
+											<p:selectBooleanCheckbox itemLabel="Responsabilité Civile Décénnale/Exploitation" value="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent)" listener="#{devisRcdController.initAffichageAntecedent}"/>
+									        </p:selectBooleanCheckbox>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									    	 <p:selectBooleanCheckbox itemLabel="Responsabilité Civile Exploitation" value="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}"> -->
+<!-- 									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent)" listener="#{devisRcdController.initAffichageAntecedent}"/> -->
+<!-- 									        </p:selectBooleanCheckbox> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 											<p:inputText rendered="#{devisRcdController.afficheBaseAntecedentRce}" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRceNomAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 												disabled="#{devisRcdController.editableSaufAvenantCourtier() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}"> -->
+<!-- 												<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 												<p:ajax event="blur" update="@this" /> -->
+<!-- 											</p:inputText> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+									    	<p:outputLabel value="N° de police" rendered="#{devisRcdController.afficheBaseAntecedentRcd or devisRcdController.afficheBaseAntecedentRce}"/>
+									    </div>
+									    <div class="ui-g-4">
+											<p:inputText rendered="#{devisRcdController.afficheBaseAntecedentRcd}" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdPoliceAssureur}" validator="#{devisRcdController.validateDevisRcPro}"
+												disabled="#{devisRcdController.editableSaufAvenantCourtier() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}">
+												<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+												<p:ajax event="blur" update="@this" />
+											</p:inputText>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 											<p:inputText rendered="#{devisRcdController.afficheBaseAntecedentRce}" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcePoliceAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 												disabled="#{devisRcdController.editableSaufAvenantCourtier() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}"> -->
+<!-- 												<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 												<p:ajax event="blur" update="@this" /> -->
+<!-- 											</p:inputText> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+									    	<p:outputLabel value="Le contrat est-il ?" rendered="#{devisRcdController.afficheBaseAntecedentRcd or devisRcdController.afficheBaseAntecedentRce}"/>
+									    </div>
+									    <div class="ui-g-4">
+									        <p:selectOneRadio rendered="#{devisRcdController.afficheBaseAntecedentRcd}" value="#{devisRcdController.selectedAntecedantRCDEnCours}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+									            <f:selectItem itemLabel="En cours" itemValue="en_cours" />
+									            <f:selectItem itemLabel="Résilié" itemValue="resilie" />
+									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.actRadioAntecedantRCDEnCours}"/>
+									        </p:selectOneRadio>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheBaseAntecedentRce}" value="#{devisRcdController.selectedAntecedantRCEEnCours}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}"> -->
+<!-- 									            <f:selectItem itemLabel="En cours" itemValue="en_cours" /> -->
+<!-- 									            <f:selectItem itemLabel="Résilié" itemValue="resilie" /> -->
+<!-- 									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.actRadioAntecedantRCEEnCours}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+									    	<p:outputLabel value="Date de résiliation" rendered="#{devisRcdController.afficheResilieRcd}"/>
+									    </div>
+									    <div class="ui-g-4">
+											<p:calendar rendered="#{devisRcdController.afficheResilieRcd}" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdDateResiliation}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+												showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" 
+												disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+												<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" />
+												<p:ajax event="dateSelect" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" />
+			<!-- 									<f:ajax event="blur" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+											</p:calendar>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 											<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRceDateResiliation}"  -->
+<!-- 												rendered="#{devisRcdController.afficheResilieRce}" -->
+<!-- 												pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true" -->
+<!-- 												showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}"> -->
+<!-- 												<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" /> -->
+<!-- 												<p:ajax event="dateSelect" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+<!-- 											</p:calendar> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+									    	<p:outputLabel value="Le contrat a-t-il été résilié ?" rendered="#{devisRcdController.afficheResilieRcd}"/>
+									
+									    </div>
+									    <div class="ui-g-4">
+										    <p:selectOneRadio rendered="#{devisRcdController.afficheResilieRcd}" value="#{devisRcdController.selectedAntecedantRCDResilieParAssure}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" widgetVar="wvContratRCDResilieAssure">
+									            <f:selectItem itemLabel="Par l'assuré" itemValue="assure_rcd" />
+									            <f:selectItem itemLabel="Par l'assureur" itemValue="assureur_rcd" />
+									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvContratRCDResilieAssureur),
+									            	@widgetVar(wvAntecedantMotifRCDAssureur),@widgetVar(wvAntecedantMotifRCDAssure)
+									            	,@widgetVar(wvContratRCDResilieAssure),@widgetVar(wvAntecedantMotifRCDAssureur),@widgetVar(wvAntecedantMotifRCDAssure)" 
+									            	listener="#{devisRcdController.actRadioAntecedantRCDResilieParAssure}"/>
+<!-- 									            <p:ajax listener="#{devisRcdController.actRadioAntecedantRCDResilieParAssureur}"/> -->
+									        </p:selectOneRadio>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheResilieRce}" value="#{devisRcdController.selectedAntecedantRCEResilieParAssure}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" widgetVar="wvContratRCEResilieAssure"> -->
+<!-- 									            <f:selectItem itemLabel="Par l'assuré" itemValue="assure_rce" /> -->
+<!-- 									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvContratRCEResilieAssureur),@widgetVar(wvAntecedantMotifRCEAssureur),@widgetVar(wvAntecedantMotifRCEAssure)" listener="#{devisRcdController.actRadioAntecedantRCEResilieParAssure}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+<!-- 									    	<p:outputLabel value="Motif" rendered="#{devisRcdController.afficheMotifResilieAssureRcd}"/> -->
+									    	<p:outputLabel value="Motif" rendered="#{devisRcdController.afficheMotifResilieAssureRcd or devisRcdController.afficheMotifResilieAssureurRcd}"/>
+									    </div>
+									    <div class="ui-g-4">
+											<p:selectOneRadio rendered="#{devisRcdController.afficheMotifResilieAssureRcd}" value="#{devisRcdController.selectedAntecedantMotifRCDAssure}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}"
+									        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCDAssure">
+									            <f:selectItem itemLabel="Résiliation à l'échéance" itemValue="echeance" />
+									            <f:selectItem itemLabel="Hausse tarifs (hors indice)" itemValue="hausse_tarif" />
+									            <f:selectItem itemLabel="Changement activité" itemValue="changement_act" />
+									            <f:selectItem itemLabel="Résiliation amiable" itemValue="amiable" />
+									           <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCDAssure}"/>
+									        </p:selectOneRadio>
+									        
+									        <p:selectOneRadio rendered="#{devisRcdController.afficheMotifResilieAssureurRcd}" value="#{devisRcdController.selectedAntecedantMotifRCDAssureur}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}"
+									        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCDAssureur">
+									            <f:selectItem itemLabel="Non-paiement de prime" itemValue="non_paiement" />
+									            <f:selectItem itemLabel="Sinistre" itemValue="sinistre" />
+									            <f:selectItem itemLabel="Modification d'activité" itemValue="modification_activite" />
+									            <f:selectItem itemLabel="Autre" itemValue="autre" />
+									            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCDAssureur}"/>
+									        </p:selectOneRadio>
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheMotifResilieAssureRce}" value="#{devisRcdController.selectedAntecedantMotifRCEAssure}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" -->
+<!-- 									        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCEAssure"> -->
+<!-- 									            <f:selectItem itemLabel="Résiliation à l'échéance" itemValue="echeance" /> -->
+<!-- 									            <f:selectItem itemLabel="Hausse tarifs (hors indice)" itemValue="hausse_tarif" /> -->
+<!-- 									            <f:selectItem itemLabel="Changement activité" itemValue="changement_act" /> -->
+<!-- 									            <f:selectItem itemLabel="Résiliation amiable" itemValue="amiable" /> -->
+<!-- 									            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCEAssure}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									    	<p:outputLabel value="Le contrat a-t-il été résilié ?" rendered="#{devisRcdController.afficheMotifResilieAssureurRcd}"/> -->
+<!-- 									    </div> -->
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 											<p:selectOneRadio rendered="#{devisRcdController.afficheResilieRcd}" value="#{devisRcdController.selectedAntecedantRCDResilieParAssureur}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" widgetVar="wvContratRCDResilieAssureur"> -->
+<!-- 									            <f:selectItem itemLabel="Par l'assureur" itemValue="assureur_rcd" /> -->
+<!-- 									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvContratRCDResilieAssure),@widgetVar(wvAntecedantMotifRCDAssureur),@widgetVar(wvAntecedantMotifRCDAssure)" listener="#{devisRcdController.actRadioAntecedantRCDResilieParAssureur}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheResilieRce}" value="#{devisRcdController.selectedAntecedantRCEResilieParAssureur}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" widgetVar="wvContratRCEResilieAssureur"> -->
+<!-- 									            <f:selectItem itemLabel="Par l'assureur" itemValue="assureur_rce" /> -->
+<!-- 									            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvContratRCEResilieAssure),@widgetVar(wvAntecedantMotifRCEAssureur),@widgetVar(wvAntecedantMotifRCEAssure)" listener="#{devisRcdController.actRadioAntecedantRCEResilieParAssureur}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+									</div>
+									<div class="ui-g-12">
+									    <div class="ui-g-4">
+<!-- 									    	<p:outputLabel value="Motif" rendered="#{devisRcdController.afficheMotifResilieAssureurRcd}"/> -->
+									    </div>
+									    <div class="ui-g-4">
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheMotifResilieAssureurRcd}" value="#{devisRcdController.selectedAntecedantMotifRCDAssureur}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" -->
+<!-- 									        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCDAssureur"> -->
+<!-- 									            <f:selectItem itemLabel="Non-paiement de prime" itemValue="non_paiement" /> -->
+<!-- 									            <f:selectItem itemLabel="Sinistre" itemValue="sinistre" /> -->
+<!-- 									            <f:selectItem itemLabel="Modification d'activité" itemValue="modification_activite" /> -->
+<!-- 									            <f:selectItem itemLabel="Autre" itemValue="autre" /> -->
+<!-- 									            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCDAssureur}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+									    </div>
+<!-- 									    <div class="ui-g-4"> -->
+<!-- 									        <p:selectOneRadio rendered="#{devisRcdController.afficheMotifResilieAssureurRce}" value="#{devisRcdController.selectedAntecedantMotifRCEAssureur}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" -->
+<!-- 									        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCEAssureur"> -->
+<!-- 									            <f:selectItem itemLabel="Non-paiement de prime" itemValue="non_paiement" /> -->
+<!-- 									            <f:selectItem itemLabel="Sinistre" itemValue="sinistre" /> -->
+<!-- 									            <f:selectItem itemLabel="Modification d'activité" itemValue="modification_activite" /> -->
+<!-- 									            <f:selectItem itemLabel="Autre" itemValue="autre" /> -->
+<!-- 									            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCEAssureur}"/> -->
+<!-- 									        </p:selectOneRadio> -->
+<!-- 									    </div> -->
+									</div>
+								</div>
+							</p:panel>
+							<h:panelGrid columns="3" rendered="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque}" >
+					
+<!-- 								<p:outputLabel value="" /> -->
+<!-- 								<p:selectBooleanCheckbox itemLabel="Responsabilité Civile Décénnale" value="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvPanelAntecedent)" /> -->
+<!-- 						        </p:selectBooleanCheckbox> -->
+<!-- 						        <p:selectBooleanCheckbox itemLabel="Responsabilité Civile Exploitation" value="#{devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvPanelAntecedent)" /> -->
+<!-- 						        </p:selectBooleanCheckbox> -->
+						        
+<!-- 						        <p:outputLabel value="Nom de l'assureur" rendered="#{devisRcdController.afficheBaseAntecedentRcd or devisRcdController.afficheBaseAntecedentRce}"/> -->
+<!-- 						        <h:panelGroup rendered="#{devisRcdController.afficheBaseAntecedentRcd}"> -->
+<!-- 							        <p:inputText id="aa" value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdNomAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 										disabled="#{devisRcdController.editable() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}" required="true" requiredMessage=""> -->
+<!-- 										<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 										<p:ajax event="blur" update="@this,dd" /> -->
+<!-- 									</p:inputText> -->
+<!-- 									<p:message id="dd" for="aa" style="display:inline-grid;"/> -->
+<!-- 								</h:panelGroup> -->
+<!-- 								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRceNomAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 									disabled="#{devisRcdController.editable() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="N° de police" /> -->
+<!-- 						        <p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdPoliceAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 									disabled="#{devisRcdController.editable() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRcd}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+<!-- 								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcePoliceAssureur}" validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 									disabled="#{devisRcdController.editable() or !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisqueRce}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+						        
+<!-- 						        <p:outputLabel value="Le contrat est-il ?" /> -->
+<!-- 								<p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCDEnCours}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 						            <f:selectItem itemLabel="En cours" itemValue="en_cours" /> -->
+<!-- 						            <f:selectItem itemLabel="Résilié" itemValue="resilie" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.actRadioAntecedantRCDEnCours}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCEEnCours}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 						            <f:selectItem itemLabel="En cours" itemValue="en_cours" /> -->
+<!-- 						            <f:selectItem itemLabel="Résilié" itemValue="resilie" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvPanelAntecedent),@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.actRadioAntecedantRCEEnCours}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+						        
+<!-- 						        rendered="#{devisRcdController.selectedAntecedantRCDEnCours eq 'resilie'}" -->
+<!-- 						        <p:outputLabel value="Date de résiliation" /> -->
+<!-- 						        <h:panelGroup /> -->
+<!-- 						        <p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRcdDateResiliation}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true" -->
+<!-- 									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}"  -->
+									
+<!-- 									disabled="#{devisRcdController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" /> -->
+<!-- 									<p:ajax event="dateSelect" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+<!-- 									<f:ajax event="blur" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+<!-- 								</p:calendar> -->
+<!-- 								<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.antecedentRceDateResiliation}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true" -->
+<!-- 									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="#{devisRcdController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" /> -->
+<!-- 									<p:ajax event="dateSelect" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+<!-- 									<f:ajax event="blur" update="@this,@widgetVar(wvRadioBtnInterruptionAssurance)" listener="#{devisRcdController.calculeDureeInterruptionAssurance}" /> -->
+<!-- 								</p:calendar> -->
+								
+<!-- 								<p:outputLabel value="Le contrat a-t-il été résilié ?" /> -->
+<!-- 								<p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCDResilieParAssure}" disabled="#{devisRcdController.editable()}" widgetVar="wvContratRCDResilieAssure"> -->
+<!-- 						            <f:selectItem itemLabel="Par l'assuré" itemValue="assure_rcd" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvContratRCDResilieAssureur),@widgetVar(wvAntecedantMotifRCDAssureur),@widgetVar(wvAntecedantMotifRCDAssure)" listener="#{devisRcdController.actRadioAntecedantRCDResilieParAssure}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCEResilieParAssure}" disabled="#{devisRcdController.editable()}" widgetVar="wvContratRCEResilieAssure"> -->
+<!-- 						            <f:selectItem itemLabel="Par l'assuré" itemValue="assure_rce" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvContratRCEResilieAssureur),@widgetVar(wvAntecedantMotifRCEAssureur),@widgetVar(wvAntecedantMotifRCEAssure)" listener="#{devisRcdController.actRadioAntecedantRCEResilieParAssure}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+						        
+<!-- 						        <p:outputLabel value="Motif" /> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantMotifRCDAssure}" disabled="#{devisRcdController.editable()}" -->
+<!-- 						        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCDAssure"> -->
+<!-- 						            <f:selectItem itemLabel="Résiliation à l'échéance" itemValue="echeance" /> -->
+<!-- 						            <f:selectItem itemLabel="Hausse tarifs (hors indice)" itemValue="hausse_tarif" /> -->
+<!-- 						            <f:selectItem itemLabel="Changement activité" itemValue="changement_act" /> -->
+<!-- 						            <f:selectItem itemLabel="Résiliation amiable" itemValue="amiable" /> -->
+<!-- 						           <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCDAssure}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantMotifRCEAssure}" disabled="#{devisRcdController.editable()}" -->
+<!-- 						        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCEAssure"> -->
+<!-- 						            <f:selectItem itemLabel="Résiliation à l'échéance" itemValue="echeance" /> -->
+<!-- 						            <f:selectItem itemLabel="Hausse tarifs (hors indice)" itemValue="hausse_tarif" /> -->
+<!-- 						            <f:selectItem itemLabel="Changement activité" itemValue="changement_act" /> -->
+<!-- 						            <f:selectItem itemLabel="Résiliation amiable" itemValue="amiable" /> -->
+<!-- 						            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCEAssure}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+						        
+<!-- 						        <p:outputLabel value="Le contrat a-t-il été résilié ?" /> -->
+<!-- 								<p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCDResilieParAssureur}" disabled="#{devisRcdController.editable()}" widgetVar="wvContratRCDResilieAssureur"> -->
+<!-- 						            <f:selectItem itemLabel="Par l'assureur" itemValue="assureur_rcd" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvContratRCDResilieAssure),@widgetVar(wvAntecedantMotifRCDAssureur),@widgetVar(wvAntecedantMotifRCDAssure)" listener="#{devisRcdController.actRadioAntecedantRCDResilieParAssureur}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantRCEResilieParAssureur}" disabled="#{devisRcdController.editable()}" widgetVar="wvContratRCEResilieAssureur"> -->
+<!-- 						            <f:selectItem itemLabel="Par l'assureur" itemValue="assureur_rce" /> -->
+<!-- 						            <p:ajax update="@this,@widgetVar(wvContratRCEResilieAssure),@widgetVar(wvAntecedantMotifRCEAssureur),@widgetVar(wvAntecedantMotifRCEAssure)" listener="#{devisRcdController.actRadioAntecedantRCEResilieParAssureur}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+						        
+<!-- 						        <p:outputLabel value="Motif" /> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantMotifRCDAssureur}" disabled="#{devisRcdController.editable()}" -->
+<!-- 						        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCDAssureur"> -->
+<!-- 						            <f:selectItem itemLabel="Non-paiement de prime" itemValue="non_paiement" /> -->
+<!-- 						            <f:selectItem itemLabel="Sinistre" itemValue="sinistre" /> -->
+<!-- 						            <f:selectItem itemLabel="Modification d'activité" itemValue="modification_activite" /> -->
+<!-- 						            <f:selectItem itemLabel="Autre" itemValue="autre" /> -->
+<!-- 						            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCDAssureur}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+<!-- 						        <p:selectOneRadio value="#{devisRcdController.selectedAntecedantMotifRCEAssureur}" disabled="#{devisRcdController.editable()}" -->
+<!-- 						        	layout="responsive" columns="1" widgetVar="wvAntecedantMotifRCEAssureur"> -->
+<!-- 						            <f:selectItem itemLabel="Non-paiement de prime" itemValue="non_paiement" /> -->
+<!-- 						            <f:selectItem itemLabel="Sinistre" itemValue="sinistre" /> -->
+<!-- 						            <f:selectItem itemLabel="Modification d'activité" itemValue="modification_activite" /> -->
+<!-- 						            <f:selectItem itemLabel="Autre" itemValue="autre" /> -->
+<!-- 						            <p:ajax update="@this" listener="#{devisRcdController.actRadioAntecedantMotifRCEAssureur}"/> -->
+<!-- 						        </p:selectOneRadio> -->
+
+							</h:panelGrid>
+						</div>
+					</p:panel>
+					</div>
+					
+					<div class="ui-g-12">
+						<p:panel header="INTERRUPTION D'ASSURANCE" toggleable="true">
+							<p:selectOneRadio value="#{devisRcdController.selectedInteruptionAssurance}" disabled="true" widgetVar="wvRadioBtnInterruptionAssurance">
+					            <!-- <f:selectItem itemLabel="-6 mois" itemValue="6mois" />
+					            <f:selectItem itemLabel="6 à 12 mois" itemValue="6a12mois" />
+					            <f:selectItem itemLabel="12 à 24 mois" itemValue="12a24mois" />
+					            <f:selectItem itemLabel="24 à 36 mois" itemValue="24a36mois" />
+					            <f:selectItem itemLabel="36 à 60 mois" itemValue="36a60mois" />
+					            <f:selectItem itemLabel="60 à 84 mois" itemValue="60a84mois" />
+					            <f:selectItem itemLabel="+84 mois" itemValue="84mois" /> -->
+					            <f:selectItem itemLabel="0 à 2 ans" itemValue="0_2ans" />
+					            <f:selectItem itemLabel="2 à 5 ans" itemValue="2_5ans" />
+					            <f:selectItem itemLabel="5 à 7 ans" itemValue="5_7ans" />
+					            <f:selectItem itemLabel="plus de 7 ans" itemValue="plus_7ans" />
+					            <p:ajax update="@this" listener="#{devisRcdController.actRadioInteruptionAssurance}"/>
+						    </p:selectOneRadio>
+						</p:panel>
+					</div>
+				</div>
+			
+			<ui:include src="./precendent_suivant_include.xhtml" />
+					
+		</p:tab>
+		
+		<p:tab id="idOngletSinistralite" title="Sinistralité" titleStyleClass="#{devisRcdController.onglet4Valide?'onglet-valide':'onglet-erreur'}" titletip="Sinistralité">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<p:panel widgetVar="wvPanelAntecedentAssuranceGroupe" header="Sinistralité">
+				
+				<h:panelGrid columns="2" cellpadding="10">
+				
+					<p:outputLabel value="Sur les 36 derniers mois, êtes-vous ou avez-vous été en redressement et/ou en liquidation judiciaire au titre de la société demandeuse ?" />
+					<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteLiquidationSocieteDemandeuse}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+			            <f:selectItem itemLabel="oui" itemValue="true" />
+			            <f:selectItem itemLabel="non" itemValue="false" />
+			            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe), @widgetVar(wvSelectOneRadioFractionnement)" listener="#{devisRcdController.actChangementRedressementJudiciaire}" />
+			        </p:selectOneRadio>
+			        
+			        <p:outputLabel value="Sur les 36 derniers mois, êtes-vous ou avez-vous été en redressement et/ou en liquidation judiciaire au titre d’une autre société" />
+					<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteLiquidationAutreSociete}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+			            <f:selectItem itemLabel="oui" itemValue="true" />
+			            <f:selectItem itemLabel="non" itemValue="false" />
+			            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe), @widgetVar(wvSelectOneRadioFractionnement)" listener="#{devisRcdController.actChangementRedressementJudiciaireAutre}" />
+			        </p:selectOneRadio>
+			        
+			        <p:outputLabel value="Les risques ont-ils fait l’objet d’un refus d’assurance ?" />
+					<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteRisqueRefusAssurance}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+			            <f:selectItem itemLabel="oui" itemValue="true" />
+			            <f:selectItem itemLabel="non" itemValue="false" />
+			            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe)" />
+			        </p:selectOneRadio>
+			        
+			        <p:outputLabel value="Avez-vous fait l’objet d’une ou de plusieurs mises en cause au cours des 24 derniers mois ?" />
+					<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteMiseEnCause}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+			            <f:selectItem itemLabel="oui" itemValue="true" />
+			            <f:selectItem itemLabel="non" itemValue="false" />
+			            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe)" />
+			        </p:selectOneRadio>
+			        
+			    </h:panelGrid>
+			    
+			    Si oui, indiquez ci-dessous chacune des mises en cause, y compris les réclamations n’ayant pas fait l’objet d’un règlement :
+				<br/>
+				<br/>
+								
+				<p:commandButton value="Ajouter" actionListener="#{devisRcdController.actInsererSinistreAntecedent()}" 
+					disabled="#{devisRcdController.editableSaufAvenantCourtier()}"
+					rendered="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteMiseEnCause}"
+					update="@widgetVar(wvSinistreAntedentPanel)" oncomplete="PF('wvSinistreAntedentDialog').show()" process="@this"/>
+					
+				<p:dataTable
+					widgetVar="wvDatatableSinistreAntecedant"
+					value="#{devisRcdController.taDossierRcd.taSinistreAntecedent}"
+					var="s"
+					rendered="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteMiseEnCause}"
+					emptyMessage="Aucun sinistre"
+					selection="#{devisRcdController.selectedTaSinstreAntecedent}">
+					
+					<f:facet name="header">
+						Sinitre(s) sur les 36 derniers mois
+					</f:facet>
+					
+					<p:column headerText="Type de garantie" styleClass="center">
+						<p:outputLabel value="#{s.taTGarantieSinistre.liblTGarantieSinistre}" />
+					</p:column>
+<!-- 							<p:column headerText="Nombre de sinistre" styleClass="center"> -->
+<!-- 								<p:outputLabel value="#{s.nbrSinistres}" /> -->
+<!-- 							</p:column> -->
+					<p:column headerText="Année de déclaration" styleClass="center">
+						<h:outputText value="#{s.dateSinistre}">
+							<f:convertDateTime pattern="#{msg.date_pattern}" timeZone="#{msg.time_zone}"/>
+						</h:outputText>
+					</p:column>
+					
+					<p:column headerText="Nature des dommages" styleClass="center">
+<!-- 								<p:outputLabel value="#{s.liblSinistre}" /> -->
+						<p:outputLabel value="#{s.natureDommages}" />
+					</p:column>
+					
+					<p:column headerText="Part de responsabilité" styleClass="center">
+						<p:outputLabel value="#{s.partResponsabilite}" />
+					</p:column>
+					
+					<p:column headerText="Montant des dommages" styleClass="center">
+						<p:outputLabel value="#{s.montantSinistre}" />
+					</p:column>
+					
+					<p:column headerText="" styleClass="center">
+						<p:commandButton value="Supprimer" action="#{devisRcdController.actSupprimerAntecedent()}" 
+							disabled="#{devisRcdController.editableSaufAvenantCourtier()}" update="@widgetVar(wvDatatableSinistreAntecedant),@widgetVar(wvNbSinistre5ans),@widgetVar(wvCoutGlobalSinistre)" process="@this" >
+							<f:setPropertyActionListener value="#{s}" target="#{devisRcdController.selectedTaSinstreAntecedent}" />
+						</p:commandButton>	
+					</p:column>
+					
+				</p:dataTable>
+
+				<h:panelGrid columns="2" cellpadding="10">
+					<p:outputLabel value="Avez-vous connaissance d’autres événements susceptibles d’engager votre responsabilité ?" />
+					<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteEvenementEngageantResp}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}">
+			            <f:selectItem itemLabel="oui" itemValue="true" />
+			            <f:selectItem itemLabel="non" itemValue="false" />
+			            <p:ajax update="@this,@widgetVar(wvPanelAntecedentAssuranceGroupe)" />
+			        </p:selectOneRadio>
+		        </h:panelGrid>
+		        
+		        Si oui, explicitez les faits :
+				<br/>
+				<p:inputTextarea  value="#{devisRcdController.selectedTaDossierRcdDTO.sinistraliteEvenementFaits}" disabled="#{devisRcdController.editableSaufAvenantCourtier()}" style="width:100%" autoResize="true">
+					<p:ajax update="@this"/>
+				</p:inputTextarea>
+	
+			</p:panel>
+			
+			<ui:include src="./precendent_suivant_include.xhtml" />
+		</p:tab>
+			
+		<p:tab id="idOngletActiviteDeclare" title="Activités déclarées" titleStyleClass="#{devisRcdController.onglet5Valide?'onglet-valide':'onglet-erreur'}" titletip="Activité déclaré">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<p:panel widgetVar="wvPanelActivite">
+						<p:panel rendered="#{!devisRcdController.assurePib()}">
+	
+<!-- 							<p:selectManyCheckbox value="#{devisRcdController.selectedTaActiviteDTOs}"  -->
+<!-- 								layout="responsive" columns="2" converter="entityConverter" disabled="#{devisRcdController.editable()}"> -->
+<!-- 					            <f:selectItems value="#{devisRcdController.taActiviteDTODisponible}" var="act" itemLabel="#{act.codeActivite} - #{act.liblActivite}" itemValue="#{act}" /> -->
+<!-- 					            <p:ajax listener="#{devisRcdController.actModificationActivite}" update="@widgetVar(wvMontantPrimeDevisRcPro)"/> -->
+<!-- 					        </p:selectManyCheckbox> -->
+					        
+<!-- 					        rowSelectMode="add"  checkbox   new -->
+							<p:tabView>
+							
+<!-- 								<p:ajax event="tabChange" update="@widgetVar(wvActiviteSelectioneDataTable)" />  -->
+								
+								<p:tab title="Activité(s) : sélectionner les activités principales (1 à #{devisRcdController.nbActiviteMax})" titleStyleClass="#{devisRcdController.onglet5_1Valide?'onglet-valide':'onglet-erreur'}">
+							        <p:dataTable 
+							        	widgetVar="wvActiviteDataTable"
+							        	binding="#{devisRcdController.activiteDatatable}"
+							        	var="act" 
+							        	value="#{devisRcdController.taActiviteDTODisponible}" 
+							        	expandableRowGroups="true" 
+							        	rowSelectMode="add"
+							        	disabled="#{devisRcdController.editable()}"
+							        	rendered="#{!devisRcdController.editable()}"
+							        	selection="#{devisRcdController.selectedTaActiviteDTOs}" 
+							        	rowKey="#{act.id}" 
+							        	style="margin-bottom:0" 
+							        	sortBy="#{act.liblFamilleActivite}">
+<!-- 		disabledSelection="#{devisRcdController.editable()}" -->
+		
+		<!-- 								<p:ajax event="rowSelect" listener="#{devisRcdController.actModificationActivite}" update="@widgetVar(wvMontantPrimeDevisRcPro)" /> -->
+										<p:ajax event="rowSelect" listener="#{devisRcdController.onActiviteSelect}" update="@widgetVar(wvMontantPrimeDevisRcPro),@widgetVar(wvActiviteDataTable),@widgetVar(wvActiviteSelectioneDataTable),@widgetVar(wvPanelQuestionExp5ans)" process="@this"/>
+		        						<p:ajax event="rowUnselect" listener="#{devisRcdController.onActiviteUnselect}" update="@widgetVar(wvMontantPrimeDevisRcPro),@widgetVar(wvActiviteSelectioneDataTable),@widgetVar(wvPanelQuestionExp5ans)" process="@this"/>
+		
+										<p:headerRow>
+								            <p:column colspan="2">
+								                <h:outputText value="#{act.liblFamilleActivite}" />
+								            </p:column>
+								        </p:headerRow>
+								        
+								        <p:column selectionMode="multiple" style="width:16px;text-align:center" visible="false"/>
+					
+								        <p:column headerText="Code activité" style="width:50px">
+								            <h:outputText value="#{act.codeActivite}" />
+								        </p:column>
+								        
+								        <p:column headerText="Nature de l'activité" >
+								            <h:outputText value="#{act.liblActivite}" />
+								        </p:column>
+								        
+								    </p:dataTable>
+								    
+								    <p:dataTable 
+							        	widgetVar="wvActiviteDataTableConsultation"
+							        	rendered="#{devisRcdController.editable()}"
+							        	var="act" 
+							        	value="#{devisRcdController.selectedTaActiviteDTOs}" 
+							        	expandableRowGroups="true" 
+							        	sortBy="#{act.liblFamilleActivite}">
+							        	
+										<p:headerRow>
+								            <p:column colspan="2">
+								                <h:outputText value="#{act.liblFamilleActivite}" />
+								            </p:column>
+								        </p:headerRow>
+								        					
+								        <p:column headerText="Code activité" style="width:50px">
+								            <h:outputText value="#{act.codeActivite}" />
+								        </p:column>
+								        
+								        <p:column headerText="Nature de l'activité" >
+								            <h:outputText value="#{act.liblActivite}" />
+								        </p:column>
+								        
+								    </p:dataTable>
+								</p:tab>
+								
+								<!-- <p:tab title="Informations complémentaires" titleStyleClass="#{devisRcdController.onglet5_2Valide?'onglet-valide':'onglet-erreur'}">
+								
+									<p:panel widgetVar="wvPanelQuestionExp5ans">
+										<h:panelGrid columns="2" cellpadding="10" rendered="#{devisRcdController.afficheQuestionExperienceActivte5ans()}">
+							
+									        <p:outputLabel value="Bénéficiant d’une expérience de 5 ans minimum dans les activités à garantir : " styleClass="labelchob" />
+											<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.experienceActivte5ans}" disabled="#{devisRcdController.editable()}">
+									            <f:selectItem itemLabel="oui" itemValue="true" />
+									            <f:selectItem itemLabel="non" itemValue="false" />
+									            <p:ajax update="@this" />
+									        </p:selectOneRadio>
+								        
+								  		</h:panelGrid> 
+						  				<p:outputLabel value="Pour les activités : 3 ; 5 ; 6 ; 7 ; 8 ; 9 ; 11 ; 15 ; 16 ; 17 ; 28-1 ; 30-1 ; 36"  rendered="#{devisRcdController.afficheQuestionExperienceActivte5ans()}"/>
+					  				</p:panel>
+					  	
+									 <p:dataTable 
+							        	widgetVar="wvActiviteSelectioneDataTable"
+							        	var="act" 
+							        	rendered="#{!devisRcdController.editable()}"
+							        	value="#{devisRcdController.listeTaActiviteDTODetail}" 
+							        	expandableRowGroups="true" 
+							        	rowKey="#{act.id}" 
+							        	style="margin-bottom:0" 
+							        	editable="true" 
+							        	sortBy="#{act.liblFamilleActivite}">
+		        						<p:ajax event="rowEdit" listener="#{devisRcdController.onRowEditPourcent}" update="@(.pourcent),@widgetVar(wvTotauxPourcentSousTraitance)" />
+		
+										<p:headerRow>
+								            <p:column colspan="6">
+								                <h:outputText value="#{act.liblFamilleActivite}" />
+								            </p:column>
+								        </p:headerRow>
+								        
+					
+								        <p:column headerText="Code activité" style="width:50px">
+								            <h:outputText value="#{act.codeActivite}" />
+								        </p:column>
+								        
+								        <p:column headerText="Nature de l'activité" >
+								            <h:outputText value="#{act.liblActivite}" />
+								        </p:column>
+								        
+										<p:column headerText="Activités exercées par l'entreprise" style="width:60px" styleClass="right">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{act.pourcentExerceEntreprise} %" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{act.pourcentExerceEntreprise}" style="width:100%">
+														<p:ajax event="blur" update="@this" />
+													</p:inputText>
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										
+										<p:column headerText="Activités sous traitées" style="width:60px" styleClass="right">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{act.pourcentSousTraite} %" />
+												</f:facet>
+												<f:facet name="input">
+													<p:inputText value="#{act.pourcentSousTraite}" style="width:100%">
+														<p:ajax event="blur" update="@this" />
+													</p:inputText>
+												</f:facet>
+											</p:cellEditor>
+										</p:column>
+										
+										<p:column headerText="%" style="width:50px" styleClass="right">
+								            <h:outputText value="#{act.pourcentTotalRepartition} %" styleClass="pourcent"/>
+								        </p:column>
+								        
+								        <p:column style="width:16px" >
+											<p:rowEditor />
+										</p:column>
+
+								        
+								    </p:dataTable>
+								    
+								    <p:dataTable 
+							        	widgetVar="wvActiviteSelectioneDataTableConsultation"
+							        	var="act" 
+							        	rendered="#{devisRcdController.editable()}"
+							        	value="#{devisRcdController.selectedTaActiviteDTOs}" 
+							        	expandableRowGroups="true" 
+							        	rowKey="#{act.id}" 
+							        	editable="true" 
+							        	sortBy="#{act.liblFamilleActivite}">
+										<p:headerRow>
+								            <p:column colspan="5">
+								                <h:outputText value="#{act.liblFamilleActivite}" />
+								            </p:column>
+								        </p:headerRow>
+
+					
+								        <p:column headerText="Code activité" style="width:50px">
+								            <h:outputText value="#{act.codeActivite}" />
+								        </p:column>
+								        
+								        <p:column headerText="Nature de l'activité" >
+								            <h:outputText value="#{act.liblActivite}" />
+								        </p:column>
+
+								        
+										<p:column headerText="Activité exercées par l'entreprise" style="width:60px" styleClass="right">
+											<h:outputText value="#{act.pourcentExerceEntreprise} %" />	
+										</p:column>
+										
+										<p:column headerText="Activité sous traitées" style="width:60px" styleClass="right">
+											<h:outputText value="#{act.pourcentSousTraite} %" />
+										</p:column>
+										
+										<p:column headerText="%" style="width:50px" styleClass="right">
+								            <h:outputText value="#{act.pourcentTotalRepartition} %" styleClass="pourcent"/>
+								        </p:column>
+
+								        
+								    </p:dataTable>
+								    
+								    <p:panel widgetVar="wvTotauxPourcentSousTraitance" styleClass="center">
+								    	<p:panelGrid columns="3" style="margin:auto">
+								    		<f:facet name="header">Total</f:facet>
+								    		<h:outputText value="Activité exercé par l'entreprise" styleClass="pourcent"/>
+								    		<h:outputText value="Activité sous traitées" styleClass="pourcent"/>
+								    		<h:outputText value="Total" styleClass="pourcent"/>
+								    		
+											<h:outputText value="#{devisRcdController.totalPourcentageActiviteEntreprise} %" styleClass="pourcent"/>
+								    		<h:outputText value="#{devisRcdController.totalPourcentageActiviteSousTraite} %" styleClass="pourcent"/>
+								    		<h:outputText value="#{devisRcdController.totalPourcentageActivite} %" styleClass="pourcent"/>
+								    	</p:panelGrid>
+								    </p:panel>
+								    
+								    Attention : La somme de vos activités déclarées = 100 % de votre activité<br/>
+								    <br/>
+								    <br/>
+									Précisions<br/>
+									* Pour les activités 15 et 16, veuillez préciser le type et la nature des produits utilisés<br/>
+									* Pour l’activité 39, précisez vertical ou horizontal<br/>
+								    
+								</p:tab> -->
+							</p:tabView>
+							   
+	
+						</p:panel>
+						
+						<p:panel header="Métiers intellectuels du bâtiment" toggleable="true" rendered="#{devisRcdController.assurePib()}">
+	
+							<p:selectManyCheckbox value="#{devisRcdController.selectedTaTauxRcproPibDTOs}" widgetVar="wvtauxRcproPIBCheckBox" 
+								layout="responsive" columns="2" converter="entityConverter" disabled="#{devisRcdController.editable()}">
+					            <f:selectItems value="#{devisRcdController.taTauxRcproPibDTODisponible}" var="act" itemLabel="#{act.codeTauxRcproPib} - #{act.liblTauxRcproPib}" itemValue="#{act}" />
+					            <p:ajax listener="#{devisRcdController.actModificationActivitePib}" update="@widgetVar(wvMontantPrimeDevisRcPro),@widgetVar(wvtauxRcproPIBCheckBox)" process="@this"/>
+					        </p:selectManyCheckbox>
+	
+						</p:panel>
+					</p:panel>
+				</div>
+			</div>
+		
+			<ui:include src="./precendent_suivant_include.xhtml" />
+		
+		</p:tab>
+			
+		<p:tab id="idOngletOptionPaiement" title="Option / Paiement" titleStyleClass="#{devisRcdController.onglet6Valide?'onglet-valide':'onglet-erreur'}" titletip="Paiement">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<p:panel header="PROTECTION JURIDIQUE" toggleable="true" widgetVar="wvPanelProtectionJuridique">
+						<p:selectOneRadio value="#{devisRcdController.selectedPJ}" disabled="#{devisRcdController.editable()}" rendered="#{!devisRcdController.assurePib()}">
+						 	<f:selectItem itemLabel="PAS DE PJ" itemValue=""/>
+						   <f:selectItem itemLabel="PJ PRO JURIDICA (#{devisRcdController.montantPj} €)" itemValue="Pj"/>
+						   <f:selectItem itemLabel="PJ PRO JURIDICA ETENDUE (#{devisRcdController.montantPjEtendue} €)" itemValue="Pj_ETENDUE"/>						
+						   <p:ajax update="@this,@widgetVar(wvPanelProtectionJuridique)" listener="#{devisRcdController.actRadioProtectionJuridique()}" />
+						</p:selectOneRadio>
+						<p:selectOneRadio value="#{devisRcdController.selectedPJ}" disabled="#{devisRcdController.editable()}" rendered="#{devisRcdController.assurePib()}">
+						 	<f:selectItem itemLabel="PAS DE PJ" itemValue=""/>
+						   <f:selectItem itemLabel="PJ PRO JURIDICA (#{devisRcdController.montantPj} €)" itemValue="Pj"/>
+						   <f:selectItem itemLabel="PJ PRO JURIDICA ETENDUE (PIB) (#{devisRcdController.montantPjEtenduePIB} €)" itemValue="Pj_ETENDUE_PIB"/>						
+						   <p:ajax update="@this,@widgetVar(wvPanelProtectionJuridique)" listener="#{devisRcdController.actRadioProtectionJuridique()}" />
+						</p:selectOneRadio>
+					</p:panel>
+					<p:panel header="REPRISE DU PASSE" toggleable="true" widgetVar="wvPanelPaiement" rendered="#{!devisRcdController.assurePib()}">
+
+<!-- 						<h:panelGrid columns="2" cellpadding="10"> -->
+								<p:selectOneRadio id="idRadioReprisePasse" value="#{devisRcdController.selectedTaDossierRcdDTO.reprisePasse}" disabled="#{devisRcdController.editable() or
+								 !devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque or devisRcdController.selectedTaDossierRcdDTO.antecedentRcdContratEnCours}">
+						            <f:selectItem itemLabel="oui" itemValue="true"/>
+						            <f:selectItem itemLabel="non" itemValue="false" />
+						            <p:ajax update="@this,@widgetVar(wvPanelPaiement)" />
+						        </p:selectOneRadio>
+						        <p:tooltip id="toolTipFadeRadioReprisePasse" for="idRadioReprisePasse" value="Cette option n'est possible que si l'assuré a déjà été assuré même risque et que la date de résiliation n'a pas plus de 12 mois." position="top"/>
+						       
+						        <!-- <p:outputLabel value="Si oui," styleClass="labelchob" rendered="#{devisRcdController.selectedTaDossierRcdDTO.reprisePasse}"/><br/>
+						        <p:selectOneRadio value="#{devisRcdController.selectedReprisePasse}" disabled="#{devisRcdController.editable()}" 
+						        	 rendered="#{devisRcdController.selectedTaDossierRcdDTO.reprisePasse}">
+						            <f:selectItem itemLabel="-3 mois" itemValue="3mois" />
+						            <f:selectItem itemLabel="3 à 6 mois" itemValue="3a6mois" />
+						            <f:selectItem itemLabel="6 à 12 mois" itemValue="6a12mois" />
+						            <p:ajax update="@this,@widgetVar(wvCalendarReprisePasse)" listener="#{devisRcdController.actRadioReprisePasse}"/>
+						        </p:selectOneRadio> -->
+						        
+						        <p:outputLabel value="Date de reprise du passé : " styleClass="labelchob" rendered="#{devisRcdController.selectedTaDossierRcdDTO.reprisePasse}"/>
+								<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.dateRepriseDuPasse}" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" mindate="#{devisRcdController.dateLimiteRepriseDuPasse}" maxdate="#{devisRcdController.now}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true"
+									readonlyInput="true"
+									rendered="#{devisRcdController.selectedTaDossierRcdDTO.reprisePasse}" widgetVar="wvCalendarReprisePasse">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_REPRISE_PASSE}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+	<!-- 					</h:panelGrid> -->
+					</p:panel>
+
+					<p:panel header="SOUS TRAITANCE" toggleable="true" >
+
+						        <p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.codeTSousTraitance}" 
+									disabled="#{devisRcdController.editable()}" converter="entityConverter" validator="#{devisRcdController.validateDevisRcPro}">
+									<f:selectItems value="#{devisRcdController.listeTaTSousTraitance}" var="st" itemLabel="#{st.liblTSousTraitance}" itemValue="#{st.codeTSousTraitance}" />
+									<f:attribute name="nomChamp" value="#{const.C_CODE_PART_SOUS_TRAITANCE}" />
+					            	<p:ajax process="@this" update="@this" listener="#{devisRcdController.actChangementPartSousTraitance}"/>
+							    </p:selectOneRadio>
+					</p:panel>
+					
+					<p:panel header="TERRITORIALITE" toggleable="true" >
+
+<!-- 						<h:panelGrid columns="2" cellpadding="10"> -->
+<!-- 						</h:panelGrid> -->
+						Lieu de vos interventions
+						<p:selectBooleanCheckbox itemLabel="France métropolitaine" value="#{devisRcdController.selectedTaDossierRcdDTO.territorialiteLieuFranceMetrop}" disabled="#{devisRcdController.editable()}">
+							<p:ajax update="@this" />
+						</p:selectBooleanCheckbox> 
+						<p:selectBooleanCheckbox itemLabel="Corse" value="#{devisRcdController.selectedTaDossierRcdDTO.territorialiteLieuCorse}" disabled="#{devisRcdController.editable()}">
+							<p:ajax update="@this" />
+						</p:selectBooleanCheckbox> 
+						<p:selectBooleanCheckbox itemLabel="DOM" value="#{devisRcdController.selectedTaDossierRcdDTO.territorialiteLieuDomtom}" disabled="#{devisRcdController.editable()}">
+							<p:ajax update="@this" />
+						</p:selectBooleanCheckbox> 
+					</p:panel>
+					
+					<p:panel header="FRANCHISE" toggleable="true">
+
+						<h:panelGrid columns="2" cellpadding="10">
+							 <p:outputLabel value="Franchise : " />
+						    <p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.codeFranchise}" 
+								disabled="#{devisRcdController.editable() or devisRcdController.assurePib()}" converter="entityConverter" validator="#{devisRcdController.validateDevisRcPro}">
+								<f:selectItems value="#{devisRcdController.listeTaTFranchise}" var="e" itemLabel="#{e.liblTFranchise} (#{e.tauxMontant}%)" itemValue="#{e.codeTFranchise}" itemDisabled="#{devisRcdController.franchiseDesactive(e)}" />
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_FRANCHISE}" />
+				            	<p:ajax process="@this" update="@this" listener="#{devisRcdController.actChangementFranchise}"/>
+						    </p:selectOneRadio>
+						</h:panelGrid>
+					</p:panel>
+					
+					<p:panel widgetVar="wvCommissionPanel" header="COMMISSION" toggleable="true">
+
+						<h:panelGrid columns="3" cellpadding="10">
+						<!-- De 0 à 50 si possible de 5 en 5 -->
+							<p:outputLabel value="Taux de commission : " />
+							<h:panelGrid columns="1" style="margin-bottom: 10px" >
+<!-- 						        <p:inputNumber id="txt3" value="#{devisRcdController.selectedTaDossierRcdDTO.tauxCommission}" -->
+<!-- 						        	 validator="#{devisRcdController.validateDevisRcPro}" -->
+<!-- 									disabled="true"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_TAUX_COMMISSION}" /> -->
+<!-- 									<p:ajax event="blur" update="@this,idMontantCommisionPrevu" listener="#{devisRcdController.majMontantCommissionPrevu}" /> -->
+<!-- 								</p:inputNumber> -->
+<!-- valueChangeListener="#{devisRcdController.onInputChangedCommissionCourtier}" readonly="true" -->
+ 								<p:inputNumber id="txt3" value="#{devisRcdController.selectedTaDossierRcdDTO.tauxCommission}"
+						        	 validator="#{devisRcdController.validateDevisRcPro}" disabled="true"
+						        	 >
+									<f:attribute name="nomChamp" value="#{const.C_TAUX_COMMISSION}" />
+									<p:ajax event="blur" process="@this" update="@this,idMontantCommisionPrevu" />
+								</p:inputNumber>
+						        <p:slider for="txt3" step="1" maxValue="30" disabled="#{devisRcdController.editable()}" >
+									 <p:ajax event="slideEnd" update="@this,idMontantCommisionPrevu" process="txt3,@this" listener="#{devisRcdController.majMontantCommissionPrevuSlideEnd}"/>
+						        </p:slider>
+						        <!-- TEST SLIDER -->
+						        <!-- <p:inputNumber id="nmb1" value="#{sliderView.number3}" symbol=" €" valueChangeListener="#{sliderView.onInputChanged}">
+							            <p:ajax process="@this" update="growl" />
+							        </p:inputNumber>
+							        <p:slider for="nmb1" /> -->
+						        
+						        
+						    </h:panelGrid>
+						    <p:outputLabel id="idMontantCommisionPrevu" value=" soit #{devisRcdController.montantCommisionPrevu} €" />
+<!-- 						    <p:outputLabel id="idMontantCommisionPrevu" /> -->
+						</h:panelGrid>
+<!-- 						<p:outputLabel value="Montant :" /> -->
+					</p:panel>
+					
+					<p:panel header="FRAIS DE DOSSIER" toggleable="true">
+
+						<h:panelGrid columns="3" cellpadding="10">
+						<p:outputLabel value="Frais de dossier : " />
+							<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.fraisRcPro}" validator="#{devisRcdController.validateDevisRcPro}"
+								symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}"
+								disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_FRAIS_RC_PRO}" />
+								<p:ajax event="blur" update="@this" />
+							</p:inputNumber>
+							<p:selectBooleanCheckbox itemLabel="Inclure les frais de dossier dans le 1er règlement." disabled="#{devisRcdController.editable()}"
+								value="#{devisRcdController.selectedTaDossierRcdDTO.inclusionFraisDossier}" >
+								<!-- validator="#{devisRcdController.validateDevisRcPro}" -->
+								<p:ajax update="@this" />
+							</p:selectBooleanCheckbox>
+						</h:panelGrid>
+					</p:panel>
+						
+					<p:panel header="DATE EFFET ET FRACTIONNEMENT" toggleable="true">
+
+						<h:panelGrid columns="2" cellpadding="10">
+						
+							<p:outputLabel value="Date d'effet souhaitée : " styleClass="labelchob"/>
+							<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.dateEffet}" pattern="#{msg.date_pattern}"
+							    mask="true" locale="fr" navigator="true" readonlyInput="true"
+							    mindate="#{devisRcdController.now}"
+							    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+								showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="#{devisRcdController.editable()}">
+								<f:attribute name="nomChamp" value="#{const.C_DATE_EFFET}" />
+								<p:ajax event="dateSelect" update="@this" />
+								<f:ajax event="blur" update="@this" />
+							</p:calendar>
+						
+						
+						<p:outputLabel value="Fractionnement souhaité" />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.codeEcheance}" widgetVar="wvSelectOneRadioFractionnement"
+								disabled="#{devisRcdController.editable()
+								 or (devisRcdController.selectedTaDossierRcdDTO.sinistraliteLiquidationSocieteDemandeuse or devisRcdController.selectedTaDossierRcdDTO.sinistraliteLiquidationAutreSociete)
+								 or (devisRcdController.selectedTaDossierRcdDTO.assureMemeRisque and devisRcdController.selectedTaDossierRcdDTO.antecedentRcdContratResilie and devisRcdController.selectedAntecedantMotifRCDAssureur.equals('non_paiement'))
+								 or (devisRcdController.blocageChampsApresPremiereActionReglement) }"
+								 converter="entityConverter" validator="#{devisRcdController.validateDevisRcPro}">
+								 <!-- or (auth.isAdmin() and devisRcdController.isDossierSoumisSouscrAndPasAttentePremierPaiement()) -->
+								 <!-- or (!auth.isAdmin() and devisRcdController.selectedTaDossierRcdDTO.soumisSouscription) -->
+								<f:selectItems value="#{devisRcdController.listeTaTEcheance}" var="e" itemLabel="#{e.liblTEcheance}" itemValue="#{e.codeTEcheance}" />
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_ECHEANCE}" />
+				            	<p:ajax process="@this" update="@this" listener="#{devisRcdController.actChangementEcheance}"/>
+						    </p:selectOneRadio>
+						
+							<p:outputLabel value="Mode de règlement : " />
+							<p:selectOneRadio value="#{devisRcdController.selectedTaDossierRcdDTO.codeTReglement}" 
+								disabled="#{devisRcdController.editable() or devisRcdController.blocageChampsApresPremiereActionReglement}" converter="entityConverter" validator="#{devisRcdController.validateDevisRcPro}">
+<!-- 					            <f:selectItem itemLabel="CB" itemValue="CB" /> -->
+<!-- 						        <f:selectItem itemLabel="Chèque" itemValue="Chèque" /> -->
+								<f:selectItems value="#{devisRcdController.listeTaTReglement}" var="r" itemLabel="#{r.liblTReglement}" itemValue="#{r.codeTReglement}" />
+								<f:attribute name="nomChamp" value="#{const.C_CODE_T_REGLEMENT}" />
+				            	<p:ajax process="@this" update="@this" listener="#{devisRcdController.actChangementPaiement}"/>
+					        </p:selectOneRadio>
+						    
+						</h:panelGrid>
+
+
+<!-- En application de la Loi Informatique et Liberté n°78-17 du 6 janvier 1978 le soussigné peut demander à la Compagnie communication et rectification de toute in- -->
+<!-- formation le concernant qui figurerait sur tout fichier à usage de la compagnie, de ses mandataires, des réassureurs et des organismes professionnels. -->
+<!-- Le proposant déclare que toutes les réponses et déclarations effectuées sur le présent formulaire pour permettre à l’Assureur de se faire une juste appréciation des -->
+<!-- risques sont sincères et à sa connaissance exactes. Il reconnaît qu’il a été porté à sa connaissance que toute réticence et toute déclaration inexacte sont soumises, -->
+<!-- selon le cas, aux sanctions prévues aux articles L113-8 et L113-9 du Code des Assurances. -->
+<!-- La garantie ne peut être délivrée que par l’Assureur à réception de la présente proposition dûment signée pour accord du proposant et accompagnée des justificatifs -->
+<!-- demandés. La présente vaut ordre de placement exclusif auprès de l’assureur par l’intermédiaire du courtier pour une durée de 2 mois. -->
+						<br/>
+						<br/>
+						<h:panelGrid columns="2" cellpadding="10">
+<!-- 						fixé à la date de généraion du pdf (non modfiable) -->
+<!-- 							<p:outputLabel value="Fait en 2 exemplaires le : " /> -->
+<!-- 							<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.dateDevis}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true" -->
+<!-- 								showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true"> -->
+<!-- 								<f:attribute name="nomChamp" value="#{const.C_DATE_DEVIS}" /> -->
+<!-- 								<p:ajax event="dateSelect" update="@this" /> -->
+<!-- 								<f:ajax event="blur" update="@this" /> -->
+<!-- 							</p:calendar> -->
+						</h:panelGrid>
+						
+						<br/>
+						
+						
+
+					</p:panel>
+				</div>
+			</div>
+		
+			<ui:include src="./precendent_suivant_include.xhtml" />
+		</p:tab>
+		
+		<p:tab id="idOngletInformationLegale" title="Informations légales" titleStyleClass="#{devisRcdController.onglet7Valide?'onglet-valide':'onglet-erreur'}" titletip="Information légale">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+
+			<p:panel header="Information légale">
+			
+			<p:selectBooleanCheckbox styleClass="cbInfosLegales" itemLabel="Je reconnais avoir été informé(e) (conformément à l'article 27 de la loi du 6 janvier 1978) du
+				caractère obligatoire des réponses aux questions posées ci-avant, ainsi que des conséquences qui
+				pourraient résulter d'une omission ou d’une fausse déclaration prévue aux articles L 113-8 (nullité du
+				contrat) et L 113-9 (réduction des indemnités) du Code des assurances." 
+				value="#{devisRcdController.selectedTaDossierRcdDTO.informerCaractereObligatoire}" disabled="#{devisRcdController.editable()}">
+				<p:ajax update="@this" />
+			</p:selectBooleanCheckbox>
+			
+			<p:selectBooleanCheckbox styleClass="cbInfosLegales" itemLabel="En cochant cette case, je reconnais que je ne suis pas tenu d'accepter les termes de la proposition
+				d'assurance faite par les assureurs, mais dans le cas où un contrat d'assurance serait accepté, cette
+				proposition et les déclarations faites dans ce questionnaire feront partie intégrante
+				du contrat et lui serviront de base." 
+				value="#{devisRcdController.selectedTaDossierRcdDTO.informationPropositionPartieIntegranteContrat}" disabled="#{devisRcdController.editable()}">
+				<p:ajax update="@this" />
+			</p:selectBooleanCheckbox>
+			
+			<p:selectBooleanCheckbox styleClass="cbInfosLegales" itemLabel="J'autorise l'assureur à communiquer mes réponses à ses correspondants dans la mesure
+				où cette transmission est nécessaire à la gestion et à l'exécution du contrat. Je l'autorise
+				également à utiliser mes réponses dans la mesure où elles sont nécessaires à la gestion et à
+				l'exécution des autres contrats souscrits auprès de lui, ou auprès des autres sociétés du
+				groupe auquel il appartient. Je dispose d'un droit d'accès et de rectification auprès du
+				Service Clientèle Régional de l'assureur pour toute information me concernant. »" 
+				value="#{devisRcdController.selectedTaDossierRcdDTO.autoriseAssureurCommuniquerReponses}" disabled="#{devisRcdController.editable()}">
+				<p:ajax update="@this" />
+			</p:selectBooleanCheckbox>
+			
+			<br/>
+			<br/>
+			Les données recueillis par l’assureur lors de la souscription et les actes de gestion peuvent
+			être utilisées par NOVARISKS UNDERWRITING à des fins de prospection commerciale
+			auxquelles je peux m’opposer en cochant la case ci-contre : 
+			<p:selectBooleanCheckbox styleClass="cbInfosLegales" value="#{devisRcdController.selectedTaDossierRcdDTO.opposeUtilisationDonneesFinCommerciale}" disabled="#{devisRcdController.editable()}">
+				<p:ajax update="@this" />
+			</p:selectBooleanCheckbox>
+			
+			<br/>
+			<br/>
+			<p:outputLabel 
+				value="Le présent questionnaire est un relevé des informations techniques et administratives relatives au dossier proposé, permettant à la Compagnie de prendre position quant à son acceptation et à la tarification du risque. La mise en œuvre de la garantie n’étant fondée que sur la seule présentation de la police d’assurance ou la note de compagnie." />
+
+			</p:panel>
+
+			<ui:include src="./precendent_suivant_include.xhtml" />
+		</p:tab>
+			
+		<p:tab id="idOngletPrime" title="Prime" titleStyleClass="#{devisRcdController.onglet8Valide?'onglet-valide':'onglet-erreur'}" titletip="Prime">
+			
+			<ui:include src="menu_devis_rcd.xhtml" />
+			
+			<div class="ui-g">
+				<div class="ui-g-12">
+					<p:panel header="Prime" toggleable="true" widgetVar="wvPanelPrime">
+					
+					<!-- NOVARISKS SOUHAITE ENLEVER LA SOUMISSION A ETUDE POUR LE MOMENT 03/12/18 -->
+					
+						<!-- <p:panel rendered="#{devisRcdController.erreurBloquante() or devisRcdController.selectedTaDossierRcdDTO.montantPrime ==null}">
+							<p:commandButton value="Soumettre à étude" update="@widgetVar(wvPanelPrime), @widgetVar(wvPanelStatutDevis)" 
+								process="@this" disabled="#{devisRcdController.editable() or devisRcdController.selectedTaDossierRcdDTO.soumisEtude==true}" actionListener="#{devisRcdController.soumettreLeDevisAEtude}">
+								<p:confirm header="Confirmation" message="Etes vous sur de vouloir soumettre ce devis à étude ?" icon="ui-icon-alert" />
+								</p:commandButton>
+						</p:panel> -->
+
+
+						<div class="ui-g-6">
+							<h:panelGrid columns="2" cellpadding="10">
+<!-- 								<f:facet name="header"> -->
+<!-- 									PRIME PROPOSÉE -->
+<!-- 								</f:facet> -->
+																
+								<p:outputLabel value="Date d'effet" />
+								<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.dateEffet}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_EFFET}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Echéance" />
+								<!-- 1an -1jour à partir de la date d'effet -->
+								<p:calendar value="#{devisRcdController.selectedTaDossierRcdDTO.dateEcheance}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_ECHEANCE}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Fractionnement choisi : " />
+								<p:inputText value="#{devisRcdController.selectedTaDossierRcdDTO.liblTEcheance}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true" />
+								
+								<p:outputLabel style="font-weight : 800" value="Prime (incluant les frais de fractionnement) :" />
+								<p:inputNumber value="#{devisRcdController.selectedTaDossierRcdDTO.montantPrime}" styleClass="montant-gras" validator="#{devisRcdController.validateDevisRcPro}"
+									symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}"  style="font-weight : 800"
+									disabled="true" widgetVar="wvMontantPrimeDevisRcPro">
+									<f:attribute name="nomChamp" value="#{const.C_MONTANT_PRIME}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputNumber>
+								
+								<!-- CHAMPS NOUVELLE PRIME BASE NETTE POUR NOVARISKS -->
+								<p:outputLabel rendered="#{(auth.isAdmin() or auth.isYlyade()) and devisRcdController.selectedTaDossierRcdDTO.soumisEtude == true }"
+								 style="font-weight : 800" 
+								 value="Nouvelle prime nette de base pour le recalcul de la prime :" />
+								<p:inputNumber rendered="#{(auth.isAdmin() or auth.isYlyade()) and devisRcdController.selectedTaDossierRcdDTO.soumisEtude == true }"
+								 			value="#{devisRcdController.selectedTaDossierRcdDTO.primeNetteYlyade}" 
+								 			validator="#{devisRcdController.validateDevisRcPro}"
+									        symbol="#{msg.input_number_symbol}"
+									        symbolPosition="#{msg.input_number_symbolPosition}"
+									        disabled="#{devisRcdController.editable() or devisRcdController.selectedTaDossierRcdDTO.validationApresetudeYlyade == true or devisRcdController.selectedTaDossierRcdDTO.validationAssureurApresetude == true }" 
+									        widgetVar="wvPrimeNetteYlyade">
+									<f:attribute name="nomChamp" value="#{const.C_PRIME_NETTE_YLYADE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputNumber>
+								
+								
+								<!-- CHAMPS NOUVELLE PRIME BASE NETTE POUR ASSUREUR -->
+								<p:outputLabel rendered="#{auth.isSuperAssureur() and devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == true }"
+								 style="font-weight : 800" 
+								 value="Nouvelle prime nette de base pour le recalcul de la prime :" />
+								<p:inputNumber rendered="#{auth.isSuperAssureur() and devisRcdController.selectedTaDossierRcdDTO.soumisEtudeAssureur == true }"
+								 			value="#{devisRcdController.selectedTaDossierRcdDTO.primeNetteAssureur}" 
+								 			validator="#{devisRcdController.validateDevisRcPro}"
+									        symbol="#{msg.input_number_symbol}"
+									        symbolPosition="#{msg.input_number_symbolPosition}"
+									        disabled="#{devisRcdController.enModifPrimeAssureur == false}" 
+									        widgetVar="wvPrimeNetteAssureur">
+									<f:attribute name="nomChamp" value="#{const.C_PRIME_NETTE_ASSUREUR}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputNumber>
+<!-- 								</p:panel> -->
+								<h:panelGroup rendered="true">
+									<p:commandButton value="Détail" id="btnDetailCalculPrime" update="@widgetVar(wvDetailCalculPrimePanel)" 
+										oncomplete="PF('wvDetailCalculPrimeDialog').show()" process="@this" rendered="#{auth.isYlyade() or auth.isAdmin()}"/>
+							    </h:panelGroup>
+								
+							</h:panelGrid>
+						</div>
+					</p:panel>
+					</div>
+				</div>
+				<div class="ui-g">
+				<div class="ui-g-12">
+					<p:panel header="Règlement" toggleable="true" widgetVar="wvPanelReglement">
+
+						<div class="ui-g-6">
+							
+							
+								<h:panelGrid columns="3" cellpadding="10">
+									<p:outputLabel style="font-weight : 800" value="Le 1er réglement est de :" />
+									<p:inputNumber styleClass="montant-gras" value="#{devisRcdController.selectedTaDossierRcdDTO.montantPremierReglement}" validator="#{devisRcdController.validateDevisRcPro}"
+										symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}"
+										disabled="true">
+										<f:attribute name="nomChamp" value="#{const.C_MONTANT_PREMIER_REGLEMENT}" />
+										<p:ajax event="blur" update="@this" />
+									</p:inputNumber>
+										<p:commandButton id="btnDetailCalculPremierReglement" 
+										value="Détail"
+										 update="@widgetVar(wvDetailCalculPremierReglementPanel)"
+										 oncomplete="PF('wvDetailCalculPremierReglementDialog').show()"
+										 process="@this" rendered="#{auth.isYlyade() or auth.isAdmin()}"/>
+									
+<!-- 									<p:commandButton value="Détail" id="btnDetailCalculPrime" update="@widgetVar(wvDetailCalculPrimePanel)"  -->
+<!-- 										oncomplete="PF('wvDetailCalculPrimeDialog').show()" process="@this" disabled="#{devisRcdController.editable()}"/> -->
+							    </h:panelGrid>
+								
+								<h:panelGrid columns="4" cellpadding="10">
+								
+								<p:outputLabel style="font-weight : 800" value="pour la période du :" />
+								<p:calendar style="font-weight : 800" value="#{devisRcdController.selectedTaDossierRcdDTO.dateDebutPremierePeriode}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_DEBUT_PREMIERE_PERIODE}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel style="font-weight : 800" value="au :" />
+								<p:calendar style="font-weight : 800" value="#{devisRcdController.selectedTaDossierRcdDTO.dateFinPremierePeriode}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}" disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_FIN_PREMIERE_PERIODE}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+
+							</h:panelGrid>
+						</div>
+					</p:panel>
+				</div>
+			</div>
+	
+			<ui:include src="./precendent_suivant_include.xhtml">
+				<ui:param name="masqueSuivant" value="true" />
+			</ui:include>
+		</p:tab>
+
+		
+		<p:tab id="idOngletGedDocument" title="GED Document"  titleStyleClass="#{devisRcdController.onglet9Valide?'onglet-valide':'onglet-erreur'} #{devisRcdController.classOngletGED}" titletip="GED Document" disabled="#{!devisRcdController.gedDevisRcProController.isMasterEntityId()}">
+			<ui:include src="menu_devis_rcd.xhtml" />
+			Documents à joindre impérativement pour l’appréciation du risque
+			<ui:include src="ged_devis_rcd.xhtml" />
+		</p:tab>
+		
+		<p:tab id="idOngletAction" title="Action" titleStyleClass="#{devisRcdController.onglet9Valide?'onglet-valide':'onglet-erreur'}" titletip="Action" disabled="#{!devisRcdController.gedDevisRcProController.isMasterEntityId()}">
+			<p:panel widgetVar="wvTabActionDevisRcd" >
+			<ui:include src="menu_devis_rcd.xhtml" />
+			Action à apporter au dossier
+			<ui:include src="action_tab.xhtml" />
+			</p:panel>
+			<p:fieldset legend="Commentaire" toggleable="true" collapsed="false" rendered="#{auth.isCourtier() or auth.isYlyade()}">
+				<p:inputTextarea value="#{devisRcdController.selectedTaDossierRcdDTO.commentaireCourtier}" process="@this" placeholder="Commentaire global courtier"
+					style="width:100%"
+					update="@this"
+				 	disabled="#{!auth.isCourtier()}"
+				 	rendered="#{auth.isCourtier() or auth.isYlyade()}">
+				  	<p:ajax/>
+				</p:inputTextarea>
+				<p:commandButton value="Enregistrer le commentaire" process="@this" actionListener="#{devisRcdController.actEnregistrerCommentaireCourtierGlobal}" disabled="#{!auth.isCourtier()}"/>
+			</p:fieldset>
+			
+			<p:fieldset legend="Commentaire Novarisks" toggleable="true" collapsed="false" rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+				<p:inputTextarea value="#{devisRcdController.selectedTaDossierRcdDTO.commentaireValidationYlyade}" process="@this" placeholder="Commentaire global Novarisks"
+					style="width:100%"
+					update="@this"
+				 	disabled="#{!auth.isYlyade()}"
+				 	rendered="#{auth.isCourtier() or auth.isYlyade() or auth.isSuperAssureur()}">
+				  	<p:ajax/>
+				</p:inputTextarea>
+				<p:commandButton value="Enregistrer le commentaire" process="@this" actionListener="#{devisRcdController.actEnregistrerCommentaireCourtierGlobal}" disabled="#{!auth.isYlyade()}"/>
+			</p:fieldset>
+			
+			<p:fieldset legend="Commentaire" toggleable="true" collapsed="false" rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+				<p:inputTextarea value="#{devisRcdController.selectedTaDossierRcdDTO.commentaireValidationAssureur}" process="@this" placeholder="Commentaire global assureur"
+					style="width:100%"
+					update="@this"
+				 	disabled="#{!auth.isSuperAssureur()}"
+				 	rendered="#{auth.isYlyade() or auth.isSuperAssureur()}">
+				  	<p:ajax/>
+				</p:inputTextarea>
+				<p:commandButton value="Enregistrer le commentaire" process="@this" actionListener="#{devisRcdController.actEnregistrerCommentaireCourtierGlobal}" disabled="#{!auth.isSuperAssureur()}"/>
+			</p:fieldset>
+			
+			<p:panel rendered="#{(devisRcdController.taDossierRcd.soumisSouscription==true)}">
+			
+				<p:panel header="Première échéance" toggleable="true" id="idPanelPremiereEcheance" widgetVar="wvPanelPremiereEcheance">
+						<p:dataTable var="e"
+							widgetVar="wvDataTableListePremiereEcheanceDossierRcd"
+							value="#{devisRcdController.listeTaEcheanceDTO}"
+							rowKey="e"
+							styleClass="datatable mt10"
+							resizableColumns="true">
+							
+							<p:column styleClass="" >
+								<f:facet name="header">
+									<h:outputText value="Paiement" />
+								</f:facet>
+								<h:panelGroup rendered="#{e.codeTReglement=='CB'}">
+									<p:commandButton value="Payer par CB" action="#{devisRcdController.actDialoguePaiementEcheanceParCarte}" process="@this"
+										disabled="#{e.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+										<p:ajax event="dialogReturn" listener="#{devisRcdController.handleReturnDialoguePaiementEcheanceParCarte}"
+										 update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd),
+										 @widgetVar(wvTabActionDevisRcd),
+										  @widgetVar(wvPanelStatutDevis)" />
+									</p:commandButton>
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{e.codeTReglement=='CHEQUE'}" >
+									<p:commandButton value="Chèque envoyé" title="Chèque envoyé par le courtier" 
+										rendered="#{auth.isCourtier() or auth.isYlyade()}" 
+										action="#{devisRcdController.actChequeReglementEcheanceEnvoyeCourtier}" process="@this"
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateEnvoiChequeParCourtier!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+									<br/>
+									<p:commandButton value="Chèque reçu" title="Chèque reçu par Novarisks" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{devisRcdController.actChequeReglementEcheanceRecu}" process="@this"
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateReceptionCheque!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+									<br/>
+									<p:commandButton value="Déposé banque" title="Chèque déposé banque" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{devisRcdController.actChequeReglementEcheanceEncaisse}" process="@this" 
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateDepotCheque!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+									<br/>
+									<p:commandButton value="Echéance réglée" title="Echéance réglée (chèque encaissé)" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{devisRcdController.actChequeReglementEcheanceValide}" process="@this"
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvTabActionDevisRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+								</h:panelGroup>
+								
+								<h:panelGroup rendered="#{e.codeTReglement=='VIR'}" >
+									<p:commandButton value="Virement effectué par le courtier" title="Virement effectué par le courtier" 
+										rendered="#{auth.isCourtier() or auth.isYlyade()}" 
+										action="#{devisRcdController.actVirementReglementEcheanceEffectueCourtier}" process="@this"
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateVirementEffectue!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+									<br/>
+									<p:commandButton value="Echéance réglée" title="Echéance réglée (virement reçu)" 
+										rendered="#{auth.isYlyade()}" 
+										action="#{devisRcdController.actVirementReglementEcheanceValide}" process="@this"
+										update="@widgetVar(wvDataTableListePremiereEcheanceDossierRcd), @widgetVar(wvTabActionDevisRcd), @widgetVar(wvPanelStatutDevis)"
+										disabled="#{e.dateReglement!=null}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+							
+							<p:column sortBy="#{e.dateEcheance}" filterBy="#{e.dateDebutEcheance}" filterMatchMode="contains" styleClass="center" style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Date début" />
+								</f:facet>
+								<h:outputText value="#{e.dateDebutEcheance}">
+									<f:convertDateTime pattern="#{msg.date_pattern}" timeZone="#{msg.time_zone}"/>
+								</h:outputText>
+							</p:column>
+			        
+			        		<p:column sortBy="#{e.dateEcheance}" filterBy="#{e.dateEcheance}" filterMatchMode="contains" styleClass="center" style="width:110px">
+								<f:facet name="header">
+									<h:outputText value="Date fin" />
+								</f:facet>
+								<h:outputText value="#{e.dateEcheance}">
+									<f:convertDateTime pattern="#{msg.date_pattern}" timeZone="#{msg.time_zone}"/>
+								</h:outputText>
+							</p:column>
+			        		
+							<p:column sortBy="#{e.montantEcheance}" filterBy="#{e.montantEcheance}" filterMatchMode="contains" styleClass="center" style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Montant initial" />
+								</f:facet>
+								<h:outputText value="#{e.montantEcheance} €" />
+							</p:column>
+							
+							<!--COLONNES FRAIS-->
+							
+							<p:column styleClass="center" style="width:190px">
+								<f:facet name="header">
+									<h:outputText value="Liste des frais liés à l'échéance" />
+								</f:facet>								
+								<p:selectOneMenu style="width:100px" rendered="#{not empty e.taFraisImpaye}" value="#{e.taFraisImpaye}" 
+								 converter="omnifaces.SelectItemsConverter">
+                					<f:selectItems value="#{e.taFraisImpaye}" />
+            					</p:selectOneMenu>
+
+							</p:column>
+							
+							<p:column styleClass="center" style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Montant à payer" />
+								</f:facet>
+								<h:outputText id="montantEcheanceDevisPlusFraisOutputText" styleClass="#{e.montantEcheancePlusFrais != null? 'montant-plus-frais-text':''}" value="#{e.montantEcheancePlusFrais != null? e.montantEcheancePlusFrais:e.montantEcheance} €" />
+								<p:tooltip rendered="#{e.montantEcheancePlusFrais != null}" id="toolTipGrowMontantEcheanceDevisPlusFraisOutputText"
+								 value="Ce montant est la somme du montant de l'échéance initial plus les frais détaillés dans la colonne précédante."  for="montantEcheanceDevisPlusFraisOutputText" showEffect="clip" position="top"/>
+							</p:column>
+							
+							
+							<!-- FIN COLONNES FRAIS -->
+							
+							<p:column sortBy="#{e.codeTEcheance}" filterBy="#{e.codeTEcheance}" filterMatchMode="contains" styleClass="center" style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Type échéance" />
+								</f:facet>
+								<h:outputText value="#{e.codeTEcheance}" />
+							</p:column>
+							
+							<p:column sortBy="#{e.codeTReglement}" filterBy="#{e.codeTReglement}" filterMatchMode="contains" styleClass="center" style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Type règlement" />
+								</f:facet>
+								<h:outputText value="#{e.codeTReglement}" />
+							</p:column>
+							
+							
+							
+							<p:column styleClass="center" style="width:30px">
+								<f:facet name="header">
+									<h:outputText value="Réglé" />
+								</f:facet>
+								<p:selectBooleanCheckbox value="#{e.validationAutomatiquePaiement}" disabled="true" rendered="#{e.codeTReglement=='CB'}"/>
+								<p:selectBooleanCheckbox value="#{e.validationManuellePaiement}" disabled="true" rendered="#{e.codeTReglement=='CHEQUE'}"/>
+							</p:column>
+							
+							<p:column styleClass="center" style="width:50px">
+								<f:facet name="header">
+									<h:outputText value="Quittance" />
+								</f:facet>
+								<p:commandButton icon="ui-icon-print" title="Imprimer la quittance" 
+										action="#{devisRcdController.actImprimerQuittance}" process="@this"
+										onsuccess="window.open('#{request.contextPath}/output?__report=/reports/gestionComptable/QuittanceDePrime.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+										rendered="#{e.validationAutomatiquePaiement or e.validationManuellePaiement}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+								</p:commandButton>
+							</p:column>
+							
+							<p:column styleClass="center" style="width:100px" rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+								<f:facet name="header">
+									<h:outputText value="Talon comptable" />
+								</f:facet>
+								<p:commandButton icon="ui-icon-print" title="Imprimer le talon comptable" 
+										action="#{devisRcdController.actImprimerTalonComptable}" process="@this"
+										onsuccess="window.open('#{request.contextPath}/output?__report=/reports/gestionComptable/TalonComptable.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+										rendered="#{e.validationAutomatiquePaiement or e.validationManuellePaiement}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+								</p:commandButton>
+							</p:column>
+							
+							 <!-- <p:column styleClass="center" rendered="#{auth.isCourtier() or auth.isYlyade()}" >
+								<f:facet name="header">
+									<h:outputText value="Avis d'échéance" />
+								</f:facet>
+								<p:commandButton icon="ui-icon-print" title="Imprimer l'avis d'échéance"
+										action="#{devisRcdController.actImprimerAvisEcheance}" process="@this"
+										onsuccess="window.open('#{request.contextPath}/output?__report=/reports/gestionComptable/AvisEcheance.rptdesign&amp;id_tiers=#{devisRcdController.selectedTaDossierRcdDTO.id}&amp;__format=pdf')"
+										rendered="#{e.validationAutomatiquePaiement or e.validationManuellePaiement}">
+										<f:setPropertyActionListener target="#{devisRcdController.selectedTaEcheanceDTO}" value="#{e}" />
+								</p:commandButton>
+							</p:column>  -->
+							
+							</p:dataTable>
+					</p:panel>
+			</p:panel>
+			
+		</p:tab>
+
+	</p:tabView>
+	
+	<p:dialog header="Sinistre antécédent" widgetVar="wvSinistreAntedentDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:panel widgetVar="wvSinistreAntedentPanel" >
+			<p:panelGrid  columns="2" rendered="#{devisRcdController.selectedTaSinstreAntecedent!=null}">
+			
+				<p:outputLabel value="Type" styleClass="labelchob"/>
+<!--                 <p:selectOneMenu> -->
+<!--                 	<f:selectItem itemValue="" itemLabel="Garantie de responsabilité décénale"/> -->
+<!--                 	<f:selectItem itemValue="" itemLabel="Garantie de responsabilités et autres garanties"/> -->
+<!--                 	<p:ajax update="@this"/> -->
+<!--                 </p:selectOneMenu> -->
+                <p:selectOneMenu value="#{devisRcdController.selectedTaSinstreAntecedent.taTGarantieSinistre}" converter="entityConverter">
+                	<f:selectItems value="#{devisRcdController.listeTaTGarantieSinistre}" var="g" itemLabel="#{g.liblTGarantieSinistre}" itemValue="#{g}"/>
+                	<p:ajax update="@this"/>
+                </p:selectOneMenu>
+			
+<!-- 				<p:outputLabel value="Nombre de sinistres" styleClass="labelchob"/> -->
+<!--                 <p:inputText value="#{devisRcdController.selectedTaSinstreAntecedent.nbrSinistres}"> -->
+<!--                 	<p:ajax update="@this"/> -->
+<!--                 </p:inputText> -->
+  
+                <p:outputLabel value="Date de déclaration" styleClass="labelchob"/>
+                <p:calendar value="#{devisRcdController.selectedTaSinstreAntecedent.dateSinistre}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+					showOn="button" timeZone="#{msg.time_zone}">
+					<p:ajax event="dateSelect" update="@this" />
+					<f:ajax event="blur" update="@this" />
+				</p:calendar>
+ 
+                <p:outputLabel value="Nature des dommages" styleClass="labelchob" style="text-transform: uppercase"/>
+                <p:inputText value="#{devisRcdController.selectedTaSinstreAntecedent.natureDommages}">
+                	<p:ajax update="@this"/>
+                </p:inputText>
+                
+                <p:outputLabel value="Part de responsabilité" styleClass="labelchob"/>
+                <p:inputText value="#{devisRcdController.selectedTaSinstreAntecedent.partResponsabilite}">
+                	<p:ajax update="@this"/>
+                </p:inputText>
+ 
+                <p:outputLabel value="Montant des dommages" styleClass="labelchob"/>
+                <p:inputNumber value="#{devisRcdController.selectedTaSinstreAntecedent.montantSinistre}" symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}">
+                	<p:ajax update="@this"/>
+                </p:inputNumber>
+ 
+ 				<p:commandButton value="Annuler" actionListener="#{devisRcdController.actAnnulerSinistreAntecedent}" oncomplete="PF('wvSinistreAntedentDialog').hide()" update="@widgetVar(wvDatatableSinistreAntecedant),@widgetVar(wvNbSinistre5ans),@widgetVar(wvCoutGlobalSinistre),@widgetVar(wvCoutGlobalSinistre)"/>
+                <p:commandButton value="Enregistrer" actionListener="#{devisRcdController.actEnregistrerSinistreAntecedent}" update="@widgetVar(wvDatatableSinistreAntecedant),@widgetVar(wvNbSinistre5ans),@widgetVar(wvCoutGlobalSinistre)" process="@this" oncomplete="PF('wvSinistreAntedentDialog').hide()"/>
+                
+            </p:panelGrid>
+        </p:panel>
+    </p:dialog> 
+    
+    <p:dialog header="Détail calcul prime" widgetVar="wvDetailCalculPrimeDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+        <p:panel widgetVar="wvDetailCalculPrimePanel">
+	        <p:scrollPanel style="width:1050px;height:750px">
+<!-- 				<p:outputLabel value="#{devisRcdController.logDebugCalculPrime}" escape="false" /> -->
+					<p:outputLabel value="#{devisRcdController.taDossierRcd.logDetailCalculPrime}" escape="false" /> 
+			</p:scrollPanel>
+        </p:panel>
+    </p:dialog>
+    
+     <p:dialog header="Détail calcul premier règlement" widgetVar="wvDetailCalculPremierReglementDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+        <p:panel widgetVar="wvDetailCalculPremierReglementPanel" >
+        <p:scrollPanel style="width:750px;height:550px">
+<!-- 			<p:outputLabel value="#{devisRcdController.logDebugCalculPremierReglement}" escape="false" /> -->
+			<p:outputLabel value="#{devisRcdController.taDossierRcd.logDetailCalculPremierReglement}" escape="false" />
+		</p:scrollPanel>
+        </p:panel>
+    </p:dialog>
+
+</ui:composition>

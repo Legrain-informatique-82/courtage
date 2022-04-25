@@ -1,0 +1,256 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<o:importConstants type="fr.ylyade.courtage.app.LgrTab" />
+	
+	<p:commandLink id="listeExtractionClientBtn" >
+		<i class="top-submenu-icon fa fa-fw fa-user"></i>
+		<span><h:outputText value="Liste des clients"/></span>
+	</p:commandLink>
+	
+	<p:overlayPanel id="idlisteExtractionClientPanel" for="listeExtractionClientBtn" hideEffect="fade" dynamic="true" 
+		dismissable="true" appendToBody="true" widgetVar="wvOverlaylisteExtractionClient" showCloseIcon="true">
+		<h:form>
+		<div class="dashboard-title" style="background:#f6f6f6;">
+              <h:panelGrid columns="3" cellpadding="5">
+<!--             	<h:graphicImage name="dashboard/tier.svg" library="images" height="35px" style="margin-top:1px;" /> -->
+                <p:outputLabel value="Liste des clients" style="font-size:20px;"/>
+              </h:panelGrid>  
+              <p:separator/>
+        </div>
+        
+	<p:menubar styleClass="menu-onglet" widgetVar="wvMenulisteExtractionClient" id="idMenulisteExtractionClient">
+		 <p:menuitem value="Ajouter un nouveau Assure" update=":form:tabView,:form:messages,@widgetVar(wvMenulisteExtractionClient),@widgetVar(wvDataTablelisteExtractionClient),@widgetVar(wvBandeauActionAssure)" 
+		 actionListener="#{assureController.nouveau}" styleClass="icon icon-insert" disabled="#{assureController.etatBouton('inserer')}" oncomplete="PF('wvOverlaylisteExtractionClient').hide();"/>
+	
+<!-- 		 <p:menuitem title="Ajouter un nouveau Assure" update=":form:tabView,:form:messages,@widgetVar(wvMenulisteExtractionClient),@widgetVar(wvDataTablelisteExtractionClient),@widgetVar(wvBandeauActionAssure)"  -->
+<!-- 		 actionListener="#{assureController.nouveau}" styleClass="icon icon-insert" disabled="#{assureController.etatBouton('inserer')}" oncomplete="PF('wvOverlaylisteExtractionClient').hide();"/> -->
+
+		 <p:menuitem title="Rafraîchir la liste" update="@form,:form:messages" actionListener="#{assureController.refresh}" styleClass="icon icon-refresh" disabled="#{assureController.modeEcran.dataSetEnModif()}"/>
+		 
+	</p:menubar>
+	
+	<p:sticky target="idMenulisteExtractionClient" />
+	
+
+	 	
+	<p:dataTable id="dataTablelisteExtractionClient" var="taAssure"
+				widgetVar="wvDataTablelisteExtractionClient"
+				value="#{assureController.valuesExtraction}"
+				rowKey="#{taAssure.id}"
+				selection="#{assureController.selectedTaAssureDTOs}"
+				dblClickSelect="true"
+				styleClass="datatable mt10"
+				resizableColumns="true"
+				paginator="true" 
+				rows="#{msg.modele_datatable_ligne_par_page_debut}"
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}"
+				disabledSelection="#{assureController.modeEcran.dataSetEnModif()}">
+				
+				<p:ajax event="rowSelect" delay="#{msg.datatable_rowselect_delay}" listener="#{assureController.onRowSelect}" update=":form:tabView,:form:messages,@widgetVar(wvBandeauActionAssure)" oncomplete="activeTabCenter('#{LgrTab.CSS_CLASS_TAB_ASSURE}');PF('wvOverlaylisteExtractionClient').hide();scrollToTop();"/>
+			
+				<f:facet name="header">  
+           			<h:outputText value="Assure" />
+        		</f:facet>
+
+		  		<f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage library="images" name="excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="dataTablelisteExtractionClient" fileName="liste_clients" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="pdf.png"  width="24"/>
+		                <p:dataExporter type="pdf" target="dataTablelisteExtractionClient" fileName="liste_clients"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="csv.png"  width="24"/>
+		                <p:dataExporter type="csv" target="dataTablelisteExtractionClient" fileName="liste_clients" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="xml.png"  width="24"/>
+		                <p:dataExporter type="xml" target="dataTablelisteExtractionClient" fileName="liste_clients" />
+		            </h:commandLink>
+		            
+		            <p:commandLink id="idBtnListePrintEcranlisteExtractionClient"
+							 title="Imprimer la liste"
+							 onsuccess="window.open('#{request.contextPath}/output?__report=/reports/listesEditionsAssure/listeExtractionClient.rptdesign&amp;id_tiers=#{assureController.values}&amp;__format=pdf')"
+		               		actionListener="#{assureController.actImprimer}"
+		               		process="@this" rendered="#{!devisRcdController.assurePib()}">		               		
+		                <p:graphicImage library="images" name="imprimante.png"  width="24"/>		                
+		            </p:commandLink>
+		            
+		        </f:facet>
+        
+        		<p:column selectionMode="multiple" style="width:16px;text-align:center" exportable="false"/>
+
+				<p:column sortBy="#{taAssure.codeAssure}" filterBy="#{taAssure.codeAssure}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Code" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeAssure}" />
+				</p:column>
+				<p:column sortBy="#{taAssure.raisonSociale}" filterBy="#{taAssure.raisonSociale}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Raison sociale" />
+					</f:facet>
+					<h:outputText value="#{taAssure.raisonSociale}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.nom}" filterBy="#{taAssure.nom}" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Nom" />
+					</f:facet>
+					<h:outputText value="#{taAssure.nom}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.prenom}" filterBy="#{taAssure.prenom}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Prénom" />
+					</f:facet>
+					<h:outputText value="#{taAssure.prenom}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.codeSiret}" filterBy="#{taAssure.codeSiret}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="SIRET" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeSiret}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.codeTAssure}" filterBy="#{taAssure.codeTAssure}" styleClass="center" filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="Type Assure (Activité)" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codeTAssure}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.adresseLigne1}" filterBy="#{taAssure.adresseLigne1}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Adresse" />
+					</f:facet>
+					<h:outputText value="#{taAssure.adresseLigne1}" />
+				</p:column>
+				<p:column sortBy="#{taAssure.adresseLigne2}" filterBy="#{taAssure.adresseLigne2}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Adresse (2)" />
+					</f:facet>
+					<h:outputText value="#{taAssure.adresseLigne2}" />
+				</p:column>
+				<p:column sortBy="#{taAssure.adresseLigne3}" filterBy="#{taAssure.adresseLigne3}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Adresse (3)" />
+					</f:facet>
+					<h:outputText value="#{taAssure.adresseLigne3}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.dateNaissance}" filterBy="#{taAssure.dateNaissance}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Date de naissance" />
+					</f:facet>
+					<h:outputText value="#{taAssure.dateNaissance}" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.adresseEmail}" filterBy="#{taAssure.adresseEmail}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Email" />
+					</f:facet>
+					<h:outputText value="#{taAssure.adresseEmail}" />
+				</p:column>
+				
+				<p:column sortBy="" filterBy="" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="IBAN" />
+					</f:facet>
+					<h:outputText value="pas de donnée" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.numeroTel}" filterBy="#{taAssure.numeroTel}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Tel." />
+					</f:facet>
+					<h:outputText value="#{taAssure.numeroTel}" />
+				</p:column>
+				
+				<p:column sortBy="" filterBy="" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Numéro de client" />
+					</f:facet>
+					<h:outputText value="pas de donnée" />
+				</p:column>
+				
+				<p:column sortBy="" filterBy="" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Profession" />
+					</f:facet>
+					<h:outputText value="pas de donnée" />
+				</p:column>
+				
+				<p:column sortBy="#{taAssure.pays}" filterBy="#{taAssure.pays}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Pays" />
+					</f:facet>
+					<h:outputText value="#{taAssure.pays}" />
+				</p:column>
+				<p:column sortBy="#{taAssure.liblTCivilite}" filterBy="#{taAssure.liblTCivilite}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Sexe" />
+					</f:facet>
+					<h:outputText value="#{taAssure.liblTCivilite}" />
+				</p:column>
+				
+				<p:column sortBy="" filterBy="" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Statut" />
+					</f:facet>
+					<h:outputText value="pas de donnée" />
+				</p:column>
+				<p:column sortBy="#{taAssure.codePostal}" filterBy="#{taAssure.codePostal}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Code postal" />
+					</f:facet>
+					<h:outputText value="#{taAssure.codePostal}" />
+				</p:column>
+
+				<p:column sortBy="#{taAssure.ville}" filterBy="#{taAssure.ville}" filterMatchMode="contains" styleClass="center">
+					<f:facet name="header">
+						<h:outputText value="Ville" />
+					</f:facet>
+					<h:outputText value="#{taAssure.ville}" />
+				</p:column>
+				
+				
+				
+				<p:column sortBy="#{taAssure.client}" styleClass="center" filterBy="#{taAssure.client}" filterMatchMode="equals">
+					<f:facet name="header">
+						<h:outputText value="Prospect ou client" />
+					</f:facet>
+					<f:facet name="filter">
+			                <p:selectOneButton onchange="PF('wvDataTablelisteExtractionClient').filter()">
+			                    <f:converter converterId="javax.faces.Boolean" />
+			                    <f:selectItem itemLabel="Tous" itemValue="" />
+			                    <f:selectItem itemLabel="Client" itemValue="true" />
+			                    <f:selectItem itemLabel="Prospect" itemValue="false" />
+			                </p:selectOneButton>
+			            </f:facet>
+			            <h:outputText value="#{taAssure.client ? 'Client': 'Prospect'}" />
+<!-- 					<p:selectBooleanCheckbox value="#{taAssure.client}" disabled="true"/> -->
+				</p:column>
+				
+
+
+			</p:dataTable>
+
+		</h:form>
+	</p:overlayPanel>
+	
+</ui:composition>

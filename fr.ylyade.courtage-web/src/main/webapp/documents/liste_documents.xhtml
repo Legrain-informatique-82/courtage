@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+       
+       <div id="main-wrapper-content">
+       	
+       	<p:menubar styleClass="menu-onglet">
+<!-- 				<p:menuitem value="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuDevisRcPro').show()" /> -->
+
+		
+		<p:menuitem value="Fermer"
+			styleClass="icon icon-close menuitem-fermer-droite" process="@this"
+			
+			disabled="#{devisRcdController.etatBouton('fermer')}"
+			onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+			<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" disabled="#{!devisRcdController.modeEcran.dataSetEnModif()}" />
+		</p:menuitem>
+				
+	</p:menubar>
+	
+       		<div class="ui-g">
+       			<div class="ui-g-12 ui-md-12">
+       				
+					<p:panel header="Documents PDF téléchargeables"  id="idTabViewDocumentPDF">
+						
+
+							<p:dataList id="listeDoc" value="#{documentPdfController.values}" var="val" type="unordered">
+								<p:column>
+									<p:panel header="#{val.liblDoc}">
+										<h:panelGrid columns="3">
+												<!-- <b>Description : </b>  --> 
+	     				  						<i>#{val.description}</i>
+												
+							
+											<p:growl id="messages" showDetail="true" />
+											
+											<!-- <p:commandButton value="Télécharger #{val.liblDoc}"  process="@this"  ajax="false" icon="ui-icon-arrowthick-1-s">
+												<f:setPropertyActionListener value="#{val}" target="#{documentPdfController.selectedDoc}" />
+												
+												<p:fileDownload value="#{documentPdfController.file}"/>
+											</p:commandButton>  -->
+											<p:button href="/DocPDFServlet/#{val.idDocumentPdf}" value="Télécharger #{val.liblDoc}"/>
+											</h:panelGrid>
+									</p:panel>
+								</p:column>
+
+
+								
+					     		
+							</p:dataList>
+						<!-- <p:panel header="ACPR">
+							<h:panelGrid columns="3">
+
+								<p:growl id="messages" showDetail="true" />
+												
+								<p:button icon="ui-icon-arrowthick-1-s" 
+								href="https://acpr.banque-france.fr/sites/default/files/20180313-01_entreprises_europeennes_exercant_en_lps_en_france_deouis_leur_siege_social.pdf" value=" Télécharger ACPR" />
+							</h:panelGrid>
+						
+						</p:panel> -->
+						
+					</p:panel>
+					
+
+					
+       		</div>       		
+       	</div>
+
+       	
+       </div>
+</ui:composition>

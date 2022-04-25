@@ -1,0 +1,1091 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-6">
+                        <div class="dashboard-title">
+                            
+                            <h2> Tableau de bord</h2>
+<!--                             <p style="display:inline-block;"><p:outputLabel value="Nom du dossier : #{dashBoardBean.tenantInfo.tenantId} (#{monCompteBean.dossierCourant.taTNiveau.libelle})"/> </p> -->
+                        </div>
+                         <div>
+                        	<p:commandButton id="refreshDashYlyade" icon="fa fa-refresh" process="@this" 
+							actionListener="#{dashYlyadeController.refresh()}" update="idpanelYlyade, idpanelAvenantYlyade, idpanelSoumisExpertiseYlyade, idpanelYlyadePaiement, idpanelResiliationYlyade, idpanelPaiementContratYlyade, idpanelAttestationNominativeYlyade" styleClass="refresh-button-dashboard"/>
+                        </div>
+                        <p:tooltip id="toolTipFadeRefresh" for="refreshDashYlyade"
+	   						  value="Rafraîchir le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-md-6 dashboard-buttons">
+
+                        <p:commandButton id="closeDashYlyade" icon="fa fa-times" styleClass="icon icon-close fermer-droite" process="@this" 
+							onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())"/>
+							<p:tooltip id="toolTipFadeClose" for="closeDashYlyade"
+	   						  value="Fermer le tableau de bord"
+	   						  position="top"/>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+
+                    </div>
+                </div>
+            </div>
+       </div>
+       
+       <div id="main-wrapper-content">
+       		<div class="ui-g">
+       			<div class="ui-g-12 ui-md-6">
+					<p:panel header="Notifications Dossier (temporaire)" rendered="false" id="idTabViewNotificationDossierAccueil">
+						<p:tabView orientation="right" styleClass="verticalTab" >
+
+							<p:tab title="#{messDossier.titreMessage}" id="idTabNotificationDossierAccueil">
+							
+
+									<ui:include src="#{messDossier.titreCorpsMessage}" />
+									<ui:include src="#{messDossier.texte1Message}" />
+									<ui:include src="#{messDossier.texte2Message}" />
+									<ui:include src="#{messDossier.texte3Message}" />
+									<h:outputLabel escape="false" value="Message informatif" />
+									<br />
+									<h:outputLabel escape="false" value="Il vous reste 5 documents à envoyer pour l'activation de votre compte !" />
+ 									
+								
+							</p:tab>
+						
+						</p:tabView>
+					</p:panel>
+					
+					<p:panel id="idpanelYlyade" header="Etat des dossiers" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" style="align:center;">
+				
+				<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Contrats à traiter <h:outputLink id="tooltiptraiter" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeTraiter" for="tooltiptraiter"
+                             value="Cette liste contient tous les contrats qui n'ont pas encore été traités, c'est à dire imprimés et remis aux clients pour signature par le courtier, et enfin reçus et validés par Novarisks."
+                             position="top"/>
+<!-- 						<p:outputLabel value="#{dashCourtierController.nbContratATraiter}" style="align:center;width:100%;" styleClass="label-number-dashboard" /> -->
+<!-- 						<p:outputLabel value="10000" -->
+<!-- 						 style="align:center;width:100%;"  -->
+<!-- 						 styleClass="label-number-dashboard panel-dash" /> -->
+						 <p:outputLabel  style="align:center;width:100%;"
+						  styleClass="label-number-dashboard"> #{dashYlyadeController.nbContratATraiter}</p:outputLabel>
+						 
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeOverlayContratATraiter" styleClass="" process="@this"
+						 oncomplete="PF('wvOverlayListeContratATraiterNova').show();"
+						 update="@widgetVar(wvDataTableListeContratATraiterNova)"
+						  value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis à valider <h:outputLink id="tooltip1" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFade1" for="tooltip1"
+	   						  value="Cette liste contient tous les devis qui ont été soumis à souscription par les courtiers, ou la GED est intégralement validée et le règlement du 1er paiement effectué)."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbDossierAValider}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierAValider" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDossierAValiderYlyade').show();"
+							  update="@widgetVar(wvDataTablelisteDossierAValiderYlyade)"
+							  value="Afficher la liste"  />
+							   
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis à valider et en attente de paiement <h:outputLink id="tooltipAValiderEnAttentePaiement" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>	
+	   						 <p:tooltip id="toolTipFade1" for="tooltipAValiderEnAttentePaiement"
+	   						  value="Cette liste contient tous les devis qui ont été soumis à souscription par les courtiers, ou la GED est intégralement validée, mais le règlement du 1er paiement n'a pas encore été effectué)."
+	   						  position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbDossierAValiderEnAttentePaiement}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierAValiderEnAttentePaiement" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDossierAValiderEnAttentePaiementYlyade').show();"
+							  update="@widgetVar(wvDataTablelisteDossierAValiderEnAttentePaiementYlyade)"
+							  value="Afficher la liste"  />
+							   
+						</div>
+					</h:panelGroup>
+						
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis soumis à validation assureur <h:outputLink id="tooltip2" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+                            <p:tooltip id="toolTipFade2" for="tooltip2"
+                             value="Cette liste contient tous les devis qui ont été entièrement validés par Novarisks et donc en attente de la validation Assureur pour la concrétisation en contrat. "
+                             position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbDossierEnAttenteValidationAssureur}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierValidationYlyade" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDossierValidationYlyade').show();"
+							 update="@widgetVar(wvDataTablelisteDossierValidationYlyade)"
+							  value="Afficher la liste"  />  
+						</div>
+					</h:panelGroup>
+					
+				
+					
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Dossiers refusés <h:outputLink id="tooltip3" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFade3" for="tooltip3"
+                             value="Cette liste contient tous les devis qui ont été refusés par l'assureur, triés par date de création."
+                             position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbDossierRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierRefuse" styleClass=""
+						 	oncomplete="PF('wvOverlayListeDossierRefuse').show();"
+						 	update="@widgetVar(wvDataTableListeDossierRefuse)"
+						  	value="Afficher la liste"  />	
+						</div>
+					</h:panelGroup>
+					
+					
+					
+
+
+				</h:panelGrid>
+			
+			</p:panel>
+			
+			<!-- PAIEMENT -->
+			<p:panel id="idpanelYlyadePaiement" header="Etat des paiements (Devis)" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+				
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Devis en attente de paiement <h:outputLink id="tooltipAttentePaiement" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    				<p:tooltip id="toolTipFadeAttentePaiement" for="tooltipAttentePaiement"
+	                         value="Cette liste contient tous les devis qui ont la GED validée par le courtier, qui ont été soumis à souscription  mais où il manque le paiement de la 1ère échéance."
+	                         position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbDevisAttentePaiementYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeDevisAttentePaiementYlyade" styleClass=""
+							 oncomplete="PF('wvOverlaylisteDevisAttentePaiementYlyade').show();"
+							 update="@widgetVar(wvDataTablelisteDevisAttentePaiementYlyade)"
+							 value="Afficher la liste"  /> 
+							
+						</div>
+						</h:panelGroup>
+				
+				
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente d'envoi du chèque <h:outputLink id="tooltipAttenteEnvoiChequeYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteEnvoiChequeYlyade" for="tooltipAttenteEnvoiChequeYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par chèque, où le chèque du 1er paiement n'a pas encore été envoyé par le courtier."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteEnvoiCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteEnvoiChequeYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteEnvoiChequeYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteEnvoiChequeYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente de réception du chèque <h:outputLink id="tooltipAttenteReceptionChequeYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteReceptionChequeYlyade" for="tooltipAttenteReceptionChequeYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par chèque, où le chèque du 1er paiement a été envoyé par le courtier mais pas encore été reçu."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteReceptionCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteReceptionChequeYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteReceptionChequeYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteReceptionChequeYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente de dépôt du chèque <h:outputLink id="tooltipAttenteDepotChequeYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteDepotChequeYlyade" for="tooltipAttenteDepotChequeYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par chèque, où le chèque du 1er paiement a été reçu mais pas encore déposé à la banque."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteDepotCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteDepotChequeYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteDepotChequeYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteDepotChequeYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente d'encaissement du chèque <h:outputLink id="tooltipAttenteEncaissementChequeYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteEncaissementChequeYlyade" for="tooltipAttenteEncaissementChequeYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par chèque, où le chèque du 1er paiement a été déposé en banque mais où le règlement n'a pas encore été constaté sur le compte en banque."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteEncaissementCheque}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteEncaissementChequeYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteEncaissementChequeYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteEncaissementChequeYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente de virement <h:outputLink id="tooltipAttenteVirementEffectueYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteEnvoiChequeYlyade" for="tooltipAttenteVirementEffectueYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par virement, où le virement du 1er paiement n'a pas encore été effectué par le courtier."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteVirementEffectue}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteVirementEffectueYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteVirementEffectueYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteVirementEffectueYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+						
+								<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis en attente de validation du virement <h:outputLink id="tooltipAttenteReceptionVirementYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    				<p:tooltip id="toolTipFadeAttenteReceptionVirementYlyade" for="tooltipAttenteReceptionVirementYlyade"
+		                         value="Cette liste contient tous les devis avec option de paiement par virement, où le virement du 1er paiement a été envoyé par le courtier, mais pas encore constaté sur le compte et validé."
+		                         position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbDevisAttenteReceptionVirement}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeDevisAttenteReceptionVirementYlyade" styleClass=""
+								 oncomplete="PF('wvOverlaylisteDevisAttenteReceptionVirementYlyade').show();"
+								 update="@widgetVar(wvDataTablelisteDevisAttenteReceptionVirementYlyade)"
+								 value="Afficher la liste"  /> 
+								
+							</div>
+						</h:panelGroup>
+					
+					</h:panelGrid>
+			
+			</p:panel>
+			
+			<!-- ESPACE PAIEMENT CONTRATS -->
+					<p:panel id="idpanelPaiementContratYlyade" header="Espace paiement (Contrats)" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats arrivant à termes <h:outputLink id="tooltipContratArrivantTermesYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratArrivantTermesYlyade" for="tooltipContratArrivantTermesYlyade"
+		                             value="Cette liste contient tous les contrats qui ont la date de règlement de la prochaine échéance dans moins de 30 jours et ou celle-ci n'a pas encore été réglée."
+		                             position="top"/>
+									<p:outputLabel value="#{dashYlyadeController.nbContratArrivantTermesYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratArrivantTermesYlyade" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratArrivantTermesYlyade').show();"
+								 	update="@widgetVar(wvDataTablelisteContratArrivantTermesYlyade)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup rendered="true">
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats termes dépassée <h:outputLink id="tooltipContratTermesDepasseeYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratTermesDepasseeYlyade" for="tooltipContratTermesDepasseeYlyade"
+		                             value="Cette liste contient tous les contrats qui ont la prochaine échéance non payé depuis au moins 10 jours."
+		                             position="top"/>
+									<p:outputLabel value="#{dashYlyadeController.nbContratTermesDepasseeYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratTermesDepasseeYlyade" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratTermesDepasseeYlyade').show();"
+								 	update="@widgetVar(wvDataTablelisteContratTermesDepasseeYlyade)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats arrivant à échéance annuelle <h:outputLink id="tooltipContratArrivantEcheanceAnnuelleYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratArrivantEcheanceAnnuelleYlyade" for="tooltipContratArrivantEcheanceAnnuelleYlyade"
+		                             value="Cette liste contient tous les contrats qui arrivent à échéance annuelle dans 30 jours ou moins."
+		                             position="top"/>
+									<p:outputLabel value="#{dashYlyadeController.nbContratArrivantEcheanceAnnuelleYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratArrivantEcheanceAnnuelleYlyade" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratArrivantEcheanceAnnuelleYlyade').show();"
+								 	update="@widgetVar(wvDataTablelisteContratArrivantEcheanceAnnuelleYlyade)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats mis en demeure <h:outputLink id="tooltipContratMisEnDemeureYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratMisEnDemeureYlyade" for="tooltipContratMisEnDemeureYlyade"
+		                             value="Cette liste contient tous les contrats qui sont mis en demeure, c'est à dire les contrats qui n'ont pas reçus le dernier règlement attendu depuis au moins 30 jours"
+		                             position="top"/>
+									<p:outputLabel value="#{dashYlyadeController.nbContratMisEnDemeureYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratMisEnDemeureYlyade" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratMisEnDemeureYlyade').show();"
+								 	update="@widgetVar(wvDataTablelisteContratMisEnDemeureYlyade)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+								<div class="card card-courtier" style="text-align:center;">
+									<h3 align="center">Contrats suspendus pour non-paiement <h:outputLink id="tooltipContratSuspendusNonPaiementYlyade" value="#">
+			        						<i class="fa fa-question-circle"></i>
+			    						</h:outputLink></h3>
+			    						<p:tooltip id="toolTipFadeContratSuspendusNonPaiementYlyade" for="tooltipContratSuspendusNonPaiementYlyade"
+		                             value="Cette liste contient tous les contrats qui ont été automatiquement suspendus car l'échéance suivante n'à pas été réglée depuis au moins 1 mois."
+		                             position="top"/>
+									<p:outputLabel value="#{dashYlyadeController.nbContratSuspendusNonPaiementYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+									<p:separator></p:separator>
+									<p:commandButton id="idBtnListeOverlayContratSuspendusNonPaiementYlyade" styleClass=""
+								 	oncomplete="PF('wvOverlaylisteContratSuspendusNonPaiementYlyade').show();"
+								 	update="@widgetVar(wvDataTablelisteContratSuspendusNonPaiementYlyade)"
+								  	value="Afficher la liste"  />
+								  	
+								  
+								</div>
+							</h:panelGroup>
+							
+							
+						</h:panelGrid>
+					</p:panel>
+					
+					<!-- AVENANT -->
+			<p:panel id="idpanelAvenantYlyade" header="Etat des avenants" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" style="align:center;">
+				
+				<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Avenants à valider <h:outputLink id="tooltipAvenantAttenteValidationYlyade" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+                            <p:tooltip id="toolTipFadeAvenantAttenteValidationYlyade" for="tooltipAvenantAttenteValidationYlyade"
+                             value="Cette liste contient tous les avenants qui sont en attente de validation par Novarisks. Ils ont la GED Validée par le courtier, ont été soumis à souscription et le 1er paiement à été effectué.  "
+                             position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbAvenantEnAttenteValidationYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayAvenantEnAttenteValidationYlyade" styleClass=""
+							 oncomplete="PF('wvOverlaylisteAvenantEnAttenteValidationYlyade').show();"
+							 update="@widgetVar(wvDataTablelisteAvenantEnAttenteValidationYlyade)"
+							  value="Afficher la liste"  />  
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Avenants soumis à validation assureur <h:outputLink id="tooltipAvenantAttenteValidationAssureur" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+                            <p:tooltip id="toolTipFadeAvenantAttenteValidationAssureur" for="tooltipAvenantAttenteValidationAssureur"
+                             value="Cette liste contient tous les avenants qui ont été entièrement validés par Novarisks et donc en attente de la validation Assureur pour la concrétisation en contrat. "
+                             position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbAvenantEnAttenteValidationAssureur}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayAvenantValidationYlyade" styleClass=""
+							 oncomplete="PF('wvOverlaylisteAvenantValidationYlyade').show();"
+							 update="@widgetVar(wvDataTablelisteAvenantValidationYlyade)"
+							  value="Afficher la liste"  /> 
+							  
+<!-- 							  nbAvenantEnAttenteValidationAssureur = listAvenantEnAttenteValidationAssureur.size();  -->
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+					<div class="card card-courtier" style="text-align:center;">
+						<h3 align="center">Avenants en attente de paiement <h:outputLink id="tooltipAvenantAttentePaiement" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    				<p:tooltip id="toolTipFadeAvenantAttentePaiement" for="tooltipAvenantAttentePaiement"
+                         value="Cette liste contient tous les avenants qui ont la GED validée par le courtier, qui ont été soumis à souscription  mais ou il manque le paiement de la 1ère échéance."
+                         position="top"/>
+						<p:outputLabel value="#{dashYlyadeController.nbAvenantEnAttentePaiementYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+						<p:separator></p:separator>
+						<p:commandButton id="idBtnListeAvenantAttentePaiementYlyade" styleClass=""
+						 oncomplete="PF('wvOverlaylisteAvenantAttentePaiementYlyade').show();"
+						 update="@widgetVar(wvDataTablelisteAvenantAttentePaiementYlyade)"
+						 value="Afficher la liste"  /> 
+						
+					</div>
+					</h:panelGroup>
+					
+					<h:panelGroup>
+						<div class="card card-courtier" style="text-align:center;">
+							<h3 align="center">Avenants refusés <h:outputLink id="tooltipAvenantsRefuse" value="#">
+	        						<i class="fa fa-question-circle"></i>
+	    						</h:outputLink></h3>
+	    						<p:tooltip id="toolTipFadeAvenantsRefuse" for="tooltipAvenantsRefuse"
+                             value="Cette liste contient tous les avenants qui ont été refusés par l'assureur, triés par date de création."
+                             position="top"/>
+							<p:outputLabel value="#{dashYlyadeController.nbAvenantRefuseAssureur}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayDossierRefuseAssureur" styleClass=""
+						 	oncomplete="PF('wvOverlayListeAvenantRefuseAssureur').show();"
+						 	update="@widgetVar(wvDataTableListeAvenantRefuseAssureur)"
+						  	value="Afficher la liste"  />	
+						</div>
+					</h:panelGroup>
+					
+					
+			</h:panelGrid>
+			
+			</p:panel>
+					
+					
+					
+					
+					<!-- Votre portefeuille -->
+					<p:panel header="Votre portefeuille" rendered="true">
+						<h:panelGrid columns="3" cellpadding="10" style="align:center;"> 
+						<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Liste extraction Dossier</h3>
+	
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayExtractionDossier" styleClass=""
+								 oncomplete="PF('wvOverlaylisteExtractionDossier').show();"
+								  update="@widgetVar(wvDataTablelisteExtractionDossier)"
+								  value="Afficher la liste"  />
+						</div> 
+	 					</h:panelGroup> 
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Liste extraction Clients</h3>
+	
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnListeOverlayExtractionClient" styleClass=""
+								 oncomplete="PF('wvOverlaylisteExtractionClient').show();"
+								  update="@widgetVar(wvDataTablelisteExtractionClient)"
+								  value="Afficher la liste"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	
+	 					</h:panelGrid> 
+					</p:panel><!-- fin portefeuille -->
+					
+					<!-- test envoi de mail -->
+					<p:panel header="Testez vos modèles de mail (sans PJ)" rendered="true">
+						<h3 align="left">Adresse mail pour test :</h3>
+						<p:inputText id="input_adresse" value="#{dashYlyadeController.adresseMailTest}" />
+						
+						<h:panelGrid columns="3" cellpadding="10" style="align:center;"> 
+						
+						<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail disponibilité de bordereau de commission (courtier)</h3>
+							 
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailCourtierBordereaux" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailCourtierBordereaux}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup> 
+	 					
+						<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail création courtier</h3>
+							 
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailCreationCourtier" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailCreationCourtier}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup> 
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail changement mot de passe</h3>
+							 
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailChangementPass" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailChangementPass}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup> 
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail confirmation changement mot de passe</h3>
+							 
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailConfirmationChangementPass" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailConfirmationChangementPass}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup> 
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation à l'échéance</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationEcheance" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationEcheance}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation à l'amiable</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationAmiable" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationAmiable}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation fausse déclaration</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationFausseDecla" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationFausseDecla}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation céssation d'activité</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationCessation" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationCessation}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation sans effet/annuler</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationSansEffetAnnuler" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationSansEffetAnnuler}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Résiliation Impayé</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailResiliationImpaye" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailResiliationImpaye}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Contrat Arrivant à terme  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailBientotATerme" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailBientotATerme}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Contrat 1 semaine après le terme  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailUneSemaineApresTerme" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailUneSemaineApresTerme}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Contrat mis en demeure de payer  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailMisEnDemeureImpaye" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailMisEnDemeureImpaye}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Contrat suspendu non paiement  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailSuspenduNonPaiement" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailSuspenduNonPaiement}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail dossier validé par super assureur  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailValidationSuperAssureur" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailValidationSuperAssureur}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail avenant validé par super assureur  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailValidationSuperAssureurAvenant" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailValidationSuperAssureurAvenant}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail avenant refusé par super assureur  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailRefusSuperAssureurAvenant" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailRefusSuperAssureurAvenant}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail activation compte courtier  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailActivationCourtier" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailActivationCourtier}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail enregistrement nouveau devis  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailEnregistrementDevis" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailEnregistrementDevis}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail Paiement comptant  </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailPaiementComptant" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailPaiementComptant}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail enregistrement nouvel avenant </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailEnregistrementDevisAvenant" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailEnregistrementDevisAvenant}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail courtier inactif </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailCourtierInactif" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailCourtierInactif}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail pièces invalides </h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailPiecesInvalides" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailPiecesInvalide}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					<h:panelGroup>
+						<div class="card">
+							<h3 align="center">Mail pièces invalides BIS</h3>
+							<p:separator></p:separator>
+							<p:commandButton id="idBtnEnvoiMailPiecesInvalidesBis" styleClass=""
+								 action="#{dashYlyadeController.actEnvoiMailPiecesInvalideBis}"
+								  value="Envoyez le mail de test"  />
+						</div> 
+	 					</h:panelGroup>
+	 					
+	
+	 					</h:panelGrid> 
+					</p:panel><!-- fin test mail -->
+					
+					<!-- DEBUT TEST DECLENCHEMENT CRON -->
+					<p:panel header="Déclencher les Timer manuellement" rendered="false">
+						<h:panelGrid columns="3" cellpadding="10" style="align:center;"> 
+							<h:panelGroup>
+							<div class="card">
+								<h3 align="center">Envoi de mail contrat terme dépassé depuis une semaine</h3>
+								 
+								<p:separator></p:separator>
+								<p:commandButton 
+									 action="#{dashYlyadeController.actEnvoiMailContratTermeDepasse1Semaine}"
+									  value="Déclencher le timer"  />
+							</div> 
+		 					</h:panelGroup> 
+		 					<h:panelGroup>
+							<div class="card">
+								<h3 align="center">Envoi de mail dossier pièces invalides</h3>
+								 
+								<p:separator></p:separator>
+								<p:commandButton 
+									 action="#{dashYlyadeController.actDeclencheTimerEnvoiMailPiecesInvalide}"
+									  value="Déclencher le timer"  />
+							</div> 
+		 					</h:panelGroup> 
+		 					<h:panelGroup>
+							<div class="card">
+								<h3 align="center">Envoi de mail Courtier Inactif</h3>
+								 
+								<p:separator></p:separator>
+								<p:commandButton 
+									 action="#{dashYlyadeController.actDeclencheTimerEnvoiMailCourtierInactif}"
+									  value="Déclencher le timer" disabled="true" />
+							</div> 
+		 					</h:panelGroup> 
+	 					</h:panelGrid>
+	 				</p:panel>
+
+
+       		</div>
+			<div class="ui-g-12 ui-md-6">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<!-- SOUMIS A ETUDE -->
+			<p:panel id="idpanelSoumisExpertiseYlyade" header="Etat des dossiers soumis à étude" rendered="true" styleClass="panel-dash" toggleable="true">
+				<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+				
+				<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude en attente de validation NOVARISKS <h:outputLink id="tooltipSoumisEtudeAttenteValidationYlyade" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeAttenteValidationYlyade" for="tooltipSoumisEtudeAttenteValidationYlyade"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et qui attendent la validation NOVARISKS"
+	                             position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbSoumisEtudeAttenteValidationYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeAttenteValidationYlyade" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeAttenteValidationYlyade').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeAttenteValidationYlyade)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude en attente de validation par la compagnie <h:outputLink id="tooltipSoumisEtudeAttenteValidationAssureur" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeAttenteValidationAssureur" for="tooltipSoumisEtudeAttenteValidationAssureur"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude à l'assureur et qui attendent la validation de la compagnie"
+	                             position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbSoumisEtudeAttenteValidationAssureur}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeAttenteValidationAssureurYlyade" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeAttenteValidationAssureurYlyade').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeAttenteValidationAssureurYlyade)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude validés <h:outputLink id="tooltipSoumisEtudeValide" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeValide" for="tooltipSoumisEtudeValide"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et validés soit par Novarisks soit par la compagnie."
+	                             position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbSoumisEtudeValide}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeValideYlyade" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeValideYlyade').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeValideYlyade)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude refusés <h:outputLink id="tooltipSoumisEtudeRefuse" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeRefuse" for="tooltipSoumisEtudeRefuse"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et refusés soit par Novarisks soit par la compagnie."
+	                             position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbSoumisEtudeRefuse}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseYlyade" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseYlyade').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseYlyade)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup>
+							<div class="card card-courtier" style="text-align:center;">
+								<h3 align="center">Devis soumis à étude refusés définitivement <h:outputLink id="tooltipSoumisEtudeRefuseDefinitif" value="#">
+		        						<i class="fa fa-question-circle"></i>
+		    						</h:outputLink></h3>
+		    						<p:tooltip id="toolTipFadeSoumisEtudeRefuseDefinitif" for="tooltipSoumisEtudeRefuseDefinitif"
+	                             value="Cette liste contient tous les devis qui ont été soumis à étude et refusés définitivement soit par la compagnie soit par Novarisks."
+	                             position="top"/>
+								<p:outputLabel value="#{dashYlyadeController.nbSoumisEtudeRefuseDefinitif}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+								<p:separator></p:separator>
+								<p:commandButton id="idBtnListeOverlaySoumisEtudeRefuseDefinitifYlyade" styleClass=""
+							 	oncomplete="PF('wvOverlaylisteSoumisEtudeRefuseDefinitifYlyade').show();"
+							 	update="@widgetVar(wvDataTablelisteSoumisEtudeRefuseDefinitifYlyade)"
+							  	value="Afficher la liste"  />
+							  	
+							  
+							</div>
+						</h:panelGroup>
+				
+				
+				
+				
+				</h:panelGrid>
+			
+			</p:panel>
+			
+					
+					
+					
+					
+					<!-- RESILIATION -->
+					<p:panel  id="idpanelResiliationYlyade" header="Résiliation" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour non-paiement <h:outputLink id="tooltipContratResilieNonPaiementYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieNonPaiementYlyade" for="tooltipContratResilieNonPaiementYlyade"
+			                             value="Cette liste contient tous les contrats automatiquement résiliés pour non-paiement après 11 jours de mise en demeure."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieNonPaiementYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieNonPaiementYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieNonPaiementYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieNonPaiementYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés à l'échéance <h:outputLink id="tooltipContratResilieEcheanceYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieEcheanceYlyade" for="tooltipContratResilieEcheanceYlyade"
+			                             value="Cette liste contient tous les contrats résiliés à l'échéance."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieEcheanceYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieEcheanceYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieEcheanceYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieEcheanceYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés à l'amiable <h:outputLink id="tooltipContratResilieAmiableYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieAmiableYlyade" for="tooltipContratResilieAmiableYlyade"
+			                             value="Cette liste contient tous les contrats résiliés à l'amiable."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieAmiableYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieAmiableYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieAmiableYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieAmiableYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour fausse déclaration <h:outputLink id="tooltipContratResilieFausseDeclarationYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieFausseDeclarationYlyade" for="tooltipContratResilieFausseDeclarationYlyade"
+			                             value="Cette liste contient tous les contrats résiliés pour fausse déclaration."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieFausseDeclarationYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieFausseDeclarationYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieFausseDeclarationYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieFausseDeclarationYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats résiliés pour cessation d'activité <h:outputLink id="tooltipContratResilieCessationActiviteYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieCessationActiviteYlyade" for="tooltipContratResilieCessationActiviteYlyade"
+			                             value="Cette liste contient tous les contrats résiliés pour cessation d'activité."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieCessationActiviteYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieCessationActiviteYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieCessationActiviteYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieCessationActiviteYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								<h:panelGroup>
+									<div class="card card-courtier" style="text-align:center;">
+										<h3 align="center">Contrats sans effet / annulés  <h:outputLink id="tooltipContratResilieSansEffetYlyade" value="#">
+				        						<i class="fa fa-question-circle"></i>
+				    						</h:outputLink></h3>
+				    						<p:tooltip id="toolTipFadeContratResilieSansEffetYlyade" for="tooltipContratResilieSansEffetYlyade"
+			                             value="Cette liste contient tous les contrats sans effet / annulés."
+			                             position="top"/>
+										<p:outputLabel value="#{dashYlyadeController.nbContratResilieSansEffetYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+										<p:separator></p:separator>
+										<p:commandButton id="idBtnListeOverlayContratResilieSansEffetYlyade" styleClass=""
+									 	oncomplete="PF('wvOverlaylisteContratResilieSansEffetYlyade').show();"
+									 	update="@widgetVar(wvDataTablelisteContratResilieSansEffetYlyade)"
+									  	value="Afficher la liste"  />
+									  	
+									  
+									</div>
+								</h:panelGroup>
+								
+								
+						</h:panelGrid>
+					</p:panel>
+					
+					
+					<!-- ATTESTATIONS -->
+					<p:panel  id="idpanelAttestationNominativeYlyade" header="Attestations nominatives" rendered="true" styleClass="panel-dash" toggleable="true">
+						<h:panelGrid columns="3" cellpadding="3" layout="grid" style="align:center;">
+							<h:panelGroup>
+										<div class="card card-courtier" style="text-align:center;">
+											<h3 align="center">Contrats avec attestations nominatives en attente de paiement  <h:outputLink id="tooltipContratAttentePaiementAttestationNominativeYlyade" value="#">
+					        						<i class="fa fa-question-circle"></i>
+					    						</h:outputLink></h3>
+					    						<p:tooltip id="toolTipFadeContratAttentePaiementAttestationNominativeYlyade" for="tooltipContratAttentePaiementAttestationNominativeYlyade"
+				                             value="Cette liste contient tous les contrats qui possède une ou plusieurs attestations nominatives en attente de paiement."
+				                             position="top"/>
+											<p:outputLabel value="#{dashYlyadeController.nbContratAttentePaiementAttestationNominativeYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+											<p:separator></p:separator>
+											<p:commandButton id="idBtnListeOverlayContratAttentePaiementAttestationNominativeYlyade" styleClass=""
+										 	oncomplete="PF('wvOverlaylisteContratAttentePaiementAttestationNominativeYlyade').show();"
+										 	update="@widgetVar(wvDataTablelisteContratAttentePaiementAttestationNominativeYlyade)"
+										  	value="Afficher la liste"  />
+										  	
+										  
+										</div>
+							</h:panelGroup>
+							
+							<h:panelGroup>
+										<div class="card card-courtier" style="text-align:center;">
+											<h3 align="center">Contrats avec attestations nominatives en attente de validation Novarisks  <h:outputLink id="tooltipContratAttenteValidationAttestationNominativeYlyade" value="#">
+					        						<i class="fa fa-question-circle"></i>
+					    						</h:outputLink></h3>
+					    						<p:tooltip id="toolTipFadeContratAttenteValidationAttestationNominativeYlyade" for="tooltipContratAttenteValidationAttestationNominativeYlyade"
+				                             value="Cette liste contient tous les contrats qui possède une ou plusieurs attestations nominatives en attente de la validation Novarisks."
+				                             position="top"/>
+											<p:outputLabel value="#{dashYlyadeController.nbContratAttenteValidationAttestationNominativeYlyade}" style="align:center;width:100%;" styleClass="label-number-dashboard" />
+											<p:separator></p:separator>
+											<p:commandButton id="idBtnListeOverlayContratAttenteValidationAttestationNominativeYlyade" styleClass=""
+										 	oncomplete="PF('wvOverlaylisteContratAttenteValidationAttestationNominativeYlyade').show();"
+										 	update="@widgetVar(wvDataTablelisteContratAttenteValidationAttestationNominativeYlyade)"
+										  	value="Afficher la liste"  />
+										  	
+										  
+										</div>
+							</h:panelGroup>
+						</h:panelGrid>
+					</p:panel>
+					
+					
+				
+
+
+       		</div>       		
+       	</div>
+
+       	
+       </div>
+</ui:composition>

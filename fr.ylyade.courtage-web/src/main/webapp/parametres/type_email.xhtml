@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeEmailPanel" widgetVar="wvTypeEmailPanel">
+
+		<p class="subtitle">Gestion des types d'email</p>
+
+		<p:panel id="idTypeEmailPanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeEmailController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeEmailController.handleReturnDialogTypes}" update="@widgetVar(wvTypeEmailPanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeEmailController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeEmailController.handleReturnDialogTypes}" update="@widgetVar(wvTypeEmailPanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeEmailController.etatBouton('supprimer')}"
+				actionListener="#{typeEmailController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeEmail)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeEmailController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeEmailController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeEmail" 
+			widgetVar="wvDataTableTypeEmail" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeEmailController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeEmailController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeEmailController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeEmail" fileName="type_email" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeEmail" fileName="type_email" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeEmail" fileName="type_email" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeEmail" fileName="type_email" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeTEmail}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeTEmail}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblTEmail}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.liblTEmail}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeEmailFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeEmailController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeEmailController.nouveau.codeTEmail}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeEmailController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_EMAIL}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeEmailController.nouveau.liblTEmail}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeEmailController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_T_EMAIL}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeEmailController.etatBouton('enregistrer')}"
+									actionListener="#{typeEmailController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeEmailController.etatBouton('annuler')}"
+									actionListener="#{typeEmailController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeEmailController.etatBouton('annuler')}"
+									actionListener="#{typeEmailController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

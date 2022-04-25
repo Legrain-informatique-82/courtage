@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+	
+	<display-name>fr.legrain.bdg.compteclient.webapp</display-name>
+	
+	<welcome-file-list>
+		<welcome-file>index.xhtml</welcome-file>
+	</welcome-file-list>
+	
+	<session-config>
+		<!-- Penser à changer la variable fr.legrain.solstyce.webapp.Auth.sessionTimeIdle avec un temps légèrement inférieur -->
+        <session-timeout>240</session-timeout>
+    </session-config>  
+	
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>image/vnd.microsoft.icon</mime-type>
+	</mime-mapping>
+	
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+<!-- 		<param-value>aristo</param-value> -->
+<!-- 		<param-value>icarus-green</param-value> -->
+		<param-value>#{auth.theme}</param-value>
+	</context-param>
+	
+	<context-param>
+   		<param-name>primefaces.FONT_AWESOME</param-name>
+   		<param-value>true</param-value>
+	</context-param>
+	
+	<context-param>
+      <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+      <param-value>true</param-value>
+	</context-param>
+	
+	<!-- Load custom tag into JSF web application -->
+<!-- 	<context-param> -->
+<!-- 	   <param-name>facelets.LIBRARIES</param-name> -->
+<!-- 	   <param-value>/WEB-INF/legrain.taglib.xml</param-value> -->
+<!-- 	</context-param> -->
+	
+	
+	<!-- Debut - Primefaces Push Servlet -->
+<!-- 	<servlet> -->
+<!--         <servlet-name>Push Servlet</servlet-name> -->
+<!--         <servlet-class>org.primefaces.push.PushServlet</servlet-class> -->
+<!--  		<init-param> -->
+<!--         	<param-name>org.atmosphere.cpr.broadcasterCacheClass</param-name> -->
+<!--         	<param-value>org.atmosphere.cache.UUIDBroadcasterCache</param-value> -->
+<!--     	</init-param> -->
+<!--     	<load-on-startup>0</load-on-startup> -->
+<!--     	<async-supported>true</async-supported> -->
+<!--     </servlet> -->
+<!--     <servlet-mapping> -->
+<!--         <servlet-name>Push Servlet</servlet-name> -->
+<!--         <url-pattern>/primepush/*</url-pattern> -->
+<!--     </servlet-mapping> -->
+    <!-- Fin - Primefaces Push Servlet -->
+
+	<!-- Debut - Birt Engine Servlet -->
+	<servlet>
+		<servlet-name>EngineServlet</servlet-name>
+		<servlet-class>org.eclipse.birt.report.servlet.BirtEngineServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/output</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Resource location directory. Defaults to ${birt home} -->
+	<context-param>
+		<param-name>BIRT_RESOURCE_PATH</param-name>
+		<param-value>/reports/lib</param-value>
+	</context-param>
+	<!-- Fin - Birt Engine Servlet -->
+	
+	<!-- Debut - Barcode4J Servlet -->
+	<!-- Pour la servlet Barcode4J il faut barcode4j.jar, avalon-framework-4.2.0.jar, exception2svg.xslt-->
+<!-- 	<servlet> -->
+<!-- 		<servlet-name>BarcodeServlet</servlet-name> -->
+<!-- 		<servlet-class>org.krysalis.barcode4j.servlet.BarcodeServlet</servlet-class> -->
+<!-- 	</servlet> -->
+<!-- 	<servlet> -->
+<!-- 		<servlet-name>BarcodeErrorServlet</servlet-name> -->
+<!-- 		<servlet-class>org.krysalis.barcode4j.webapp.BarcodeErrorServlet</servlet-class> -->
+<!-- 	</servlet> -->
+	
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>BarcodeServlet</servlet-name> -->
+<!-- 		<url-pattern>/gensvg</url-pattern> -->
+<!-- 	</servlet-mapping> -->
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>BarcodeServlet</servlet-name> -->
+<!-- 		<url-pattern>/genbc</url-pattern> -->
+<!-- 	</servlet-mapping> -->
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>BarcodeErrorServlet</servlet-name> -->
+<!-- 		<url-pattern>/errsvg</url-pattern> -->
+<!-- 	</servlet-mapping> -->
+	
+	<mime-mapping>
+		<extension>xhtml</extension><!--mime-type>application/xhtml+xml</mime-type -->
+		<!--the above is not supported by IE6 -->
+		<mime-type>text/html</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>svg</extension>
+		<mime-type>image/svg+xml</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>svgz</extension>
+		<mime-type>image/svg+xml</mime-type>
+	</mime-mapping>
+	
+<!-- 	<error-page> -->
+<!-- 		<exception-type>org.krysalis.barcode4j.BarcodeException</exception-type> -->
+<!-- 		<location>/errsvg</location> -->
+<!-- 	</error-page> -->
+	<!-- Fin - Barcode4J Servlet -->
+	
+	<!-- Début - Javamelody Servlet -->
+<!-- 	<filter> -->
+<!-- 		<filter-name>javamelody</filter-name> -->
+<!-- 		<filter-class>net.bull.javamelody.MonitoringFilter</filter-class> -->
+<!-- 		<async-supported>true</async-supported> -->
+<!-- 	</filter> -->
+<!-- 	<filter-mapping> -->
+<!-- 		<filter-name>javamelody</filter-name> -->
+<!-- 		<url-pattern>/*</url-pattern> -->
+<!-- 		<dispatcher>REQUEST</dispatcher> -->
+<!-- 		<dispatcher>ASYNC</dispatcher> -->
+<!-- 	</filter-mapping> -->
+<!-- 	<listener> -->
+<!-- 		<listener-class>net.bull.javamelody.SessionListener</listener-class> -->
+<!-- 	</listener> -->
+	<!-- Fin - Javamelody Servlet -->
+	
+	<!-- http://forum.primefaces.org/viewtopic.php?f=3&t=20114 -->
+	<!-- Pour pouvoir utiliser ui:include dans un c:forEach pour creer les onglets -->
+	 <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.FULL_STATE_SAVING_VIEW_IDS</param-name>
+        <param-value>/index.xhtml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.validator.DISABLE_DEFAULT_BEAN_VALIDATOR</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
+    
+	<!--     FILTER -->
+<!-- 	<filter> -->
+<!-- 	    <filter-name>characterEncodingFilter</filter-name> -->
+<!-- 	    <filter-class>org.omnifaces.filter.CharacterEncodingFilter</filter-class> -->
+<!-- 	</filter> -->
+<!-- 	<filter-mapping> -->
+<!-- 	    <filter-name>characterEncodingFilter</filter-name> -->
+<!-- 	    <url-pattern>/*</url-pattern> -->
+<!-- 	</filter-mapping> -->
+    
+<!--     <context-param> -->
+<!-- 		<param-name>primefaces.CLIENT_SIDE_VALIDATION</param-name> -->
+<!-- 		<param-value>true</param-value> -->
+<!-- 	</context-param> -->
+<!--     <context-param> -->
+<!-- 	    <param-name>primefaces.TRANSFORM_METADATA</param-name> -->
+<!-- 	    <param-value>true</param-value> -->
+<!-- 	</context-param> -->
+    
+<!--     <error-page>   -->
+<!--         <exception-type>javax.faces.application.ViewExpiredException</exception-type>   -->
+<!--         <location>/login/login.xhtml</location> -->
+<!--     <error-page>   -->
+    
+	
+	<!-- Roles -->
+	<security-role>
+	  <description>Administrateur</description>
+	  <role-name>admin</role-name>
+	</security-role>
+	<security-role>
+	  <description>Utilisateur</description>
+	  <role-name>utilisateur</role-name>
+	</security-role>
+	
+	<!-- Resource / Role Mapping  -->
+<!-- 	<security-constraint> -->
+<!-- 	  <display-name>Admin Area</display-name> -->
+<!-- 	  <web-resource-collection> -->
+<!-- 	      <web-resource-name>admin_resources</web-resource-name> -->
+<!-- 	      <url-pattern>/admin/*</url-pattern> -->
+<!-- 	      <url-pattern>/admin/*</url-pattern> -->
+<!-- 	      <http-method>GET</http-method> -->
+<!-- 	      <http-method>POST</http-method> -->
+<!-- 	  </web-resource-collection> -->
+<!-- 	  <auth-constraint> -->
+<!-- 	      <description>For admin role only</description> -->
+<!-- 	      <role-name>admin</role-name> -->
+<!-- 	  </auth-constraint> -->
+<!-- 	  <user-data-constraint> -->
+<!-- 	      <transport-guarantee>NONE</transport-guarantee> -->
+<!-- 	  </user-data-constraint> -->
+<!-- 	</security-constraint>  -->
+	
+	<security-constraint>
+	  <web-resource-collection>
+	  	<web-resource-name>SSL</web-resource-name>
+	      <url-pattern>/*</url-pattern>
+	  </web-resource-collection>
+	  <user-data-constraint>
+	      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+	  </user-data-constraint>
+	</security-constraint>
+	
+	<!-- Login Prompt -->        
+	<login-config><auth-method>FORM</auth-method>
+	<form-login-config>
+	  <form-login-page>/login/login.xhtml</form-login-page>
+	  <form-error-page>/error.xhtml</form-error-page>
+	  </form-login-config>
+	</login-config>
+	
+</web-app>

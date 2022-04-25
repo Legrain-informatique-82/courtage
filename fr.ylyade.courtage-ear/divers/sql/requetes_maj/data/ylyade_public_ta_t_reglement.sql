@@ -1,0 +1,2 @@
+INSERT INTO public.ta_t_reglement (id_t_reglement, code_t_reglement, libl_t_reglement, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (2, 'CB', 'Carte bancaire', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_reglement (id_t_reglement, code_t_reglement, libl_t_reglement, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (1, 'CHEQUE', 'Chèque', null, null, null, null, null, 0);

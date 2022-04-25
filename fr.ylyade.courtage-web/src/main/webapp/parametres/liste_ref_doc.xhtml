@@ -1,0 +1,235 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idListeRefDocPanel" widgetVar="wvListeRefDocPanel">
+
+		<p class="subtitle">Gestion des listes de référence de document</p>
+
+		<p:panel id="idListeRefDocPanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{listeRefDocController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{listeRefDocController.handleReturnDialogTypes}" update="@widgetVar(wvListeRefDocPanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{listeRefDocController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{listeRefDocController.handleReturnDialogTypes}" update="@widgetVar(wvListeRefDocPanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{listeRefDocController.etatBouton('supprimer')}"
+				actionListener="#{listeRefDocController.actSupprimer}"
+				update="@widgetVar(wvDataTableListeRefDoc)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!listeRefDocController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{listeRefDocController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableListeRefDoc" 
+			widgetVar="wvDataTableListeRefDoc" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{listeRefDocController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{listeRefDocController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{listeRefDocController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableListeRefDoc" fileName="liste_ref_doc" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableListeRefDoc" fileName="liste_ref_doc" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableListeRefDoc" fileName="liste_ref_doc" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableListeRefDoc" fileName="liste_ref_doc" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeListeRefDoc}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeListeRefDoc}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblDoc}">
+				<f:facet name="header">
+					<h:outputText value="Libellé du document" />
+				</f:facet>
+				<h:outputText value="#{table.liblDoc}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.description}">
+				<f:facet name="header">
+					<h:outputText value="Description du document" />
+				</f:facet>
+				<h:outputText value="#{table.description}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblTListeRefDoc}">
+				<f:facet name="header">
+					<h:outputText value="Type de liste de référance du document" />
+				</f:facet>
+				<h:outputText value="#{table.liblTListeRefDoc}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvListeRefDocFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{listeRefDocController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{listeRefDocController.nouveau.codeListeRefDoc}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{listeRefDocController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_LISTE_REF_DOC}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle du document :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{listeRefDocController.nouveau.liblDoc}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{listeRefDocController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_DOC}" />
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Description du document :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{listeRefDocController.nouveau.description}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{listeRefDocController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_DESCRIPTION}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							
+							
+							
+							<div class="ui-g-4">
+								<h:outputText value="Type de liste  :"/>
+							</div>
+							<div class="ui-g-8">
+
+									<p:autoComplete value="#{listeRefDocController.taTListeRefDocDTO}" required="true" completeMethod="#{listeRefDocController.typeListeRefDocAutoCompleteLight}"
+										disabled="#{listeRefDocController.editable()}" var="typeListeRefDoc" itemLabel="#{typeListeRefDoc.codeTListeRefDoc}" itemValue="#{typeListeRefDoc}" forceSelection="true"
+										dropdown="true" placeholder="Votre choix" converter="entityConverter">
+										<p:column>
+											<h:outputText value="#{typeListeRefDoc.codeTListeRefDoc}" />
+										</p:column>
+										<p:column>
+											<h:outputText value="#{typeListeRefDoc.liblTListeRefDoc}" />
+										</p:column>
+										<p:column>
+											<f:facet name="header">
+												<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{listeRefDocController.actDialogTypeListeRefDoc()}"
+													styleClass="btn-insert btn">
+													<p:ajax event="dialogReturn" listener="#{listeRefDocController.handleReturnDialogTypeListeRefDoc}" update="@parent:@parent" />
+												</p:commandButton>
+											</f:facet>
+											
+											
+										</p:column>
+
+										<f:attribute name="nomChamp" value="#{const.C_CODE_T_LISTE_REF_DOC}" />
+										<p:ajax event="itemSelect" listener="#{listeRefDocController.autcompleteSelection}" update="@this" />
+									</p:autoComplete>
+								
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Actif :"/>
+							</div>
+							<div class="ui-g-8">
+								<p:selectBooleanCheckbox value="#{listeRefDocController.nouveau.actif}" validator="#{listeRefDocController.validateObject}">
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_DESCRIPTION}" /> -->
+									<p:ajax event="change" update="@this" />
+								</p:selectBooleanCheckbox>
+							</div>
+							
+							
+							<div class="ui-g-4">
+								<h:outputText value="Obligatoire :"/>
+							</div>
+							<div class="ui-g-8">
+								<p:selectBooleanCheckbox value="#{listeRefDocController.nouveau.obligatoire}" validator="#{listeRefDocController.validateObject}">
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_DESCRIPTION}" /> -->
+									<p:ajax event="change" update="@this" />
+								</p:selectBooleanCheckbox>
+							</div>										
+							
+							
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{listeRefDocController.etatBouton('enregistrer')}"
+									actionListener="#{listeRefDocController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{listeRefDocController.etatBouton('annuler')}"
+									actionListener="#{listeRefDocController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{listeRefDocController.etatBouton('annuler')}"
+									actionListener="#{listeRefDocController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

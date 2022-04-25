@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template_dialog_lgr.xhtml">
+	
+	<ui:define name="head">
+		    <title>Attestation nominative</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="idDialogAttestationNominative">
+		
+			<p:outputLabel value="Numéro de contrat : " styleClass="labelchob"/>
+								<p:inputText disabled="true" value="#{contratRcdController.selectedTaContratRcProDTO.numDossierPolice} - #{contratRcdController.selectedTaContratRcProDTO.numeroAvenant}"> 
+								</p:inputText>
+								
+						
+						<p:outputLabel value="Nom de l'assuré : " styleClass="labelchob"/>
+						<p:inputText value="#{contratRcdController.selectedTaDossierRcdDTO.taAssureDTO.nom}"
+								disabled="true">
+						</p:inputText>
+							
+						<p:outputLabel value="Prénom de l'assuré : " styleClass="labelchob"/>
+						<p:inputText value="#{contratRcdController.selectedTaDossierRcdDTO.taAssureDTO.prenom}"
+								disabled="true">
+						</p:inputText>
+						
+						<p:outputLabel value="Nom du courtier : " styleClass="labelchob"/>
+						<p:inputText value="#{contratRcdController.selectedTaDossierRcdDTO.codeCourtier}"
+								disabled="true">
+						</p:inputText>
+							
+						<p:outputLabel value="Code du courtier : " styleClass="labelchob"/>
+						<p:inputText value="#{contratRcdController.selectedTaDossierRcdDTO.nomDenominationSociale}"
+								disabled="true">
+						</p:inputText>
+						
+						<p:outputLabel value="Date d'effet souhaitée : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+	<!-- 								<f:attribute name="nomChamp" value="#{const.C_DATE_EFFET}" /> -->
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								
+								<p:outputLabel value="Valable et couvrant les chantiers du : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="au : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Adresse du chantier : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:outputLabel value="Nom du maître d'ouvrage : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:outputLabel value="Date d'ouverture du chantier : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Nature de l'ouvrage : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:outputLabel value="Coût total de construction TTC : " />
+								<p:inputNumber symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" styleClass="labelchob">
+								</p:inputNumber>
+								
+								<p:outputLabel value="Date de réception définitive : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Date d'intervention de l'assuré : " styleClass="labelchob"/>
+								<p:calendar value="" pattern="#{msg.date_pattern}"
+								    mask="true" locale="fr" navigator="true" readonlyInput="true"
+								    mindate="#{devisRcdController.now}"
+								    maxdate="#{devisRcdController.maxDatePlus12Mois()}"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{devisRcdController.validateDevisRcPro}">
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Qualité de l'assuré : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:outputLabel value="Travaux effectués : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:outputLabel value="Montant du marché HT : " />
+								<p:inputNumber symbol="#{msg.input_number_symbol}" symbolPosition="#{msg.input_number_symbolPosition}" styleClass="labelchob">
+								</p:inputNumber>
+								
+								<p:outputLabel value="Effectif pour ce chantier : " styleClass="labelchob"/>
+								<p:inputText>
+								</p:inputText>
+								
+								<p:commandButton id="validationAttestationNominativeBtn" value="Valider" process="@this"
+										widgetVar="wvvalidationAttestationNominativeBtn"
+										update="@this"
+										actionListener="#{contratRcdController.validationAttestationNominative}">
+										<p:confirm header="Confirmation" message="Etes-vous sûr de vouloir valider ces informations pour l'attestation nominative ?" icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:tooltip id="toolTipFadevalidationAttestationNominative" for="validationAttestationNominativeBtn"
+							                   value="Valider l'attestation une fois que tout les champs sont remplis. "
+							                   position="top"/>
+			
+		</h:form>
+	</ui:define>
+     
+</ui:composition>

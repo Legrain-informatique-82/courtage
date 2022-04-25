@@ -1,0 +1,649 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+
+
+	<p:tabView id="idTabViewAssure" styleClass="verticalTab" binding="#{assureController.tabViewAssure}"  cache="false">
+
+		<p:ajax event="tabChange" update="@widgetVar(panelListeAdresseAssure), @widgetVar(panelDetailAdresseAssure), @widgetVar(panelComptesBancairesAssure), @widgetVar(panelEmailEnvoyesAssure)" 
+			listener="#{assureController.onTabChange}" />
+
+		<p:tab title="Assure" titleStyleClass="tab-min tab-tiers" titletip="Assure">
+		
+			<p:menubar styleClass="menu-onglet">
+				<p:menuitem value="Aide" styleClass="icon icon-aidecontextuelle" onstart="PF('wvAideMenuAssure').show()" />
+				<p:menuitem value="Nouveau devis RCD" styleClass="icon-save icon" actionListener="#{assureController.actNouveauDevisRcd}"
+					process="@this"
+					disabled="#{assureController.etatBouton('inserer')}"
+					update=":form:tabView, @this"
+					rendered="#{auth.isCourtier()}"/>
+				<p:menuitem value="Enregistrer" styleClass="icon-save icon" actionListener="#{assureController.actEnregistrer}"
+					process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,idPanelConnexion,:form:messages,@form,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure)"
+					disabled="#{assureController.etatBouton('enregistrer')}" />
+				<p:menuitem value="Ajouter" styleClass="icon-insert icon" actionListener="#{assureController.actInserer}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(panelIdentite),@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure),@widgetVar(wvBandeauActionAssure)"
+					disabled="#{assureController.etatBouton('inserer')}" rendered="#{auth.isYlyade()}"/>
+				<p:menuitem value="Modifier" styleClass="icon-update icon" actionListener="#{assureController.actModifier}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure)"
+					disabled="#{assureController.etatBouton('modifier')}" />
+				<p:menuitem value="Annuler" styleClass="icon-cancel icon" actionListener="#{assureController.actAnnuler}"
+					process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure)"
+					disabled="#{assureController.etatBouton('annuler')}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir annuler les modifications en cours ?" icon="ui-icon-alert" />
+				</p:menuitem>
+				<p:menuitem value="Supprimer" styleClass="icon icon-delete menuitem-poubelle-droite"
+					actionListener="#{assureController.actSupprimer}" process="@this"
+					update="idPanelIdentite,idPanelAdresse,idPanelContact,:form:messages,@form,@widgetVar(wvDataTableListeAssure)"
+					disabled="#{assureController.etatBouton('supprimer')}" rendered="#{auth.isYlyade()}">
+					<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer ce Assure ?" icon="ui-icon-alert" />
+				</p:menuitem>
+				<p:menuitem value="Fermer" styleClass="icon icon-close menuitem-fermer-droite" process="@this"
+					actionListener="#{assureController.actFermer}" update=":form:messages,@widgetVar(wvMenuListeAssure),@widgetVar(wvDataTableListeAssure)"
+					disabled="#{assureController.etatBouton('fermer')}" onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+					<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert"
+						disabled="#{!assureController.modeEcran.dataSetEnModif()}" />
+				</p:menuitem>
+				<p:menuitem value="Imprimer" styleClass="icon-print icon"
+					onsuccess="window.open('#{request.contextPath}/output?__report=/reports/assure/FicheAssure.rptdesign&amp;id_tiers=#{assureController.selectedTaAssureDTO.id}&amp;__format=pdf')"
+					actionListener="#{assureController.actImprimerFiche}" disabled="#{assureController.etatBouton('imprimer')}" />
+				<p:menuitem value="Liste" styleClass="icon icon-liste" oncomplete="PF('wvOverlayListeAssure').show();" rendered="#{auth.isYlyade() or auth.isCourtier()}"/>
+			</p:menubar>
+
+			<div class="ui-g">
+				<div class="ui-g-12">
+				
+					<p:fieldset style="margin-bottom:5px;" widgetVar="wvBandeauActionAssure">
+						<h:panelGrid columns="10" cellpadding="5">
+							<p:outputLabel value="Etat" />
+								<p:selectBooleanButton id="value2" value="#{assureController.selectedTaAssureDTO.actif}" disabled="#{assureController.editable() or !auth.isYlyade()}"
+									onLabel="Actif" offLabel="Inactif" onIcon="ui-icon-check" offIcon="ui-icon-close">
+									<p:ajax event="change" update="@this" />
+								</p:selectBooleanButton>
+						</h:panelGrid>
+					</p:fieldset>
+					
+				</div>
+
+				<div class="ui-g-12">
+					<div class="ui-g-6">
+						<p:panel id="idPanelIdentite" header="Identité" toggleable="true" widgetVar="panelIdentite">
+
+							<h:panelGrid columns="2" cellpadding="10">
+							
+								<p:outputLabel value="Code assure" styleClass="labelchob" />
+								<p:inputText id="idCode" value="#{assureController.selectedTaAssureDTO.codeAssure}" validator="#{assureController.validateAssure}"
+									disabled="true">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_ASSURE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+								<p:outputLabel value="Type assure" />
+								<p:autoComplete value="#{assureController.taTAssureDTO}" required="true" completeMethod="#{assureController.typeAssureAutoCompleteLight}"
+									disabled="#{assureController.editableIfNovarisksOnly()}" var="typeAssure" itemLabel="#{typeAssure.codeTAssure}" itemValue="#{typeAssure}" forceSelection="true"
+									dropdown="true" placeholder="Type de assure" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeAssure.codeTAssure}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeAssure.liblTAssure}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{assureController.actDialogTypeAssure}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{assureController.handleReturnDialogTypeAssure}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeAssure.compteTAssure}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_ASSURE}" />
+									<p:ajax event="itemSelect" listener="#{assureController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+									
+								<p:outputLabel value="Nom" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.nom}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_NOM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Prénom" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.prenom}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_PRENOM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+	
+								<p:outputLabel value="Titre Fonction" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.titreFonction}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_TITRE_FONCTION_ASSURE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Qualifications (ex : Qualibat, Qualifelec,...)" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.qualifications}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_QULIFICATION}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Diplomes" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.diplome}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_DIPLOME}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Raison sociale" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.raisonSociale}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_RAISON_SOCIALE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Chiffre d'affaire" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.chiffreAffaire}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+								<p:outputLabel value="Date de création" />
+								<p:calendar value="#{assureController.selectedTaAssureDTO.dateCreation}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{assureController.validateAssure}" disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_CREATION}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Date de cloture du bilan" />
+								<p:calendar value="#{assureController.selectedTaAssureDTO.dateClotureBilan}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{assureController.validateAssure}" disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_CLOTURE_BILAN}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Activité principale" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.activitePrincipale}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_ACTIVITE_PRINCIPALE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+<!-- 								<p:outputLabel value="Chiffre d'affaire de l'exercice anterieur" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.chiffreAffaireExerciceAnterieur}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_ANTERIEUR}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+
+								<p:outputLabel value="Chiffre d'affaire previsionnel de l'exercice" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.chiffreAffaireExercicePrevisionnel}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CHIFFRE_AFFAIRE_EXERCICE_PREVISIONNEL}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+<!-- 								<p:outputLabel value="Effectif total exercice anterieur" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.effectifTotalExerciceAnterieur}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE_ANTERIEUR}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								<p:outputLabel value="Effectif total exercice" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.effectifTotalExercice}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL_EXERCICE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Date de naissance" />
+								<p:calendar value="#{assureController.selectedTaAssureDTO.dateNaissance}" pattern="#{msg.date_pattern}" mask="true" locale="fr" navigator="true"
+									showOn="button" timeZone="#{msg.time_zone}" validator="#{assureController.validateAssure}" disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_DATE_NAISSANCE}" />
+									<p:ajax event="dateSelect" update="@this" />
+									<f:ajax event="blur" update="@this" />
+								</p:calendar>
+								
+								<p:outputLabel value="Capital" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.capital}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CAPITAL}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Ville RCS" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.imatRegistreCommSocieteVille}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_IMAT_REGISTRE_COMM_SOCIETE_VILLE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Num RCS" />
+								<p:inputText value="#{assureController.selectedTaAssureDTO.numImat}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_NUM_IMAT}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+
+  								<p:outputLabel value="Courtier : " />
+								<p:autoComplete value="#{assureController.taCourtierDTO}"
+									required="true"
+									completeMethod="#{assureController.courtierAutoCompleteLight}"
+									disabled="#{assureController.editableIfNovarisksOnly()}" var="courtier"
+									itemLabel="#{courtier.codeCourtier}" itemValue="#{courtier}"
+									forceSelection="true" dropdown="true" placeholder="Courtier"
+									converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{courtier.codeCourtier}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{courtier.nom}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer"
+												process="@this" update="@this"
+												actionListener="#{assureController.actDialogCourtier}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn"
+													listener="#{assureController.handleReturnDialogCourtier}"
+													update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_COURTIER}" />
+									<p:ajax event="itemSelect"
+										listener="#{assureController.autcompleteSelection}"
+										update="@this" />
+								</p:autoComplete>
+								
+							<!-- 	<p:outputLabel value="Attestation de competences" />
+								<p:inputText /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.titreFonction}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_TITRE_FONCTION}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+				
+							</h:panelGrid>
+						</p:panel>
+
+					</div>
+
+					<div class="ui-g-6 ui-g-nopad">
+							<div class="ui-g-12">
+
+								<p:panel id="idPanelAdresse" header="Adresse" toggleable="true" widgetVar="panelAdresse">
+
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:outputLabel value="Ligne" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.adresseLigne1}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_1}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ligne (2)" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.adresseLigne2}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_2}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ligne (3)" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.adresseLigne3}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_LIGNE_3}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Code postal" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.codePostal}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_CODE_POSTAL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Ville" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.ville}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_VILLE}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Pays" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.pays}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_PAYS}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+										
+										<p:outputLabel value="Réside à l'étranger" />
+										<p:selectBooleanCheckbox value="#{assureController.selectedTaAssureDTO.domiciliationEtranger}" disabled="#{assureController.editable()}">
+											<p:ajax event="change" update="@this" />
+										</p:selectBooleanCheckbox>
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+
+							<div class="ui-g-12">
+
+								<p:panel id="idPanelContact" header="Contact" toggleable="true" widgetVar="panelContact">
+
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:outputLabel value="Téléphone" />
+										<p:inputText maxlength="20" value="#{assureController.selectedTaAssureDTO.numeroTel}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editableIfAssureOnly()}">
+											<f:attribute name="nomChamp" value="#{const.C_NUMERO_TEL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+										<p:outputLabel value="Adresse email (sert d'identifiant)" />
+										<p:inputText value="#{assureController.selectedTaAssureDTO.adresseEmail}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editableIfAssureOnly()}">
+											<f:attribute name="nomChamp" value="#{const.C_ADRESSE_EMAIL}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText>
+
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+						
+						<div class="ui-g-12">
+
+								<p:panel id="idPanelConnexion" header="Connexion" toggleable="true" widgetVar="panelConnexion">
+
+									<h:panelGrid columns="2" cellpadding="10">
+<!-- 										<p:outputLabel value="Identifiant" />
+										<p:inputText maxlength="20" value="#{assureController.selectedTaAssureDTO.identifiant}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable()}">
+											<f:attribute name="nomChamp" value="#{const.C_IDENTIFIANT}" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText> -->
+										
+										<p:outputLabel value="Modifier le mot de passe" rendered="#{assureController.selectedTaAssureDTO.identifiant!=null and assureController.selectedTaAssureDTO.identifiant ne ''}"/>
+										<p:outputLabel value="Création d'un compte client" rendered="#{assureController.selectedTaAssureDTO.identifiant==null or assureController.selectedTaAssureDTO.identifiant eq ''}"/>
+										<p:selectBooleanCheckbox value="#{assureController.modifierMotDePasse}" disabled="#{assureController.editable()}">
+											<p:ajax event="change" update="@this, @widgetVar(panelConnexion)" />
+										</p:selectBooleanCheckbox>
+										
+<!-- 										<p:outputLabel value="Création d'un compte client" rendered="true"/> -->
+<!-- 										<p:selectBooleanCheckbox value="#{assureController.creationCompteClientAssure}" disabled="#{assureController.editable()}" rendered="true" > -->
+<!-- 											<p:ajax event="change" update="@this, @widgetVar(panelConnexion)" /> -->
+<!-- 										</p:selectBooleanCheckbox> -->
+										
+										<p:outputLabel value="Mot de passe" />
+										<p:inputText  value="#{assureController.selectedTaAssureDTO.password}"
+											validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable() || !assureController.modifierMotDePasse}">
+											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}" />
+											<p:ajax event="blur" update="@this" /> 
+										</p:inputText > 
+				
+										
+										<p:outputLabel value="Confirmation du mot de passe" />
+										<p:inputText   value="#{assureController.selectedTaAssureDTO.passwordConfirm}" validator="#{assureController.validateAssure}"
+											disabled="#{assureController.editable() || !assureController.modifierMotDePasse}">
+											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}_CONFIRMATION" />
+											<p:ajax event="blur" update="@this" />
+										</p:inputText > 
+										
+									
+									<!-- 										match="pwd2"  -->	
+<!-- 										<p:outputLabel value="Mot de passe" /> -->
+<!-- 										<p:password id="pwd1"  -->
+<!-- 											value="#{assureController.selectedTaAssureDTO.password}" validator="#{assureController.validateAssure}" -->
+<!-- 											disabled="#{assureController.editable()}"> -->
+<!-- 											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}" /> -->
+<!-- 											<p:ajax event="blur" update="@this" /> -->
+<!-- 										</p:password> -->
+										
+<!-- 										<p:outputLabel value="Confirmation du mot de passe" /> -->
+<!-- 										<p:password id="pwd2" value="#{assureController.selectedTaAssureDTO.password}" validator="#{assureController.validateAssure}" -->
+<!-- 											disabled="#{assureController.editable()}"> -->
+<!-- 											<f:attribute name="nomChamp" value="#{const.C_PASSWORD}_CONFIRMATION" /> -->
+<!-- 											<p:ajax event="blur" update="@this" /> -->
+<!-- 										</p:password> -->
+
+									</h:panelGrid>
+
+								</p:panel>
+
+						</div>
+					</div>
+
+				</div>
+
+
+					<div class="ui-g-6">
+						<p:panel id="idPanelComptaAssure" header="Divers" toggleable="true" widgetVar="panelComptaAssure">
+							<h:panelGrid columns="2" cellpadding="10">
+	
+<!-- 								<p:outputLabel value="Suspendu" /> -->
+<!-- 								<p:selectBooleanCheckbox value="#{assureController.selectedTaAssureDTO.suspendu}" disabled="#{assureController.editable()}"> -->
+<!-- 									<p:ajax event="change" update="@this" /> -->
+<!-- 								</p:selectBooleanCheckbox> -->
+
+								
+<!-- 								<p:outputLabel value="Effectif total" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.effectifTotal}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_EFFECTIF_TOTAL}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Identifiant" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.identifiant}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_IDENTIFIANT}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+
+								<p:outputLabel value="Civilité" />
+								<p:autoComplete value="#{assureController.taTCiviliteDTO}" required="true" completeMethod="#{assureController.typeCiviliteAutoCompleteLight}"
+									disabled="#{assureController.editableIfAssureOnly()}" var="typeCivilite" itemLabel="#{typeCivilite.codeTCivilite}" itemValue="#{typeCivilite}" forceSelection="true"
+									dropdown="true" placeholder="Type de assure" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeCivilite.codeTCivilite}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeCivilite.liblTCivilite}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{assureController.actDialogTypeAssure}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{assureController.handleReturnDialogTypeAssure}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeAssure.compteTAssure}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_CIVILITE}" />
+									<p:ajax event="itemSelect" listener="#{assureController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+
+								<p:outputLabel value="Forme juridique" />
+								<p:autoComplete value="#{assureController.taTJuridiqueDTO}" required="true" completeMethod="#{assureController.typeJuridiqueAutoCompleteLight}"
+									disabled="#{assureController.editableIfAssureOnly()}" var="typeJuridique" itemLabel="#{typeJuridique.codeTJuridique}" itemValue="#{typeJuridique}" forceSelection="true"
+									dropdown="true" placeholder="Type juridique" converter="entityConverter">
+									<p:column>
+										<h:outputText value="#{typeJuridique.codeTJuridique}" />
+									</p:column>
+									<p:column>
+										<h:outputText value="#{typeJuridique.liblTJuridique}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<p:commandButton value="Ajouter" title="Insérer" process="@this" update="@this" actionListener="#{assureController.actDialogTypeAssure}"
+												styleClass="btn-insert btn">
+												<p:ajax event="dialogReturn" listener="#{assureController.handleReturnDialogTypeAssure}" update="@parent:@parent" />
+											</p:commandButton>
+										</f:facet>
+<!-- 											<h:outputText value="#{typeAssure.compteTAssure}" /> -->
+									</p:column>
+
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_COURTIER}" />
+									<p:ajax event="itemSelect" listener="#{assureController.autcompleteSelection}" update="@this" />
+								</p:autoComplete>
+	
+<!-- 								<p:outputLabel value="Commissions brutes" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.comBrutes}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_COM_BRUTES}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Commissions brutes IARD" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.comBrutesIard}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_COM_BRUTES_IARD}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+							
+<!-- 								<p:outputLabel value="Connu Ylyade" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.connuYlyade}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CONNU_YLYADE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="CA IARD Pourcent Entreprise" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.caIardPourcentEntreprise}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CA_IARD_POURCENT_ENTREPRISE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+							
+<!-- 								<p:outputLabel value="CA IARD Pourcent Particulier" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.caIardPourcentParticulier}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CA_IARD_POURCENT_PARTICULER}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+
+							</h:panelGrid>
+						</p:panel>
+					</div>
+					
+					<div class="ui-g-6">
+						<p:panel id="idPanelComptaAssure2" header="Divers 2" toggleable="true" widgetVar="panelComptaAssure2">
+							<h:panelGrid columns="2" cellpadding="10">
+
+								<p:outputLabel value="Code siret" styleClass="labelchob"/>
+								<p:inputText value="#{assureController.selectedTaAssureDTO.codeSiret}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_SIRET}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Code siren" styleClass="labelchob"/>
+								<p:inputText value="#{assureController.selectedTaAssureDTO.codeSiren}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_SIREN}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="Code APE" styleClass="labelchob"/>
+								<p:inputText value="#{assureController.selectedTaAssureDTO.codeApe}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_APE}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+								<p:outputLabel value="TVA Intra. Comm." styleClass="labelchob"/>
+								<p:inputText value="#{assureController.selectedTaAssureDTO.tvaIntraComm}" validator="#{assureController.validateAssure}"
+									disabled="#{assureController.editableIfAssureOnly()}">
+									<f:attribute name="nomChamp" value="#{const.C_TVA_INTRA_COMM}" />
+									<p:ajax event="blur" update="@this" />
+								</p:inputText>
+								
+<!-- 								<p:outputLabel value="Logo" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.logo}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_LOGO}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Qualite" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.qualite}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_QUALITE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Numéro ORIAS" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.numOrias}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_ORIAS}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+								
+<!-- 								<p:outputLabel value="Dénomination sociale" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.nomDenominationSociale}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NOM_DENOMINATION_SOCIALE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Numéro RCS" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.numRcs}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_RCS}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Numéro RC Pro." /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.numRcPro}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_RC_PRO}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+						
+<!-- 								<p:outputLabel value="Numéro greffe" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.numGreffe}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_NUM_GREFFE}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+<!-- 								<p:outputLabel value="Capital social" /> -->
+<!-- 								<p:inputText value="#{assureController.selectedTaAssureDTO.capitalSocial}" validator="#{assureController.validateAssure}" -->
+<!-- 									disabled="#{assureController.editable()}"> -->
+<!-- 									<f:attribute name="nomChamp" value="#{const.C_CAPITAL_SOCIAL}" /> -->
+<!-- 									<p:ajax event="blur" update="@this" /> -->
+<!-- 								</p:inputText> -->
+								
+							</h:panelGrid>
+						</p:panel>
+					</div>
+					
+			</div>
+
+		</p:tab>
+
+<!-- 		<p:tab title="GED Assure" titleStyleClass="tab-min" titletip="GED Assure"> -->
+<!-- 			<ui:include src="ged_assure.xhtml" /> -->
+<!-- 		</p:tab>		 -->
+		
+	</p:tabView>
+
+</ui:composition>

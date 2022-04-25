@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel id="idTypeFranchisePanel" widgetVar="wvTypeFranchisePanel">
+
+		<p class="subtitle">Gestion des types de franchises</p>
+
+		<p:panel id="idTypeFranchisePanelDataTable" styleClass="mt30" style="position:relative;"
+			rendered="#{dansDialogue == null ? true : false}">
+			
+			<p:commandButton 
+				value="Ajouter" 
+				title="Insérer" 
+				process="@this"
+				actionListener="#{typeFranchiseController.actDialogTypes}">
+				<p:ajax event="dialogReturn" listener="#{typeFranchiseController.handleReturnDialogTypes}" update="@widgetVar(wvTypeFranchisePanel)"/>
+			</p:commandButton>
+
+			<p:commandButton value="Modifier" title="Modifier" process="@this"
+				actionListener="#{typeFranchiseController.actDialogModifier}">
+				<p:ajax event="dialogReturn" listener="#{typeFranchiseController.handleReturnDialogTypes}" update="@widgetVar(wvTypeFranchisePanel)"/>
+			</p:commandButton>	
+
+			<p:commandButton value="Supprimer"
+				disabled="#{typeFranchiseController.etatBouton('supprimer')}"
+				actionListener="#{typeFranchiseController.actSupprimer}"
+				update="@widgetVar(wvDataTableTypeFranchise)" 
+				process="@this">
+				<p:confirm header="Confirmation" message="Etes vous sur de vouloir supprimer cet enregistrement ?" icon="ui-icon-alert" />
+			</p:commandButton>
+
+			<p:commandButton value="Fermer"
+				process="@this"
+				onstart="PF('widgetVarTabView').remove(PF('widgetVarTabView').getActiveIndex())">
+				<p:confirm header="Confirmation" message="#{msg_diag.alert_fermeture_onglet}" icon="ui-icon-alert" 
+					disabled="#{!typeFranchiseController.modeEcran.dataSetEnModif()}"/>
+			</p:commandButton>
+				
+			<p:commandButton value="Fermer" process="@this" 
+				actionListener="#{typeFranchiseController.actFermerDialog}"
+				rendered="#{dansDialogue != null ? true : false}" />
+		</p:panel>
+
+		<p:dataTable id="idDataTableTypeFranchise" 
+			widgetVar="wvDataTableTypeFranchise" 
+			var="table"
+			rendered="#{dansDialogue == null ? true : false}"
+			value="#{typeFranchiseController.values}" 
+			rowKey="#{table.id}"
+			selectionMode="single" 
+			styleClass="datatable"
+			selection="#{typeFranchiseController.selection}" 
+			paginator="false"
+			rows="#{msg.modele_datatable_ligne_par_page_debut}"
+			paginatorTemplate="#{msg.modele_datatable_paginator}"
+			rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+			emptyMessage="#{msg.message_datatable_vide}"
+			currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+
+			<p:ajax event="rowSelect" listener="#{typeFranchiseController.onRowSelect}" />
+
+			<f:facet name="{Exporters}">
+				<h:commandLink>
+					<p:graphicImage library="images" name="excel.png" width="24" />
+					<p:dataExporter type="xls" target="idDataTableTypeFranchise" fileName="type_Franchise" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="pdf.png" width="24" />
+					<p:dataExporter type="pdf" target="idDataTableTypeFranchise" fileName="type_Franchise" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="csv.png" width="24" />
+					<p:dataExporter type="csv" target="idDataTableTypeFranchise" fileName="type_Franchise" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage library="images" name="xml.png" width="24" />
+					<p:dataExporter type="xml" target="idDataTableTypeFranchise" fileName="type_Franchise" />
+				</h:commandLink>
+			</f:facet>
+			
+			<p:column sortBy="#{table.codeTFranchise}">
+				<f:facet name="header">
+					<h:outputText value="Code" />
+				</f:facet>
+				<h:outputText value="#{table.codeTFranchise}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.liblTFranchise}">
+				<f:facet name="header">
+					<h:outputText value="Libellé" />
+				</f:facet>
+				<h:outputText value="#{table.liblTFranchise}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.tauxMontant}">
+				<f:facet name="header">
+					<h:outputText value="Taux" />
+				</f:facet>
+				<h:outputText value="#{table.tauxMontant}" />
+			</p:column>
+			
+			<p:column sortBy="#{table.montant}">
+				<f:facet name="header">
+					<h:outputText value="Montant" />
+				</f:facet>
+				<h:outputText value="#{table.montant}" />
+			</p:column>
+		</p:dataTable>
+
+	</p:panel>
+
+	<p:messages showDetail="true" autoUpdate="true" closable="true" />
+
+	<p:panel  visible="true" widgetVar="wvTypeFranchiseFormulairePanel">
+	
+		<p:panel resizable="false" rendered="#{typeFranchiseController.modeEcran.dataSetEnModif()}">
+				<f:validateBean disabled="true">
+				
+					<div class="ui-g">
+						<div class="ui-g-12">
+							<div class="ui-g-4">
+								<h:outputText value="Code :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFranchiseController.nouveau.codeTFranchise}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFranchiseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_CODE_T_FRANCHISE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Libelle :"/>
+							</div>
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFranchiseController.nouveau.liblTFranchise}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFranchiseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_LIBL_T_FRANCHISE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Taux :"/>
+							</div>
+							
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFranchiseController.nouveau.tauxMontant}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFranchiseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_TAUX_MONTANT_T_FRANCHISE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+							
+							<div class="ui-g-4">
+								<h:outputText value="Montant :"/>
+							</div>
+							
+							<div class="ui-g-8">
+								<h:inputText  value="#{typeFranchiseController.nouveau.montant}" 
+									required="true" requiredMessage="Champs obligatoire!" validator="#{typeFranchiseController.validateObject}">
+									<f:attribute name="nomChamp" value="#{const.C_MONTANT_T_FRANCHISE}" />
+									<p:ajax event="blur" update="@this"/>
+								</h:inputText>
+							</div>
+	
+							<div class="ui-g-12 text-center">
+								<p:commandButton value="Enregistrer"
+									disabled="#{typeFranchiseController.etatBouton('enregistrer')}"
+									actionListener="#{typeFranchiseController.actEnregistrer}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeFranchiseController.etatBouton('annuler')}"
+									actionListener="#{typeFranchiseController.actAnnuler}"
+									rendered="#{dansDialogue != null ? false : true}" />
+	
+								<p:commandButton value="Annuler"
+									process="@this"
+									disabled="#{typeFranchiseController.etatBouton('annuler')}"
+									actionListener="#{typeFranchiseController.actFermerDialog}"
+									rendered="#{dansDialogue != null ? true : false}" />	
+							</div>
+						</div>
+					</div>
+				</f:validateBean>
+		</p:panel>
+	</p:panel>
+</ui:composition>

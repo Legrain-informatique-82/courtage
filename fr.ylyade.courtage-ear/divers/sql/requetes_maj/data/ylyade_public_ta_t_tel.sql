@@ -1,0 +1,3 @@
+INSERT INTO public.ta_t_tel (id_t_tel, code_t_tel, libl_t_tel, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (1, 'Tel1', 'Personnel', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_tel (id_t_tel, code_t_tel, libl_t_tel, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (2, 'Tel2', 'Professionnel', null, null, null, null, null, 0);
+INSERT INTO public.ta_t_tel (id_t_tel, code_t_tel, libl_t_tel, qui_cree, quand_cree, qui_modif, quand_modif, ip_acces, version_obj) VALUES (3, 'Tel3', 'Fax', null, null, null, null, null, 0);

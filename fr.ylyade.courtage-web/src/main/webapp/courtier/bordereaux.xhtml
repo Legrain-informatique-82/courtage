@@ -1,0 +1,140 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:f="http://java.sun.com/jsf/core" 
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:lgr="http://legrain.fr/ui"
+	xmlns:lgrjsf="http://java.sun.com/jsf/composite/lgr-jsf-component">
+
+<!-- 	<h:form enctype="multipart/form-data"> -->
+<p:panel header="Bordereaux de commission pour  : #{courtierController.selectedTaCourtierDTO.nom}">
+	<h:panelGrid columns="5">
+		<p:selectOneMenu id="moisBordereaux" value="#{courtierController.selectedMoisBordereaux}" widgetVar="wvselectOneMenuMoisBordereaux">
+	
+            <f:selectItem itemLabel="Choisir un mois" itemValue="" />
+            <f:selectItems value="#{courtierController.listeMoisBordereaux.keySet()}" />
+            <p:ajax event="change"/>
+     </p:selectOneMenu>
+     <h:outputLink id="tooltipBordereauxlink" value="#">
+		<i class="fa fa-question-circle"></i>
+	</h:outputLink>
+      <p:tooltip id="tooltipBordereaux" for="tooltipBordereauxlink"
+		  value="Cette liste de mois ne comporte pas le mois courant."
+		  position="top"/>
+      <p:selectOneMenu id="anneesBordereaux" value="#{courtierController.selectedAnneeBordereaux}">
+            <f:selectItem itemLabel="Choisir une année" itemValue="" />
+            <f:selectItems value="#{courtierController.listeAnneeBordereaux}" />
+            <p:ajax event="change" listener="#{courtierController.actChangementAnneeBordereaux}" update="@widgetVar(wvselectOneMenuMoisBordereaux)"/>
+     </p:selectOneMenu>
+          
+     <p:commandButton action="#{courtierController.actRechercheBordereaux}" process="@this" update="@this, @widgetVar(wvDataTableBordereauxCommission)" value="Afficher le bordereaux">
+     </p:commandButton>
+	</h:panelGrid>
+	
+        
+    
+
+        
+	<p:dataTable id="dataTableBordereauxCommission" var="reglement"
+				widgetVar="wvDataTableBordereauxCommission"
+				value="#{courtierController.listeReglementAssurance}"
+				styleClass="datatable mt10"
+				resizableColumns="true"
+				paginator="true" 
+				paginatorTemplate="#{msg.modele_datatable_paginator}"
+				rowsPerPageTemplate="#{msg.modele_datatable_lignes_par_page}"
+				emptyMessage="#{msg.message_datatable_vide}"
+				currentPageReportTemplate="#{msg.modele_datatable_page_courante}">
+				
+				<f:facet name="header">  
+           			<h:outputText value="Bordereaux de commission" />
+        		</f:facet>
+
+		  		<f:facet name="{Exporters}">
+		            <h:commandLink>
+		                <p:graphicImage library="images" name="excel.png" width="24"/>
+		                <p:dataExporter type="xls" target="dataTableBordereauxCommission" fileName="bordereaux_commission" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="pdf.png"  width="24"/>
+		                <p:dataExporter type="pdf" target="dataTableBordereauxCommission" fileName="bordereaux_commission"/>
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="csv.png"  width="24"/>
+		                <p:dataExporter type="csv" target="dataTableBordereauxCommission" fileName="bordereaux_commission" />
+		            </h:commandLink>
+		 
+		            <h:commandLink>
+		                <p:graphicImage  library="images" name="xml.png"  width="24"/>
+		                <p:dataExporter type="xml" target="dataTableBordereauxCommission" fileName="bordereaux_commission" />
+		            </h:commandLink>
+		            
+		            <p:commandLink id="idBtnListePrintEcranBordereauxCommission"
+                             title="Imprimer le bordereaux de commission"
+onsuccess="window.open('#{request.contextPath}/output?__report=/reports/gestionComptable/BorderauxDeCommission.rptdesign&amp;id_tiers=#{courtierController.listeReglementAssurance}&amp;__format=pdf')"
+actionListener="#{courtierController.actImprimerBordereaux}"
+            process="@this">
+                    <p:graphicImage library="images" name="imprimante.png"  width="24"/>
+                    </p:commandLink>
+					
+		        </f:facet>
+		        
+		         <p:column sortBy="#{reglement.numDossierFull()}" filterBy="#{reglement.numDossierFull()}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="N° de contrat" />
+					</f:facet>
+					<h:outputText value="#{reglement.numDossierFull()}" ></h:outputText>
+				</p:column>
+		        
+		        <p:column sortBy="#{reglement.refReglement}" filterBy="#{reglement.refReglement}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Rèf du règlement" />
+					</f:facet>
+					<h:outputText value="#{reglement.refReglement}" ></h:outputText>
+				</p:column>
+		        
+		        <p:column sortBy="#{reglement.dateReglement}" filterBy="#{reglement.dateReglement}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Date du règlement" />
+					</f:facet>
+					<h:outputText value="#{reglement.dateReglement}" ><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{devisRcdController.timeZone}" /></h:outputText>
+				</p:column>
+				
+				<p:column sortBy="#{reglement.taEcheance.dateDebutEcheance}" filterBy="#{reglement.taEcheance.dateDebutEcheance}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Période du " />
+					</f:facet>
+					<h:outputText value="#{reglement.taEcheance.dateDebutEcheance}" ><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{devisRcdController.timeZone}" /></h:outputText>
+				</p:column>
+				
+				<p:column sortBy="#{reglement.taEcheance.dateEcheance}" filterBy="#{reglement.taEcheance.dateEcheance}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Période au" />
+					</f:facet>
+					<h:outputText value="#{reglement.taEcheance.dateEcheance}" ><f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{devisRcdController.timeZone}" /></h:outputText>
+				</p:column>
+				
+				 <p:column sortBy="#{reglement.taEcheance.montantCommission}" filterBy="#{reglement.taEcheance.montantCommission}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Commission (€)" />
+					</f:facet>
+					<h:outputText value="#{reglement.taEcheance.montantCommission}" ></h:outputText>
+				</p:column>
+				
+				 <p:column sortBy="#{reglement.taEcheance.montantFraisDeDossier}" filterBy="#{reglement.taEcheance.montantFraisDeDossier}" filterMatchMode="contains" styleClass="center" style="width:130px">
+					<f:facet name="header">
+						<h:outputText value="Frais de dossier (€)" />
+					</f:facet>
+					<h:outputText value="#{reglement.taEcheance.montantFraisDeDossier}" ></h:outputText>
+				</p:column>
+				
+				
+		        
+		        
+		        
+	</p:dataTable>
+</p:panel> 
+			
+</ui:composition>
